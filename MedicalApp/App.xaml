@@ -1,0 +1,24 @@
+<Application x:Class="MedicalApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2000/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2000/xaml"
+             xmlns:viewmodels="clr-namespace:MedicalApp.ViewModels"
+             xmlns:views="clr-namespace:MedicalApp.Views">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Styles/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- DataTemplates to route ViewModel to View automatically in ContentControl -->
+            <DataTemplate DataType="{x:Type viewmodels:PatientRegistrationViewModel}">
+                <views:PatientRegistrationView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:ClinicalExamViewModel}">
+                <views:ClinicalExamView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:EchoUploadViewModel}">
+                <views:EchoUploadView/>
+            </DataTemplate>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

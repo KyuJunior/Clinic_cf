@@ -1,0 +1,96 @@
+<UserControl x:Class="MedicalApp.Views.PatientRegistrationView"
+             xmlns="http://schemas.microsoft.com/winfx/2000/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2000/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="900"
+             Background="Transparent">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="380"/> <!-- Registration Form -->
+            <ColumnDefinition Width="*"/>   <!-- Patient DataGrid & Lookup -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Column: Registration Form -->
+        <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Top">
+            <StackPanel>
+                <TextBlock Text="Register New Patient" Style="{StaticResource Header2}"/>
+                <TextBlock Text="Enter patient record details below to enroll." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
+
+                <!-- Name Input -->
+                <TextBlock Text="Full Name" Style="{StaticResource Subheading}"/>
+                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                <!-- Age & Gender Grid -->
+                <Grid Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                        <TextBlock Text="Age" Style="{StaticResource Subheading}"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                        <TextBlock Text="Gender" Style="{StaticResource Subheading}"/>
+                        <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Gender, UpdateSourceTrigger=PropertyChanged}" Height="38">
+                            <ComboBoxItem Content="Male"/>
+                            <ComboBoxItem Content="Female"/>
+                            <ComboBoxItem Content="Other"/>
+                        </ComboBox>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Phone Input -->
+                <TextBlock Text="Phone Number" Style="{StaticResource Subheading}"/>
+                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                <!-- Address Input -->
+                <TextBlock Text="Address" Style="{StaticResource Subheading}"/>
+                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,20"/>
+
+                <!-- Register Button -->
+                <Button Style="{StaticResource ModernButton}" Content="Register Patient" Command="{Binding RegisterCommand}" HorizontalAlignment="Stretch" Height="42"/>
+
+                <!-- Status Message -->
+                <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource PrimaryColor}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Right Column: Patient Lookup -->
+        <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="15,0,0,0" VerticalAlignment="Stretch">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!-- Search Panel -->
+                <Grid Grid.Row="0" Margin="0,0,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox Grid.Column="0" Style="{StaticResource ModernTextBox}" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Search" Command="{Binding SearchCommand}"/>
+                </Grid>
+
+                <!-- Patients DataGrid -->
+                <DataGrid Grid.Row="1" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" HeadersVisibility="Column">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ID" Binding="{Binding PatientId}" Width="60"/>
+                        <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*"/>
+                        <DataGridTextColumn Header="Age" Binding="{Binding Age}" Width="60"/>
+                        <DataGridTextColumn Header="Gender" Binding="{Binding Gender}" Width="80"/>
+                        <DataGridTextColumn Header="Phone" Binding="{Binding Phone}" Width="120"/>
+                        <DataGridTextColumn Header="Date Enrolled" Binding="{Binding CreatedAt, StringFormat=\{0:dd/MM/yyyy\}}" Width="120"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>

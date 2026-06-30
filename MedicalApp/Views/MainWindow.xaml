@@ -1,0 +1,107 @@
+<Window x:Class="MedicalApp.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2000/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2000/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:MedicalApp.Converters"
+        mc:Ignorable="d"
+        Title="LAN Medical Client-Server Portal" Height="780" Width="1240"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundColor}">
+    
+    <Window.Resources>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260"/> <!-- Sidebar Navigation -->
+            <ColumnDefinition Width="*"/>   <!-- Main Workspace -->
+        </Grid.ColumnDefinitions>
+
+        <!-- Sidebar Navigation -->
+        <Border Grid.Column="0" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,1,0">
+            <Grid Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Brand Logo / Title -->
+                <StackPanel Grid.Row="0" Margin="0,10,0,30">
+                    <TextBlock Text="CardioCenter" FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}"/>
+                    <TextBlock Text="Local Clinical Portal" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                </StackPanel>
+
+                <!-- Navigation List -->
+                <StackPanel Grid.Row="1">
+                    <Button Style="{StaticResource NavButton}" 
+                            Content="Patient Registry" 
+                            Command="{Binding NavigateToPatientRegistrationCommand}"
+                            Margin="0,0,0,8"/>
+                    <Button Style="{StaticResource NavButton}" 
+                            Content="Clinical Examination" 
+                            Command="{Binding NavigateToClinicalExamCommand}"
+                            IsEnabled="{Binding SelectedPatient, Converter={StaticResource NullToBoolConverter}}"
+                            Margin="0,0,0,8"/>
+                    <Button Style="{StaticResource NavButton}" 
+                            Content="Echocardiogram Hub" 
+                            Command="{Binding NavigateToEchoUploadCommand}"
+                            IsEnabled="{Binding SelectedPatient, Converter={StaticResource NullToBoolConverter}}"
+                            Margin="0,0,0,8"/>
+                </StackPanel>
+
+                <!-- Footer / Status Info -->
+                <StackPanel Grid.Row="2" Margin="0,20,0,0">
+                    <Border Height="1" Background="{StaticResource BorderColor}" Margin="0,0,0,10"/>
+                    <TextBlock Text="Local Client Node" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                    <TextBlock Text="Connected to: 192.168.1.100" FontSize="10" Foreground="{StaticResource PrimaryColor}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Main Workspace -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70"/>  <!-- Header Banner -->
+                <RowDefinition Height="*"/>   <!-- Active View Content -->
+            </Grid.RowDefinitions>
+
+            <!-- Global Patient Header Banner -->
+            <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1">
+                <Grid Margin="25,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Selected Patient Info -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Orientation="Horizontal">
+                        <TextBlock Text="Active Patient: " FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource SubtextColor}"/>
+                        <TextBlock Text="{Binding SelectedPatient.Name, TargetNullValue='No Patient Selected'}" 
+                                   FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="5,0,0,0"/>
+                        
+                        <StackPanel Orientation="Horizontal" Visibility="{Binding SelectedPatient, Converter={StaticResource NullToVisibilityConverter}}" Margin="20,0,0,0">
+                            <TextBlock Text="Age: " FontSize="14" Foreground="{StaticResource SubtextColor}"/>
+                            <TextBlock Text="{Binding SelectedPatient.Age}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" Margin="2,0,15,0"/>
+                            <TextBlock Text="Gender: " FontSize="14" Foreground="{StaticResource SubtextColor}"/>
+                            <TextBlock Text="{Binding SelectedPatient.Gender}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" Margin="2,0,15,0"/>
+                            <TextBlock Text="Phone: " FontSize="14" Foreground="{StaticResource SubtextColor}"/>
+                            <TextBlock Text="{Binding SelectedPatient.Phone}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" Margin="2,0,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Connection Badge -->
+                    <Border Grid.Column="1" VerticalAlignment="Center" Background="#E0F2FE" Padding="10,5" CornerRadius="6">
+                        <TextBlock Text="Database Connected" FontSize="11" FontWeight="SemiBold" Foreground="#0369A1"/>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- Routed view content -->
+            <ContentControl Grid.Row="1" Content="{Binding CurrentView}" Margin="25"/>
+        </Grid>
+    </Grid>
+</Window>

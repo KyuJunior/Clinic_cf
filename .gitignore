@@ -1,0 +1,14 @@
+## Build outputs
+[Bb]in/
+[Oo]bj/
+
+## IDE configs
+.vs/
+*.user
+*.suo
+*.sln.docstates
+.idea/
+
+## OS files
+.DS_Store
+Thumbs.db
