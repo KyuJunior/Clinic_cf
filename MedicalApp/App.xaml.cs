@@ -50,9 +50,41 @@ namespace MedicalApp
                 return;
             }
 
+            // Check command line arguments for individual launching modes
+            if (e.Args.Length > 0)
+            {
+                string mode = e.Args[0].ToLower();
+                switch (mode)
+                {
+                    case "/reg":
+                        LaunchStandaloneWindow("Patient Registration Desk", ServiceProvider.GetRequiredService<PatientRegistrationViewModel>(), 500, 720);
+                        return;
+                    case "/exam":
+                        LaunchStandaloneWindow("Clinical Examination Room", ServiceProvider.GetRequiredService<ClinicalExamViewModel>(), 950, 720);
+                        return;
+                    case "/echo":
+                        LaunchStandaloneWindow("Echocardiogram Hub", ServiceProvider.GetRequiredService<EchoUploadViewModel>(), 950, 720);
+                        return;
+                }
+            }
+
             // Resolve and show MainWindow
             var mainWindow = ServiceProvider.GetRequiredService<MainWindow>();
             mainWindow.Show();
+        }
+
+        private void LaunchStandaloneWindow(string title, object viewModel, double width, double height)
+        {
+            var window = new Window
+            {
+                Title = title,
+                Content = viewModel, // WPF automatically uses the DataTemplate declared in App.xaml
+                Width = width,
+                Height = height,
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Background = (System.Windows.Media.SolidColorBrush)FindResource("BackgroundColor")
+            };
+            window.Show();
         }
 
         private void ConfigureServices(IServiceCollection services)
