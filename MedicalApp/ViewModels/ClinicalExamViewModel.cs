@@ -45,7 +45,7 @@ namespace MedicalApp.ViewModels
 
             // Load initial patient context and subscribe to selection updates
             CurrentPatient = _sharedStateService.CurrentPatient;
-            _sharedStateService.CurrentPatientChanged += OnCurrentPatientChanged;
+            _sharedStateService.CurrentPatientChanged += OnSharedPatientChanged;
 
             if (CurrentPatient != null)
             {
@@ -53,7 +53,7 @@ namespace MedicalApp.ViewModels
             }
         }
 
-        private void OnCurrentPatientChanged(Patient? patient)
+        private void OnSharedPatientChanged(Patient? patient)
         {
             CurrentPatient = patient;
             if (patient != null)
@@ -131,7 +131,7 @@ namespace MedicalApp.ViewModels
 
         public void Dispose()
         {
-            _sharedStateService.CurrentPatientChanged -= OnCurrentPatientChanged;
+            _sharedStateService.CurrentPatientChanged -= OnSharedPatientChanged;
             GC.SuppressFinalize(this);
         }
     }
