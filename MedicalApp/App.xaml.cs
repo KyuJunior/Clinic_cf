@@ -92,12 +92,12 @@ namespace MedicalApp
             // Register Configuration
             services.AddSingleton<IConfiguration>(Configuration);
 
-            // Register AppDbContext with DbContextFactory for WPF concurrency safety using SQLite
+            // Register AppDbContext with DbContextFactory for WPF concurrency safety using SQL Server
             var connectionString = Configuration.GetConnectionString("DefaultConnection") 
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found in appsettings.json.");
             
             services.AddDbContextFactory<AppDbContext>(options =>
-                options.UseSqlite(connectionString));
+                options.UseSqlServer(connectionString));
 
             // Register Services
             services.AddSingleton<ISharedStateService, SharedStateService>();

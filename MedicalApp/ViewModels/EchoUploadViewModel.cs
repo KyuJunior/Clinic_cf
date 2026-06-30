@@ -14,6 +14,7 @@ namespace MedicalApp.ViewModels
     public partial class EchoUploadViewModel : ObservableObject, IDisposable
     {
         private readonly IEchoService _echoService;
+        private readonly IPatientService _patientService;
         private readonly ISharedStateService _sharedStateService;
         private readonly IConfiguration _configuration;
 
@@ -22,6 +23,16 @@ namespace MedicalApp.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<EchoRecord> _echoRecords = new();
+
+        // Standalone Patient Lookup fields
+        [ObservableProperty]
+        private string _searchTerm = string.Empty;
+
+        [ObservableProperty]
+        private ObservableCollection<Patient> _patients = new();
+
+        [ObservableProperty]
+        private Patient? _selectedPatientLookup;
 
         [ObservableProperty]
         private string _title = string.Empty;
@@ -32,34 +43,64 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private string _statusMessage = string.Empty;
 
-        public EchoUploadViewModel(IEchoService echoService, ISharedStateService sharedStateService, IConfiguration configuration)
+        public EchoUploadViewModel(IEchoService echoService, IPatientService patientService, ISharedStateService sharedStateService, IConfiguration configuration)
         {
             _echoService = echoService;
+            _patientService = patientService;
             _sharedStateService = sharedStateService;
             _configuration = configuration;
 
             // Load initial patient context and subscribe to selection updates
             CurrentPatient = _sharedStateService.CurrentPatient;
+            SelectedPatientLookup = CurrentPatient;
             _sharedStateService.CurrentPatientChanged += OnSharedPatientChanged;
 
             if (CurrentPatient != null)
             {
                 _ = LoadEchoRecordsAsync();
             }
+
+            // Load initial patient list for the search lookup dropdown
+            _ = SearchPatientsAsync();
+        }
+
+        partial void OnSelectedPatientLookupChanged(Patient? value)
+        {
+            if (CurrentPatient != value)
+            {
+                CurrentPatient = value;
+                _sharedStateService.CurrentPatient = value; // Keep shared state synchronized
+                if (value != null)
+                {
+                    _ = LoadEchoRecordsAsync();
+                }
+                else
+                {
+                    EchoRecords.Clear();
+                }
+            }
+        }
+
+        [RelayCommand]
+        public async Task SearchPatientsAsync()
+        {
+            try
+            {
+                var results = await _patientService.SearchPatientsAsync(SearchTerm);
+                Patients = new ObservableCollection<Patient>(results);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error searching patients: {ex.Message}";
+            }
         }
 
         private void OnSharedPatientChanged(Patient? patient)
         {
-            CurrentPatient = patient;
-            if (patient != null)
+            if (SelectedPatientLookup != patient)
             {
-                _ = LoadEchoRecordsAsync();
+                SelectedPatientLookup = patient;
             }
-            else
-            {
-                EchoRecords.Clear();
-            }
-            StatusMessage = string.Empty;
         }
 
         [RelayCommand]

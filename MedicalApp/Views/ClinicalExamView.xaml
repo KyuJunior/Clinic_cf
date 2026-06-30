@@ -7,118 +7,146 @@
              d:DesignHeight="600" d:DesignWidth="900"
              Background="Transparent">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="420"/> <!-- Visit Input Form -->
-            <ColumnDefinition Width="*"/>   <!-- Timeline of Previous Visits -->
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <!-- Left Column: Current Examination Entry -->
-        <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Stretch">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <TextBlock Text="New Visit Examination" Style="{StaticResource Header2}"/>
-                    <TextBlock Text="Log examination findings and plan for the active patient." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
-
-                    <!-- Chief Complaint -->
-                    <TextBlock Text="Chief Complaint" Style="{StaticResource Subheading}"/>
-                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ChiefComplaint, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
-
-                    <!-- History of Present Illness -->
-                    <TextBlock Text="History of Present Illness (HPI)" Style="{StaticResource Subheading}"/>
-                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,15"/>
-
-                    <!-- Physical Examination -->
-                    <TextBlock Text="Physical Examination Findings" Style="{StaticResource Subheading}"/>
-                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,15"/>
-
-                    <!-- Diagnosis -->
-                    <TextBlock Text="Diagnosis" Style="{StaticResource Subheading}"/>
-                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
-
-                    <!-- Treatment Plan -->
-                    <TextBlock Text="Treatment Plan &amp; Prescription" Style="{StaticResource Subheading}"/>
-                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,20"/>
-
-                    <!-- Save Button -->
-                    <Button Style="{StaticResource ModernButton}" Content="Save Visit Record" Command="{Binding SaveVisitCommand}" HorizontalAlignment="Stretch" Height="42"/>
-
-                    <!-- Status Message -->
-                    <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource PrimaryColor}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center"/>
-                </StackPanel>
-            </ScrollViewer>
-        </Border>
-
-        <!-- Right Column: Historical Visits Timeline -->
-        <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="15,0,0,0" VerticalAlignment="Stretch">
+        <!-- Top Panel: Standalone Patient Lookup -->
+        <Border Grid.Row="0" Style="{StaticResource CardBorder}" Margin="0,0,0,15" Padding="15,10">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="240"/>
+                </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Visit History Timeline" Style="{StaticResource Header2}"/>
-
-                <!-- Timeline ListBox -->
-                <ListBox Grid.Row="1" ItemsSource="{Binding VisitHistory}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1.5" Padding="0,15" Margin="0,0,0,5">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Date and Diagnosis Header -->
-                                    <Grid Grid.Row="0" Margin="0,0,0,8">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-                                        
-                                        <TextBlock Grid.Column="0" Text="{Binding Diagnosis, TargetNullValue='Undiagnosed Visit'}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding VisitDate, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" FontSize="12" Foreground="{StaticResource SubtextColor}" FontWeight="SemiBold"/>
-                                    </Grid>
-
-                                    <!-- Chief Complaint -->
-                                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,4">
-                                        <TextBlock Text="Chief Complaint: " FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextColor}"/>
-                                        <TextBlock Text="{Binding ChiefComplaint}" FontSize="13" Foreground="{StaticResource TextColor}" TextWrapping="Wrap"/>
-                                    </StackPanel>
-
-                                    <!-- Physical Exam / Present Illness Details -->
-                                    <Grid Grid.Row="2" Margin="0,0,0,6">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-                                        
-                                        <StackPanel Grid.Column="0" Margin="0,0,10,0">
-                                            <TextBlock Text="HPI" FontSize="11" FontWeight="Bold" Foreground="{StaticResource SubtextColor}"/>
-                                            <TextBlock Text="{Binding HistoryOfPresentIllness}" FontSize="12" Foreground="{StaticResource TextColor}" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                            <TextBlock Text="Physical Exam" FontSize="11" FontWeight="Bold" Foreground="{StaticResource SubtextColor}"/>
-                                            <TextBlock Text="{Binding PhysicalExamination}" FontSize="12" Foreground="{StaticResource TextColor}" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <!-- Treatment Plan -->
-                                    <Border Grid.Row="3" Background="#F1F5F9" Padding="12,8" CornerRadius="6" Margin="0,6,0,0">
-                                        <StackPanel>
-                                            <TextBlock Text="Treatment Plan" FontSize="11" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}"/>
-                                            <TextBlock Text="{Binding TreatmentPlan}" FontSize="12" Foreground="{StaticResource TextColor}" TextWrapping="Wrap" Margin="0,2,0,0"/>
-                                        </StackPanel>
-                                    </Border>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <TextBlock Grid.Column="0" Text="Select Patient:" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource SubtextColor}" Margin="0,0,10,0"/>
+                
+                <TextBox Grid.Column="1" Style="{StaticResource ModernTextBox}" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Tag="Search patient by name/phone..." VerticalContentAlignment="Center" Margin="0,0,10,0"/>
+                
+                <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Search" Command="{Binding SearchPatientsCommand}" Margin="0,0,15,0" Padding="15,6"/>
+                
+                <ComboBox Grid.Column="3" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatientLookup}" DisplayMemberPath="Name" SelectedValuePath="PatientId" Height="36" VerticalContentAlignment="Center"/>
             </Grid>
         </Border>
+
+        <!-- Main Workspace (Form + History) -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="420"/> <!-- Visit Input Form -->
+                <ColumnDefinition Width="*"/>   <!-- Timeline of Previous Visits -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Column: Current Examination Entry -->
+            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Stretch">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="New Visit Examination" Style="{StaticResource Header2}"/>
+                        <TextBlock Text="Log examination findings and plan for the active patient." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
+
+                        <!-- Chief Complaint -->
+                        <TextBlock Text="Chief Complaint" Style="{StaticResource Subheading}"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ChiefComplaint, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                        <!-- History of Present Illness -->
+                        <TextBlock Text="History of Present Illness (HPI)" Style="{StaticResource Subheading}"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,15"/>
+
+                        <!-- Physical Examination -->
+                        <TextBlock Text="Physical Examination Findings" Style="{StaticResource Subheading}"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,15"/>
+
+                        <!-- Diagnosis -->
+                        <TextBlock Text="Diagnosis" Style="{StaticResource Subheading}"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                        <!-- Treatment Plan -->
+                        <TextBlock Text="Treatment Plan &amp; Prescription" Style="{StaticResource Subheading}"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" Margin="0,0,0,20"/>
+
+                        <!-- Save Button -->
+                        <Button Style="{StaticResource ModernButton}" Content="Save Visit Record" Command="{Binding SaveVisitCommand}" HorizontalAlignment="Stretch" Height="42"/>
+
+                        <!-- Status Message -->
+                        <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource PrimaryColor}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Right Column: Historical Visits Timeline -->
+            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="15,0,0,0" VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Visit History Timeline" Style="{StaticResource Header2}"/>
+
+                    <!-- Timeline ListBox -->
+                    <ListBox Grid.Row="1" ItemsSource="{Binding VisitHistory}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1.5" Padding="0,15" Margin="0,0,0,5">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Date and Diagnosis Header -->
+                                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <TextBlock Grid.Column="0" Text="{Binding Diagnosis, TargetNullValue='Undiagnosed Visit'}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding VisitDate, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" FontSize="12" Foreground="{StaticResource SubtextColor}" FontWeight="SemiBold"/>
+                                        </Grid>
+
+                                        <!-- Chief Complaint -->
+                                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,4">
+                                            <TextBlock Text="Chief Complaint: " FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextColor}"/>
+                                            <TextBlock Text="{Binding ChiefComplaint}" FontSize="13" Foreground="{StaticResource TextColor}" TextWrapping="Wrap"/>
+                                        </StackPanel>
+
+                                        <!-- Physical Exam / Present Illness Details -->
+                                        <Grid Grid.Row="2" Margin="0,0,0,6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                                <TextBlock Text="HPI" FontSize="11" FontWeight="Bold" Foreground="{StaticResource SubtextColor}"/>
+                                                <TextBlock Text="{Binding HistoryOfPresentIllness}" FontSize="12" Foreground="{StaticResource TextColor}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                                <TextBlock Text="Physical Exam" FontSize="11" FontWeight="Bold" Foreground="{StaticResource SubtextColor}"/>
+                                                <TextBlock Text="{Binding PhysicalExamination}" FontSize="12" Foreground="{StaticResource TextColor}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Treatment Plan -->
+                                        <Border Grid.Row="3" Background="#F1F5F9" Padding="12,8" CornerRadius="6" Margin="0,6,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="Treatment Plan" FontSize="11" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}"/>
+                                                <TextBlock Text="{Binding TreatmentPlan}" FontSize="12" Foreground="{StaticResource TextColor}" TextWrapping="Wrap" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

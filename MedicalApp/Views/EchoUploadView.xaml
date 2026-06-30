@@ -7,88 +7,116 @@
              d:DesignHeight="600" d:DesignWidth="900"
              Background="Transparent">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="380"/> <!-- Upload Form -->
-            <ColumnDefinition Width="*"/>   <!-- Media List Grid -->
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <!-- Left Column: Upload Form -->
-        <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Top">
-            <StackPanel>
-                <TextBlock Text="Upload Echo Media" Style="{StaticResource Header2}"/>
-                <TextBlock Text="Store scans, clips, or reports in the central shared folder." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
-
-                <!-- Title/Label -->
-                <TextBlock Text="Record Label / Title" Style="{StaticResource Subheading}"/>
-                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
-
-                <!-- Notes/Description -->
-                <TextBlock Text="Clinical Findings &amp; Notes" Style="{StaticResource Subheading}"/>
-                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Height="120" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,20"/>
-
-                <!-- Pick & Upload Button -->
-                <Button Style="{StaticResource ModernButton}" Content="Browse &amp; Upload Media" Command="{Binding UploadEchoFileCommand}" HorizontalAlignment="Stretch" Height="42"/>
-
-                <!-- Status Message -->
-                <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource PrimaryColor}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center"/>
-            </StackPanel>
-        </Border>
-
-        <!-- Right Column: Stored Echo List -->
-        <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="15,0,0,0" VerticalAlignment="Stretch">
+        <!-- Top Panel: Standalone Patient Lookup -->
+        <Border Grid.Row="0" Style="{StaticResource CardBorder}" Margin="0,0,0,15" Padding="15,10">
             <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="240"/>
+                </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Row="0" Text="Stored Echo Records" Style="{StaticResource Header2}"/>
-
-                <!-- Scrollable Record Cards List -->
-                <ListBox Grid.Row="1" ItemsSource="{Binding EchoRecords}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,12" Background="#F8FAFC">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <!-- Record Header -->
-                                    <Grid Grid.Row="0" Margin="0,0,0,6">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <TextBlock Grid.Column="0" Text="{Binding Title}" FontSize="14" FontWeight="Bold" Foreground="{StaticResource TextColor}"/>
-                                        <TextBlock Grid.Column="1" Text="{Binding UploadDate, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" FontSize="11" Foreground="{StaticResource SubtextColor}" FontWeight="SemiBold"/>
-                                    </Grid>
-
-                                    <!-- Notes -->
-                                    <TextBlock Grid.Row="1" Text="{Binding Notes}" FontSize="12" Foreground="{StaticResource TextColor}" TextWrapping="Wrap" Margin="0,0,0,8"/>
-
-                                    <!-- File Path / Link -->
-                                    <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" Padding="8,6" CornerRadius="4" Margin="0,4,0,0">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            
-                                            <TextBlock Grid.Column="0" Text="📁 " FontSize="12"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding FilePath}" FontSize="11" Foreground="{StaticResource PrimaryColor}" TextWrapping="Wrap" VerticalAlignment="Center"/>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
+                <TextBlock Grid.Column="0" Text="Select Patient:" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource SubtextColor}" Margin="0,0,10,0"/>
+                
+                <TextBox Grid.Column="1" Style="{StaticResource ModernTextBox}" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Tag="Search patient by name/phone..." VerticalContentAlignment="Center" Margin="0,0,10,0"/>
+                
+                <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Search" Command="{Binding SearchPatientsCommand}" Margin="0,0,15,0" Padding="15,6"/>
+                
+                <ComboBox Grid.Column="3" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatientLookup}" DisplayMemberPath="Name" SelectedValuePath="PatientId" Height="36" VerticalContentAlignment="Center"/>
             </Grid>
         </Border>
+
+        <!-- Main Workspace (Upload Form + Stored Records) -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380"/> <!-- Upload Form -->
+                <ColumnDefinition Width="*"/>   <!-- Media List Grid -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Column: Upload Form -->
+            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Top">
+                <StackPanel>
+                    <TextBlock Text="Upload Echo Media" Style="{StaticResource Header2}"/>
+                    <TextBlock Text="Store scans, clips, or reports in the central shared folder." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
+
+                    <!-- Title/Label -->
+                    <TextBlock Text="Record Label / Title" Style="{StaticResource Subheading}"/>
+                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                    <!-- Notes/Description -->
+                    <TextBlock Text="Clinical Findings &amp; Notes" Style="{StaticResource Subheading}"/>
+                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Height="120" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,20"/>
+
+                    <!-- Pick & Upload Button -->
+                    <Button Style="{StaticResource ModernButton}" Content="Browse &amp; Upload Media" Command="{Binding UploadEchoFileCommand}" HorizontalAlignment="Stretch" Height="42"/>
+
+                    <!-- Status Message -->
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource PrimaryColor}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Border>
+
+            <!-- Right Column: Stored Echo List -->
+            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="15,0,0,0" VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Stored Echo Records" Style="{StaticResource Header2}"/>
+
+                    <!-- Scrollable Record Cards List -->
+                    <ListBox Grid.Row="1" ItemsSource="{Binding EchoRecords}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,0,0,12" Background="#F8FAFC">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Record Header -->
+                                        <Grid Grid.Row="0" Margin="0,0,0,6">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="{Binding Title}" FontSize="14" FontWeight="Bold" Foreground="{StaticResource TextColor}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding UploadDate, StringFormat=\{0:dd/MM/yyyy HH:mm\}}" FontSize="11" Foreground="{StaticResource SubtextColor}" FontWeight="SemiBold"/>
+                                        </Grid>
+
+                                        <!-- Notes -->
+                                        <TextBlock Grid.Row="1" Text="{Binding Notes}" FontSize="12" Foreground="{StaticResource TextColor}" TextWrapping="Wrap" Margin="0,0,0,8"/>
+
+                                        <!-- File Path / Link -->
+                                        <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" Padding="8,6" CornerRadius="4" Margin="0,4,0,0">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <TextBlock Grid.Column="0" Text="📁 " FontSize="12"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding FilePath}" FontSize="11" Foreground="{StaticResource PrimaryColor}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </Border>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

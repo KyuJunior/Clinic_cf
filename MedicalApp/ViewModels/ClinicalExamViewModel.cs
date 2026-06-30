@@ -11,6 +11,7 @@ namespace MedicalApp.ViewModels
     public partial class ClinicalExamViewModel : ObservableObject, IDisposable
     {
         private readonly IVisitService _visitService;
+        private readonly IPatientService _patientService;
         private readonly ISharedStateService _sharedStateService;
 
         [ObservableProperty]
@@ -18,6 +19,16 @@ namespace MedicalApp.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<Visit> _visitHistory = new();
+
+        // Standalone Patient Lookup fields
+        [ObservableProperty]
+        private string _searchTerm = string.Empty;
+
+        [ObservableProperty]
+        private ObservableCollection<Patient> _patients = new();
+
+        [ObservableProperty]
+        private Patient? _selectedPatientLookup;
 
         // Visit Form Fields
         [ObservableProperty]
@@ -38,33 +49,63 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private string _statusMessage = string.Empty;
 
-        public ClinicalExamViewModel(IVisitService visitService, ISharedStateService sharedStateService)
+        public ClinicalExamViewModel(IVisitService visitService, IPatientService patientService, ISharedStateService sharedStateService)
         {
             _visitService = visitService;
+            _patientService = patientService;
             _sharedStateService = sharedStateService;
 
             // Load initial patient context and subscribe to selection updates
             CurrentPatient = _sharedStateService.CurrentPatient;
+            SelectedPatientLookup = CurrentPatient;
             _sharedStateService.CurrentPatientChanged += OnSharedPatientChanged;
 
             if (CurrentPatient != null)
             {
                 _ = LoadVisitHistoryAsync();
             }
+
+            // Load initial patient list for the search lookup dropdown
+            _ = SearchPatientsAsync();
+        }
+
+        partial void OnSelectedPatientLookupChanged(Patient? value)
+        {
+            if (CurrentPatient != value)
+            {
+                CurrentPatient = value;
+                _sharedStateService.CurrentPatient = value; // Keep shared state synchronized
+                if (value != null)
+                {
+                    _ = LoadVisitHistoryAsync();
+                }
+                else
+                {
+                    VisitHistory.Clear();
+                }
+            }
+        }
+
+        [RelayCommand]
+        public async Task SearchPatientsAsync()
+        {
+            try
+            {
+                var results = await _patientService.SearchPatientsAsync(SearchTerm);
+                Patients = new ObservableCollection<Patient>(results);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error searching patients: {ex.Message}";
+            }
         }
 
         private void OnSharedPatientChanged(Patient? patient)
         {
-            CurrentPatient = patient;
-            if (patient != null)
+            if (SelectedPatientLookup != patient)
             {
-                _ = LoadVisitHistoryAsync();
+                SelectedPatientLookup = patient;
             }
-            else
-            {
-                VisitHistory.Clear();
-            }
-            StatusMessage = string.Empty;
         }
 
         [RelayCommand]
