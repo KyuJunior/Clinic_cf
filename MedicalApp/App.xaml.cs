@@ -32,13 +32,13 @@ namespace MedicalApp
 
             ServiceProvider = serviceCollection.BuildServiceProvider();
 
-            // Run database migrations on startup to ensure central DB is ready
+            // Ensure database is created on startup (perfect for SQLite zero-config testing)
             try
             {
                 using var scope = ServiceProvider.CreateScope();
                 var factory = scope.ServiceProvider.GetRequiredService<IDbContextFactory<AppDbContext>>();
                 using var dbContext = await factory.CreateDbContextAsync();
-                await dbContext.Database.MigrateAsync();
+                await dbContext.Database.EnsureCreatedAsync();
             }
             catch (Exception ex)
             {
@@ -92,12 +92,12 @@ namespace MedicalApp
             // Register Configuration
             services.AddSingleton<IConfiguration>(Configuration);
 
-            // Register AppDbContext with DbContextFactory for WPF concurrency safety
+            // Register AppDbContext with DbContextFactory for WPF concurrency safety using SQLite
             var connectionString = Configuration.GetConnectionString("DefaultConnection") 
                 ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found in appsettings.json.");
             
             services.AddDbContextFactory<AppDbContext>(options =>
-                options.UseSqlServer(connectionString));
+                options.UseSqlite(connectionString));
 
             // Register Services
             services.AddSingleton<ISharedStateService, SharedStateService>();
