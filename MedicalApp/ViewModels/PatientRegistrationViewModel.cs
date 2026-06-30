@@ -13,6 +13,7 @@ namespace MedicalApp.ViewModels
         private readonly IPatientService _patientService;
         private readonly ISharedStateService _sharedStateService;
         private readonly IQueueService _queueService;
+        private bool _isAutofilling = false;
 
         [ObservableProperty]
         private string _searchTerm = string.Empty;
@@ -41,6 +42,18 @@ namespace MedicalApp.ViewModels
 
         [ObservableProperty]
         private string _statusMessage = string.Empty;
+
+        [ObservableProperty]
+        private ObservableCollection<Patient> _nameSuggestions = new();
+
+        [ObservableProperty]
+        private bool _isSuggestionsOpen = false;
+
+        [ObservableProperty]
+        private string _registrationButtonText = "Register & Send to Queue";
+
+        [ObservableProperty]
+        private Patient? _activeEditingPatient;
 
         public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService)
         {
@@ -89,6 +102,96 @@ namespace MedicalApp.ViewModels
             }
         }
 
+        partial void OnNameChanged(string value)
+        {
+            if (_isAutofilling) return;
+
+            if (string.IsNullOrWhiteSpace(value) || value.Length < 2)
+            {
+                NameSuggestions.Clear();
+                IsSuggestionsOpen = false;
+            }
+            else
+            {
+                _ = QueryNameSuggestionsAsync(value);
+            }
+        }
+
+        private async Task QueryNameSuggestionsAsync(string query)
+        {
+            try
+            {
+                var results = await _patientService.SearchPatientsAsync(query);
+                var list = System.Linq.Enumerable.ToList(results);
+                
+                // Show suggestions only if they don't match our active editing patient name
+                if (list.Count > 0 && (ActiveEditingPatient == null || ActiveEditingPatient.Name != query))
+                {
+                    NameSuggestions = new ObservableCollection<Patient>(list);
+                    IsSuggestionsOpen = true;
+                }
+                else
+                {
+                    NameSuggestions.Clear();
+                    IsSuggestionsOpen = false;
+                }
+            }
+            catch
+            {
+                // Suppress background query errors
+            }
+        }
+
+        [RelayCommand]
+        public void LoadExistingPatient(Patient patient)
+        {
+            if (patient == null) return;
+
+            _isAutofilling = true;
+            try
+            {
+                Name = patient.Name;
+                Age = patient.Age;
+                Gender = patient.Gender;
+                Address = patient.Address;
+                Phone = patient.Phone;
+                
+                ActiveEditingPatient = patient;
+                RegistrationButtonText = "Update & Send to Queue";
+                IsSuggestionsOpen = false;
+                NameSuggestions.Clear();
+                StatusMessage = $"Loaded existing patient details: '{patient.Name}'";
+            }
+            finally
+            {
+                _isAutofilling = false;
+            }
+        }
+
+        [RelayCommand]
+        public void CancelEdit()
+        {
+            _isAutofilling = true;
+            try
+            {
+                Name = string.Empty;
+                Age = 0;
+                Gender = "Male";
+                Address = string.Empty;
+                Phone = string.Empty;
+                
+                ActiveEditingPatient = null;
+                RegistrationButtonText = "Register & Send to Queue";
+                IsSuggestionsOpen = false;
+                NameSuggestions.Clear();
+                StatusMessage = "Cleared fields. Switched to new registration.";
+            }
+            finally
+            {
+                _isAutofilling = false;
+            }
+        }
+
         [RelayCommand]
         public async Task RegisterAsync()
         {
@@ -100,34 +203,66 @@ namespace MedicalApp.ViewModels
 
             try
             {
-                var patient = new Patient
+                if (ActiveEditingPatient != null)
                 {
-                    Name = Name,
-                    Age = Age,
-                    Gender = Gender,
-                    Address = Address,
-                    Phone = Phone,
-                    CreatedAt = DateTime.UtcNow
-                };
+                    // Update existing patient
+                    ActiveEditingPatient.Name = Name;
+                    ActiveEditingPatient.Age = Age;
+                    ActiveEditingPatient.Gender = Gender;
+                    ActiveEditingPatient.Address = Address;
+                    ActiveEditingPatient.Phone = Phone;
 
-                await _patientService.AddPatientAsync(patient);
-                
-                // Add registered patient to daily queue automatically
-                await _queueService.AddToQueueAsync(patient.PatientId, patient.Name);
-                
-                StatusMessage = $"Patient '{Name}' registered & added to waitlist queue!";
+                    await _patientService.UpdatePatientAsync(ActiveEditingPatient);
+                    
+                    // Add/refresh in daily queue
+                    await _queueService.AddToQueueAsync(ActiveEditingPatient.PatientId, ActiveEditingPatient.Name);
+                    
+                    StatusMessage = $"Patient '{ActiveEditingPatient.Name}' details updated & added to queue!";
+                }
+                else
+                {
+                    // Create new patient
+                    var patient = new Patient
+                    {
+                        Name = Name,
+                        Age = Age,
+                        Gender = Gender,
+                        Address = Address,
+                        Phone = Phone,
+                        CreatedAt = DateTime.UtcNow
+                    };
+
+                    await _patientService.AddPatientAsync(patient);
+                    
+                    // Add registered patient to daily queue automatically
+                    await _queueService.AddToQueueAsync(patient.PatientId, patient.Name);
+                    
+                    StatusMessage = $"Patient '{Name}' registered & added to waitlist queue!";
+                }
                 
                 // Clear Form
-                Name = string.Empty;
-                Age = 0;
-                Address = string.Empty;
-                Phone = string.Empty;
+                _isAutofilling = true;
+                try
+                {
+                    Name = string.Empty;
+                    Age = 0;
+                    Address = string.Empty;
+                    Phone = string.Empty;
+                    ActiveEditingPatient = null;
+                    RegistrationButtonText = "Register & Send to Queue";
+                    IsSuggestionsOpen = false;
+                    NameSuggestions.Clear();
+                }
+                finally
+                {
+                    _isAutofilling = false;
+                }
 
                 await LoadPatientsAsync();
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Error registering patient: {ex.Message}";
+                StatusMessage = $"Error saving patient: {ex.Message}";
             }
         }
 

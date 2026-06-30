@@ -3,9 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:MedicalApp.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="900"
              Background="Transparent">
+    
+    <UserControl.Resources>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </UserControl.Resources>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="380"/> <!-- Registration Form -->
@@ -18,9 +24,45 @@
                 <TextBlock Text="Register New Patient" Style="{StaticResource Header2}"/>
                 <TextBlock Text="Enter patient record details below to enroll." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
 
-                <!-- Name Input -->
+                <!-- Name Input & Autocomplete Popup -->
                 <TextBlock Text="Full Name" Style="{StaticResource Subheading}"/>
-                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+                <Grid Margin="0,0,0,15">
+                    <TextBox x:Name="NameInput" Style="{StaticResource ModernTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="Type name to search existing..."/>
+                    
+                    <!-- Autocomplete Suggestions Popup -->
+                    <Popup IsOpen="{Binding IsSuggestionsOpen, Mode=TwoWay}" PlacementTarget="{Binding ElementName=NameInput}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Slide">
+                        <Border Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Width="340" MaxHeight="250" Padding="5">
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.15" ShadowDepth="3"/>
+                            </Border.Effect>
+                            <ListBox ItemsSource="{Binding NameSuggestions}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="8,6">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                
+                                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Bold" Foreground="{StaticResource TextColor}" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock FontSize="11" Foreground="{StaticResource SubtextColor}">
+                                                        <Run Text="Age:"/> <Run Text="{Binding Age}"/> <Run Text="| Phone:"/> <Run Text="{Binding Phone}"/>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                                
+                                                <!-- Existing Patient Button -->
+                                                <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Existing Patient" FontSize="11" Padding="8,4" VerticalAlignment="Center"
+                                                        Command="{Binding DataContext.LoadExistingPatientCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Border>
+                    </Popup>
+                </Grid>
 
                 <!-- Age & Gender Grid -->
                 <Grid Margin="0,0,0,15">
@@ -52,8 +94,12 @@
                 <TextBlock Text="Address" Style="{StaticResource Subheading}"/>
                 <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,20"/>
 
-                <!-- Register Button -->
-                <Button Style="{StaticResource ModernButton}" Content="Register &amp; Send to Queue" Command="{Binding RegisterCommand}" HorizontalAlignment="Stretch" Height="42"/>
+                <!-- Register / Update Button -->
+                <Button Style="{StaticResource ModernButton}" Content="{Binding RegistrationButtonText}" Command="{Binding RegisterCommand}" HorizontalAlignment="Stretch" Height="42"/>
+
+                <!-- Cancel Edit Button (Visible when editing) -->
+                <Button Style="{StaticResource ModernButton}" Content="Cancel Edit (New Registration)" Command="{Binding CancelEditCommand}" Background="#EF4444" BorderBrush="#EF4444" Margin="0,10,0,0" HorizontalAlignment="Stretch" Height="36"
+                        Visibility="{Binding ActiveEditingPatient, Converter={StaticResource NullToVisibilityConverter}}"/>
 
                 <!-- Status Message -->
                 <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource PrimaryColor}" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,15,0,0" HorizontalAlignment="Center"/>
