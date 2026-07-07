@@ -486,5 +486,18 @@ namespace MedicalApp.ViewModels
                 StatusMessage = $"Error queueing patient: {ex.Message}";
             }
         }
+
+        [RelayCommand]
+        public void OpenRegistrationModal()
+        {
+            CancelEdit();
+            ShowRegistrationModal = true;
+        }
+
+        [RelayCommand]
+        public void CloseRegistrationModal()
+        {
+            ShowRegistrationModal = false;
+        }
     }
 }
