@@ -10,7 +10,9 @@
     <SolidColorBrush x:Key="TextColor" Color="#1E293B"/> <!-- Slate 800 -->
     <SolidColorBrush x:Key="SubtextColor" Color="#64748B"/> <!-- Slate 500 -->
     <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/> <!-- Slate 200 -->
-    <SolidColorBrush x:Key="AccentColor" Color="#F43F5E"/> <!-- Rose 500 (Alert/Delete) -->
+    <SolidColorBrush x:Key="AccentColor" Color="#F43F5E"/> <!-- Rose 500 -->
+    <SolidColorBrush x:Key="SelectedTabBrush" Color="#F0FDFA"/> <!-- Soft teal selection background -->
+    <SolidColorBrush x:Key="SelectedTabTextBrush" Color="#0D9488"/> <!-- Teal 600 selection text -->
 
     <!-- Fonts -->
     <FontFamily x:Key="MainFont">Segoe UI Semibold, Segoe UI, Arial</FontFamily>
