@@ -33,6 +33,10 @@ namespace MedicalApp.Models
         public string InvestigationAttachmentPath { get; set; } = string.Empty;
         public string ImagingAttachmentPath { get; set; } = string.Empty;
 
+        // Billing properties
+        public bool IsPaid { get; set; } = true;
+        public decimal VisitPrice { get; set; } = 0;
+
         // Navigation Property
         public Patient? Patient { get; set; }
     }

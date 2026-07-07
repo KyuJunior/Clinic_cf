@@ -159,6 +159,12 @@ namespace MedicalApp
                 await dbContext.Database.ExecuteSqlRawAsync(
                     "IF COL_LENGTH('dbo.Patients', 'Allergy') IS NULL ALTER TABLE dbo.Patients ADD Allergy NVARCHAR(MAX) NOT NULL DEFAULT ''"
                 );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'IsPaid') IS NULL ALTER TABLE dbo.Visits ADD IsPaid BIT NOT NULL DEFAULT 1"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'VisitPrice') IS NULL ALTER TABLE dbo.Visits ADD VisitPrice DECIMAL(18,2) NOT NULL DEFAULT 0"
+                );
             }
             catch (Exception ex)
             {

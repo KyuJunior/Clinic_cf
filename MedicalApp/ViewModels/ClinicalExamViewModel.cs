@@ -315,30 +315,62 @@ namespace MedicalApp.ViewModels
             {
                 var rxText = string.Join(Environment.NewLine, PrescribedDrugs.Select(d => d.ToString()));
 
-                var visit = new Visit
+                using (var db = await _dbContextFactory.CreateDbContextAsync())
                 {
-                    PatientId = CurrentPatient.PatientId,
-                    ChiefComplaint = ChiefComplaint,
-                    HistoryOfPresentIllness = HistoryOfPresentIllness,
-                    PhysicalExamination = PhysicalExamination,
-                    Diagnosis = Diagnosis,
-                    TreatmentPlan = TreatmentPlan,
-                    Prescription = rxText,
-                    VitalsHR = VitalHR,
-                    VitalsSBP = VitalSBP,
-                    VitalsDBP = VitalDBP,
-                    VitalsRR = VitalRR,
-                    VitalsSPO2 = VitalSPO2,
-                    VitalsTemp = VitalTemp,
-                    Investigation = SelectedInvestigation,
-                    Imaging = SelectedImaging,
-                    ReturnDate = ReturnDate,
-                    InvestigationAttachmentPath = InvestigationAttachmentPath,
-                    ImagingAttachmentPath = ImagingAttachmentPath,
-                    VisitDate = DateTime.UtcNow
-                };
+                    var today = DateTime.UtcNow.Date;
+                    var existingVisit = await db.Visits
+                        .FirstOrDefaultAsync(v => v.PatientId == CurrentPatient.PatientId && v.VisitDate >= today);
 
-                await _visitService.AddVisitAsync(visit);
+                    if (existingVisit != null)
+                    {
+                        existingVisit.ChiefComplaint = ChiefComplaint;
+                        existingVisit.HistoryOfPresentIllness = HistoryOfPresentIllness;
+                        existingVisit.PhysicalExamination = PhysicalExamination;
+                        existingVisit.Diagnosis = Diagnosis;
+                        existingVisit.TreatmentPlan = TreatmentPlan;
+                        existingVisit.Prescription = rxText;
+                        existingVisit.VitalsHR = VitalHR;
+                        existingVisit.VitalsSBP = VitalSBP;
+                        existingVisit.VitalsDBP = VitalDBP;
+                        existingVisit.VitalsRR = VitalRR;
+                        existingVisit.VitalsSPO2 = VitalSPO2;
+                        existingVisit.VitalsTemp = VitalTemp;
+                        existingVisit.Investigation = SelectedInvestigation;
+                        existingVisit.Imaging = SelectedImaging;
+                        existingVisit.ReturnDate = ReturnDate;
+                        existingVisit.InvestigationAttachmentPath = InvestigationAttachmentPath;
+                        existingVisit.ImagingAttachmentPath = ImagingAttachmentPath;
+
+                        db.Visits.Update(existingVisit);
+                    }
+                    else
+                    {
+                        var visit = new Visit
+                        {
+                            PatientId = CurrentPatient.PatientId,
+                            ChiefComplaint = ChiefComplaint,
+                            HistoryOfPresentIllness = HistoryOfPresentIllness,
+                            PhysicalExamination = PhysicalExamination,
+                            Diagnosis = Diagnosis,
+                            TreatmentPlan = TreatmentPlan,
+                            Prescription = rxText,
+                            VitalsHR = VitalHR,
+                            VitalsSBP = VitalSBP,
+                            VitalsDBP = VitalDBP,
+                            VitalsRR = VitalRR,
+                            VitalsSPO2 = VitalSPO2,
+                            VitalsTemp = VitalTemp,
+                            Investigation = SelectedInvestigation,
+                            Imaging = SelectedImaging,
+                            ReturnDate = ReturnDate,
+                            InvestigationAttachmentPath = InvestigationAttachmentPath,
+                            ImagingAttachmentPath = ImagingAttachmentPath,
+                            VisitDate = DateTime.UtcNow
+                        };
+                        await db.Visits.AddAsync(visit);
+                    }
+                    await db.SaveChangesAsync();
+                }
 
                 // Save new drugs to drug dictionary for autocomplete
                 using (var db = await _dbContextFactory.CreateDbContextAsync())

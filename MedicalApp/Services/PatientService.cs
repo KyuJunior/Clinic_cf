@@ -67,5 +67,12 @@ namespace MedicalApp.Services
                 await context.SaveChangesAsync();
             }
         }
+
+        public async Task AddVisitForCheckInAsync(Visit visit)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            await context.Visits.AddAsync(visit);
+            await context.SaveChangesAsync();
+        }
     }
 }

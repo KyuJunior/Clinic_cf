@@ -78,7 +78,42 @@ namespace MedicalApp.ViewModels
         private ObservableCollection<QueueEntry> _waitingVisits = new();
 
         [ObservableProperty]
+        private ObservableCollection<QueueEntry> _incompleteVisits = new();
+
+        [ObservableProperty]
         private bool _showRegistrationModal = false;
+
+        // Check-in properties
+        [ObservableProperty]
+        private bool _showCheckInModal = false;
+
+        [ObservableProperty]
+        private bool _isPaidVisit = true;
+
+        [ObservableProperty]
+        private bool _isFreeVisit = false;
+
+        partial void OnIsPaidVisitChanged(bool value)
+        {
+            if (value == IsFreeVisit)
+            {
+                IsFreeVisit = !value;
+            }
+        }
+
+        partial void OnIsFreeVisitChanged(bool value)
+        {
+            if (value == IsPaidVisit)
+            {
+                IsPaidVisit = !value;
+            }
+        }
+
+        [ObservableProperty]
+        private string _visitPrice = "25000";
+
+        [ObservableProperty]
+        private Patient? _pendingCheckInPatient;
 
         // Advanced registration fields
         [ObservableProperty]
@@ -220,6 +255,9 @@ namespace MedicalApp.ViewModels
             
             // Load initial patients asynchronously
             _ = LoadPatientsAsync();
+
+            // Periodically refresh the waitlist and incomplete queue
+            _ = PollQueueAsync();
         }
 
         // When selection changes, update the shared singleton state
@@ -251,12 +289,44 @@ namespace MedicalApp.ViewModels
                 // New patients today
                 NewPatientsTodayCount = System.Linq.Enumerable.Count(Patients, p => p.CreatedAt.Date == DateTime.Today);
 
-                // Waitlist list for left sidebar
-                WaitingVisits = new ObservableCollection<QueueEntry>(activeQueue);
+                // Waitlist list for left sidebar (status Pending)
+                WaitingVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "Pending"));
+                
+                // Incomplete list for left sidebar (status InExam or InEcho)
+                IncompleteVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho"));
             }
             catch (Exception ex)
             {
                 StatusMessage = $"Error loading data: {ex.Message}";
+            }
+        }
+
+        private async Task PollQueueAsync()
+        {
+            while (true)
+            {
+                try
+                {
+                    var activeQueue = await _queueService.GetActiveQueueAsync();
+                    
+                    // Update stats & waitlists safely on dispatcher thread
+                    if (System.Windows.Application.Current != null)
+                    {
+                        System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            AttendingPatientsCount = System.Linq.Enumerable.Count(activeQueue);
+                            WaitingPatientsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "Pending");
+                            
+                            WaitingVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "Pending"));
+                            IncompleteVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho"));
+                        });
+                    }
+                }
+                catch
+                {
+                    // Ignore transient network/DB errors during background poll
+                }
+                await Task.Delay(3000);
             }
         }
 
@@ -486,6 +556,62 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
+        public void PrepareCheckIn(Patient patient)
+        {
+            if (patient == null) return;
+            PendingCheckInPatient = patient;
+            IsPaidVisit = true;
+            VisitPrice = "25000";
+            ShowCheckInModal = true;
+        }
+
+        [RelayCommand]
+        public void CancelCheckIn()
+        {
+            ShowCheckInModal = false;
+            PendingCheckInPatient = null;
+        }
+
+        [RelayCommand]
+        public async Task ConfirmCheckInAsync()
+        {
+            if (PendingCheckInPatient == null) return;
+
+            try
+            {
+                decimal price = 0;
+                if (IsPaidVisit)
+                {
+                    decimal.TryParse(VisitPrice, out price);
+                }
+
+                // Create the visit record for today
+                var visit = new Visit
+                {
+                    PatientId = PendingCheckInPatient.PatientId,
+                    VisitDate = DateTime.UtcNow, // Date & Time today
+                    IsPaid = IsPaidVisit,
+                    VisitPrice = price
+                };
+
+                await _patientService.AddVisitForCheckInAsync(visit);
+                
+                // Add patient to daily queue
+                await _queueService.AddToQueueAsync(PendingCheckInPatient.PatientId, PendingCheckInPatient.Name);
+                
+                StatusMessage = $"Checked in '{PendingCheckInPatient.Name}' and added to queue.";
+                ShowCheckInModal = false;
+                PendingCheckInPatient = null;
+
+                await LoadPatientsAsync();
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Check-in error: {ex.Message}";
+            }
+        }
+
+        [RelayCommand]
         public async Task RegisterAsync()
         {
             if (string.IsNullOrWhiteSpace(Name))
@@ -496,6 +622,7 @@ namespace MedicalApp.ViewModels
 
             try
             {
+                Patient savedPatient;
                 if (ActiveEditingPatient != null)
                 {
                     // Update existing patient
@@ -527,11 +654,7 @@ namespace MedicalApp.ViewModels
                     ActiveEditingPatient.Allergy = Allergy;
 
                     await _patientService.UpdatePatientAsync(ActiveEditingPatient);
-                    
-                    // Add/refresh in daily queue
-                    await _queueService.AddToQueueAsync(ActiveEditingPatient.PatientId, ActiveEditingPatient.Name);
-                    
-                    StatusMessage = $"Patient '{ActiveEditingPatient.Name}' details updated & added to queue!";
+                    savedPatient = ActiveEditingPatient;
                 }
                 else
                 {
@@ -567,11 +690,7 @@ namespace MedicalApp.ViewModels
                     };
 
                     await _patientService.AddPatientAsync(patient);
-                    
-                    // Add registered patient to daily queue automatically
-                    await _queueService.AddToQueueAsync(patient.PatientId, patient.Name);
-                    
-                    StatusMessage = $"Patient '{Name}' registered & added to waitlist queue!";
+                    savedPatient = patient;
                 }
                 
                 // Clear Form
@@ -615,6 +734,10 @@ namespace MedicalApp.ViewModels
                 }
 
                 ShowRegistrationModal = false;
+                
+                // Trigger check-in dialog instead of immediate queue
+                PrepareCheckIn(savedPatient);
+                
                 await LoadPatientsAsync();
             }
             catch (Exception ex)
@@ -624,23 +747,15 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public async Task SendToQueueAsync()
+        public void SendToQueue(Patient? patient)
         {
-            if (SelectedPatient == null)
+            var target = patient ?? SelectedPatient;
+            if (target == null)
             {
-                StatusMessage = "Please select a patient to queue.";
+                StatusMessage = "Please select a patient to check-in.";
                 return;
             }
-
-            try
-            {
-                await _queueService.AddToQueueAsync(SelectedPatient.PatientId, SelectedPatient.Name);
-                StatusMessage = $"Patient '{SelectedPatient.Name}' added to waitlist queue!";
-            }
-            catch (Exception ex)
-            {
-                StatusMessage = $"Error queueing patient: {ex.Message}";
-            }
+            PrepareCheckIn(target);
         }
 
         [RelayCommand]
