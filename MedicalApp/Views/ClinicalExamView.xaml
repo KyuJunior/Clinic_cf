@@ -183,7 +183,11 @@
                                 
                                 <TextBox x:Name="DrugInput" Style="{StaticResource ModernTextBox}" 
                                          Text="{Binding DrugSearchText, UpdateSourceTrigger=PropertyChanged}" 
-                                         Tag="Search or type drug name... (e.g. Aspirin)"/>
+                                         Tag="Search or type drug name... (e.g. Aspirin)">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Enter" Command="{Binding AddDrugCommand}"/>
+                                    </TextBox.InputBindings>
+                                </TextBox>
 
                                 <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Add" 
                                         Command="{Binding AddDrugCommand}" Margin="10,0,0,0" Padding="15,6"/>
