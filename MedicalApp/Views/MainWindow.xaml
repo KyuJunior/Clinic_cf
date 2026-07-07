@@ -44,12 +44,10 @@
                     <Button Style="{StaticResource NavButton}" 
                             Content="Clinical Examination" 
                             Command="{Binding NavigateToClinicalExamCommand}"
-                            IsEnabled="{Binding SelectedPatient, Converter={StaticResource NullToBoolConverter}}"
                             Margin="0,0,0,8"/>
                     <Button Style="{StaticResource NavButton}" 
                             Content="Echocardiogram Hub" 
                             Command="{Binding NavigateToEchoUploadCommand}"
-                            IsEnabled="{Binding SelectedPatient, Converter={StaticResource NullToBoolConverter}}"
                             Margin="0,0,0,8"/>
                 </StackPanel>
 
