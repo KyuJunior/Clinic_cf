@@ -19,6 +19,18 @@ namespace MedicalApp.Models
         public string HasChildren { get; set; } = string.Empty;
         public string Notes { get; set; } = string.Empty;
         public string PatientFiles { get; set; } = string.Empty;
+        public string Weight { get; set; } = string.Empty;
+        public string Height { get; set; } = string.Empty;
+        public string MaritalStatus { get; set; } = string.Empty;
+        public string SpouseName { get; set; } = string.Empty;
+        public string BloodGroup { get; set; } = string.Empty;
+        public string Smoking { get; set; } = string.Empty;
+        public DateTime? LastChildBirthDate { get; set; }
+        public string Alcohol { get; set; } = string.Empty;
+        public DateTime? MarriageDate { get; set; }
+        public string ReferredBy { get; set; } = string.Empty;
+        public string SpouseBloodGroup { get; set; } = string.Empty;
+        public string Allergy { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties

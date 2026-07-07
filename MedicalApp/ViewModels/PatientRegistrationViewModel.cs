@@ -102,21 +102,112 @@ namespace MedicalApp.ViewModels
 
         public string PatientFileName => string.IsNullOrEmpty(PatientFiles) ? string.Empty : System.IO.Path.GetFileName(PatientFiles);
 
-        // Section Toggles
+        // New Detailed Patient Profile fields
+        [ObservableProperty]
+        private string _weight = string.Empty;
+
+        [ObservableProperty]
+        private string _height = string.Empty;
+
+        [ObservableProperty]
+        private string _maritalStatus = string.Empty;
+
+        [ObservableProperty]
+        private string _spouseName = string.Empty;
+
+        [ObservableProperty]
+        private string _bloodGroup = string.Empty;
+
+        [ObservableProperty]
+        private string _smoking = string.Empty;
+
+        [ObservableProperty]
+        private DateTime? _lastChildBirthDate;
+
+        [ObservableProperty]
+        private string _alcohol = string.Empty;
+
+        [ObservableProperty]
+        private DateTime? _marriageDate;
+
+        [ObservableProperty]
+        private string _referredBy = string.Empty;
+
+        [ObservableProperty]
+        private string _spouseBloodGroup = string.Empty;
+
+        [ObservableProperty]
+        private string _allergy = string.Empty;
+
+        // The 22 show/hide switches matching mockup
         [ObservableProperty]
         private bool _isGearMenuOpen = false;
 
         [ObservableProperty]
-        private bool _showSpouseAndKids = true;
+        private bool _showGovernorate = true;
 
         [ObservableProperty]
-        private bool _showSecondaryAge = true;
+        private bool _showPhone = true;
 
         [ObservableProperty]
-        private bool _showExtraContact = true;
+        private bool _showWeight = false;
 
         [ObservableProperty]
-        private bool _showNotesAndFiles = true;
+        private bool _showMaritalStatus = false;
+
+        [ObservableProperty]
+        private bool _showVisitsCount = true;
+
+        [ObservableProperty]
+        private bool _showSpouseName = false;
+
+        [ObservableProperty]
+        private bool _showBloodGroup = false;
+
+        [ObservableProperty]
+        private bool _showSmoking = false;
+
+        [ObservableProperty]
+        private bool _showLastChildBirthDate = false;
+
+        [ObservableProperty]
+        private bool _showAlcohol = false;
+
+        [ObservableProperty]
+        private bool _showMarriageDate = false;
+
+        [ObservableProperty]
+        private bool _showJob = true;
+
+        [ObservableProperty]
+        private bool _showAddress = true;
+
+        [ObservableProperty]
+        private bool _showReferredBy = false;
+
+        [ObservableProperty]
+        private bool _showHeight = false;
+
+        [ObservableProperty]
+        private bool _showReturnDate = true;
+
+        [ObservableProperty]
+        private bool _showLastVisit = true;
+
+        [ObservableProperty]
+        private bool _showSpouseBirthDate = true;
+
+        [ObservableProperty]
+        private bool _showSpouseBloodGroup = false;
+
+        [ObservableProperty]
+        private bool _showHasChildren = true;
+
+        [ObservableProperty]
+        private bool _showNotes = true;
+
+        [ObservableProperty]
+        private bool _showAllergy = true;
 
         public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService)
         {
@@ -323,6 +414,19 @@ namespace MedicalApp.ViewModels
                 Notes = patient.Notes;
                 PatientFiles = patient.PatientFiles;
                 
+                Weight = patient.Weight;
+                Height = patient.Height;
+                MaritalStatus = patient.MaritalStatus;
+                SpouseName = patient.SpouseName;
+                BloodGroup = patient.BloodGroup;
+                Smoking = patient.Smoking;
+                LastChildBirthDate = patient.LastChildBirthDate;
+                Alcohol = patient.Alcohol;
+                MarriageDate = patient.MarriageDate;
+                ReferredBy = patient.ReferredBy;
+                SpouseBloodGroup = patient.SpouseBloodGroup;
+                Allergy = patient.Allergy;
+
                 ActiveEditingPatient = patient;
                 RegistrationButtonText = "Update & Send to Queue";
                 IsSuggestionsOpen = false;
@@ -356,6 +460,19 @@ namespace MedicalApp.ViewModels
                 Notes = string.Empty;
                 PatientFiles = string.Empty;
                 
+                Weight = string.Empty;
+                Height = string.Empty;
+                MaritalStatus = string.Empty;
+                SpouseName = string.Empty;
+                BloodGroup = string.Empty;
+                Smoking = string.Empty;
+                LastChildBirthDate = null;
+                Alcohol = string.Empty;
+                MarriageDate = null;
+                ReferredBy = string.Empty;
+                SpouseBloodGroup = string.Empty;
+                Allergy = string.Empty;
+
                 ActiveEditingPatient = null;
                 RegistrationButtonText = "Register & Send to Queue";
                 IsSuggestionsOpen = false;
@@ -396,6 +513,19 @@ namespace MedicalApp.ViewModels
                     ActiveEditingPatient.Notes = Notes;
                     ActiveEditingPatient.PatientFiles = PatientFiles;
 
+                    ActiveEditingPatient.Weight = Weight;
+                    ActiveEditingPatient.Height = Height;
+                    ActiveEditingPatient.MaritalStatus = MaritalStatus;
+                    ActiveEditingPatient.SpouseName = SpouseName;
+                    ActiveEditingPatient.BloodGroup = BloodGroup;
+                    ActiveEditingPatient.Smoking = Smoking;
+                    ActiveEditingPatient.LastChildBirthDate = LastChildBirthDate;
+                    ActiveEditingPatient.Alcohol = Alcohol;
+                    ActiveEditingPatient.MarriageDate = MarriageDate;
+                    ActiveEditingPatient.ReferredBy = ReferredBy;
+                    ActiveEditingPatient.SpouseBloodGroup = SpouseBloodGroup;
+                    ActiveEditingPatient.Allergy = Allergy;
+
                     await _patientService.UpdatePatientAsync(ActiveEditingPatient);
                     
                     // Add/refresh in daily queue
@@ -421,6 +551,18 @@ namespace MedicalApp.ViewModels
                         HasChildren = HasChildren,
                         Notes = Notes,
                         PatientFiles = PatientFiles,
+                        Weight = Weight,
+                        Height = Height,
+                        MaritalStatus = MaritalStatus,
+                        SpouseName = SpouseName,
+                        BloodGroup = BloodGroup,
+                        Smoking = Smoking,
+                        LastChildBirthDate = LastChildBirthDate,
+                        Alcohol = Alcohol,
+                        MarriageDate = MarriageDate,
+                        ReferredBy = ReferredBy,
+                        SpouseBloodGroup = SpouseBloodGroup,
+                        Allergy = Allergy,
                         CreatedAt = DateTime.UtcNow
                     };
 
@@ -448,6 +590,20 @@ namespace MedicalApp.ViewModels
                     HasChildren = string.Empty;
                     Notes = string.Empty;
                     PatientFiles = string.Empty;
+                    
+                    Weight = string.Empty;
+                    Height = string.Empty;
+                    MaritalStatus = string.Empty;
+                    SpouseName = string.Empty;
+                    BloodGroup = string.Empty;
+                    Smoking = string.Empty;
+                    LastChildBirthDate = null;
+                    Alcohol = string.Empty;
+                    MarriageDate = null;
+                    ReferredBy = string.Empty;
+                    SpouseBloodGroup = string.Empty;
+                    Allergy = string.Empty;
+
                     ActiveEditingPatient = null;
                     RegistrationButtonText = "Register & Send to Queue";
                     IsSuggestionsOpen = false;

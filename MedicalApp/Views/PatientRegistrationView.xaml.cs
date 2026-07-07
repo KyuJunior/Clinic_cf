@@ -25,4 +25,21 @@ namespace MedicalApp.Views
             }
         }
     }
+
+    public class BindingProxy : System.Windows.Freezable
+    {
+        protected override System.Windows.Freezable CreateInstanceCore()
+        {
+            return new BindingProxy();
+        }
+
+        public object Data
+        {
+            get { return (object)GetValue(DataProperty); }
+            set { SetValue(DataProperty, value); }
+        }
+
+        public static readonly System.Windows.DependencyProperty DataProperty =
+            System.Windows.DependencyProperty.Register("Data", typeof(object), typeof(BindingProxy), new System.Windows.PropertyMetadata(null));
+    }
 }
