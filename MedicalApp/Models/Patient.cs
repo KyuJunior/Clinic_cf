@@ -15,6 +15,5 @@ namespace MedicalApp.Models
 
         // Navigation Properties
         public ICollection<Visit> Visits { get; set; } = new List<Visit>();
-        public ICollection<EchoRecord> EchoRecords { get; set; } = new List<EchoRecord>();
     }
 }

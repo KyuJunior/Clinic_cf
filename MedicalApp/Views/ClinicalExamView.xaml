@@ -93,9 +93,6 @@
                                                         <DataTrigger Binding="{Binding Status}" Value="InExam">
                                                             <Setter Property="Background" Value="#FFE4E6"/>
                                                         </DataTrigger>
-                                                        <DataTrigger Binding="{Binding Status}" Value="InEcho">
-                                                            <Setter Property="Background" Value="#E0F2FE"/>
-                                                        </DataTrigger>
                                                     </Style.Triggers>
                                                 </Style>
                                             </Border.Style>
@@ -110,10 +107,6 @@
                                                             <DataTrigger Binding="{Binding Status}" Value="InExam">
                                                                 <Setter Property="Text" Value="In Exam"/>
                                                                 <Setter Property="Foreground" Value="#E11D48"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding Status}" Value="InEcho">
-                                                                <Setter Property="Text" Value="In Echo"/>
-                                                                <Setter Property="Foreground" Value="#0284C7"/>
                                                             </DataTrigger>
                                                         </Style.Triggers>
                                                     </Style>
@@ -235,14 +228,7 @@
                             <!-- Action Buttons -->
                             <StackPanel Margin="0,5,0,0">
                                 <!-- End Exam Session Actions -->
-                                <Grid Margin="0,0,0,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="Complete Visit" Command="{Binding CompleteSessionDoneCommand}" Height="40" Margin="0,0,5,0"/>
-                                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Send to Echo Waitlist" Command="{Binding CompleteSessionToEchoCommand}" Background="#0284C7" BorderBrush="#0284C7" Height="40" Margin="5,0,0,0"/>
-                                </Grid>
+                                <Button Style="{StaticResource ModernButton}" Content="Complete Visit" Command="{Binding CompleteSessionDoneCommand}" Height="40" Margin="0,0,0,10"/>
 
                                 <!-- Print Actions -->
                                 <Grid>

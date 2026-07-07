@@ -47,12 +47,5 @@ namespace MedicalApp.ViewModels
             var vm = _serviceProvider.GetRequiredService<ClinicalExamViewModel>();
             App.LaunchStandaloneWindow("Clinical Examination Room", vm, 950, 720);
         }
-
-        [RelayCommand]
-        public void LaunchEcho()
-        {
-            var vm = _serviceProvider.GetRequiredService<EchoUploadViewModel>();
-            App.LaunchStandaloneWindow("Echocardiogram Hub", vm, 950, 720);
-        }
     }
 }

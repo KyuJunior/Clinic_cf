@@ -40,7 +40,6 @@ namespace MedicalApp.Services
             using var context = await _contextFactory.CreateDbContextAsync();
             return await context.Patients
                 .Include(p => p.Visits)
-                .Include(p => p.EchoRecords)
                 .FirstOrDefaultAsync(p => p.PatientId == id);
         }
 

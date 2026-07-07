@@ -323,44 +323,6 @@ namespace MedicalApp.ViewModels
             }
         }
 
-        [RelayCommand]
-        public async Task CompleteSessionToEchoAsync()
-        {
-            if (CurrentPatient == null)
-            {
-                StatusMessage = "No active patient to complete.";
-                return;
-            }
-
-            try
-            {
-                // Save visit first
-                if (!string.IsNullOrWhiteSpace(ChiefComplaint) || !string.IsNullOrWhiteSpace(Diagnosis))
-                {
-                    await SaveVisitAsync();
-                }
-
-                // Return queue status to Pending (re-queues them for the Echo room)
-                await _queueService.UpdateQueueStatusAsync(CurrentPatient.PatientId, "Pending");
-                StatusMessage = $"Exam session saved. '{CurrentPatient.Name}' sent to Echo waitlist.";
-
-                // Clear current session
-                SelectedPatientLookup = null;
-                CurrentPatient = null;
-                VisitHistory.Clear();
-
-                ChiefComplaint = string.Empty;
-                HistoryOfPresentIllness = string.Empty;
-                PhysicalExamination = string.Empty;
-                Diagnosis = string.Empty;
-                TreatmentPlan = string.Empty;
-            }
-            catch (Exception ex)
-            {
-                StatusMessage = $"Error sending patient to Echo: {ex.Message}";
-            }
-        }
-
         async partial void OnDrugSearchTextChanged(string value)
         {
             if (string.IsNullOrWhiteSpace(value) || value.Length < 2)

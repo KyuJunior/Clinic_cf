@@ -91,9 +91,6 @@ namespace MedicalApp
                     case "/exam":
                         LaunchStandaloneWindow("Clinical Examination Room", ServiceProvider.GetRequiredService<ClinicalExamViewModel>(), 950, 720);
                         return;
-                    case "/echo":
-                        LaunchStandaloneWindow("Echocardiogram Hub", ServiceProvider.GetRequiredService<EchoUploadViewModel>(), 950, 720);
-                        return;
                     case "/home":
                     case "--home":
                         startOnHome = true;
@@ -157,7 +154,6 @@ namespace MedicalApp
             services.AddSingleton<ISharedStateService, SharedStateService>();
             services.AddTransient<IPatientService, PatientService>();
             services.AddTransient<IVisitService, VisitService>();
-            services.AddTransient<IEchoService, EchoService>();
             services.AddTransient<IQueueService, QueueService>();
             services.AddSingleton<IPrintService, PrintService>();
 
@@ -166,7 +162,6 @@ namespace MedicalApp
             services.AddTransient<HomeViewModel>();
             services.AddTransient<PatientRegistrationViewModel>();
             services.AddTransient<ClinicalExamViewModel>();
-            services.AddTransient<EchoUploadViewModel>();
             services.AddTransient<PrintSettingsViewModel>();
             services.AddTransient<Views.PrintSettingsView>();
 

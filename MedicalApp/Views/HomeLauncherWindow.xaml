@@ -41,11 +41,10 @@
         </Border>
 
         <!-- Room Selection Cards Grid -->
-        <Grid Grid.Row="1" Margin="15,20,15,10" MaxWidth="960" HorizontalAlignment="Center">
+        <Grid Grid.Row="1" Margin="15,20,15,10" MaxWidth="760" HorizontalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="280" MaxWidth="310"/>
-                <ColumnDefinition Width="*" MinWidth="280" MaxWidth="310"/>
-                <ColumnDefinition Width="*" MinWidth="280" MaxWidth="310"/>
+                <ColumnDefinition Width="*" MinWidth="300" MaxWidth="340"/>
+                <ColumnDefinition Width="*" MinWidth="300" MaxWidth="340"/>
             </Grid.ColumnDefinitions>
 
             <!-- Card 1: Patient Registry -->
@@ -79,29 +78,10 @@
                     
                     <TextBlock Grid.Row="0" Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="44" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,20"/>
                     <TextBlock Grid.Row="1" Text="Clinical Examination" FontSize="16" FontWeight="Bold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                    <TextBlock Grid.Row="2" Text="Manage waitlisted patients in real-time, record complaints/diagnoses, and direct patients to completed status or to echo lab." 
+                    <TextBlock Grid.Row="2" Text="Manage waitlisted patients in real-time, record complaints/diagnoses, and direct patients to completed status." 
                                FontSize="12" Foreground="{StaticResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="16" Margin="0,0,0,20"/>
                     
                     <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Open Exam Room" Command="{Binding LaunchExamCommand}" Height="38" HorizontalAlignment="Stretch"/>
-                </Grid>
-            </Border>
-
-            <!-- Card 3: Echocardiogram Hub -->
-            <Border Grid.Column="2" Style="{StaticResource CardBorder}" Margin="10">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Icon -->
-                        <RowDefinition Height="Auto"/> <!-- Title -->
-                        <RowDefinition Height="*"/>    <!-- Description -->
-                        <RowDefinition Height="Auto"/> <!-- Enter Button -->
-                    </Grid.RowDefinitions>
-                    
-                    <TextBlock Grid.Row="0" Text="&#xE722;" FontFamily="Segoe MDL2 Assets" FontSize="44" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,20"/>
-                    <TextBlock Grid.Row="1" Text="Echocardiogram Hub" FontSize="16" FontWeight="Bold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                    <TextBlock Grid.Row="2" Text="Select waitlist queue entries, upload cardiac clips directly to the local LAN storage share, and view previous echo reports." 
-                               FontSize="12" Foreground="{StaticResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="16" Margin="0,0,0,20"/>
-                    
-                    <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Open Echo Lab" Command="{Binding LaunchEchoCommand}" Height="38" HorizontalAlignment="Stretch"/>
                 </Grid>
             </Border>
         </Grid>

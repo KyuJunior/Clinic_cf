@@ -27,12 +27,5 @@ namespace MedicalApp.ViewModels
             var mainVm = _serviceProvider.GetRequiredService<MainViewModel>();
             mainVm.NavigateToClinicalExam();
         }
-
-        [RelayCommand]
-        public void NavigateToEcho()
-        {
-            var mainVm = _serviceProvider.GetRequiredService<MainViewModel>();
-            mainVm.NavigateToEchoUpload();
-        }
     }
 }
