@@ -10,6 +10,9 @@
             </ResourceDictionary.MergedDictionaries>
 
             <!-- DataTemplates to route ViewModel to View automatically in ContentControl -->
+            <DataTemplate DataType="{x:Type viewmodels:HomeViewModel}">
+                <views:HomeView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:PatientRegistrationViewModel}">
                 <views:PatientRegistrationView/>
             </DataTemplate>
