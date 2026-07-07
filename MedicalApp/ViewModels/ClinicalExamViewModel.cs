@@ -129,6 +129,22 @@ namespace MedicalApp.ViewModels
         private DateTime? _returnDate;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(InvestigationAttachmentName))]
+        private string _investigationAttachmentPath = string.Empty;
+
+        [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(ImagingAttachmentName))]
+        private string _imagingAttachmentPath = string.Empty;
+
+        public string InvestigationAttachmentName => string.IsNullOrWhiteSpace(InvestigationAttachmentPath) 
+            ? string.Empty 
+            : Path.GetFileName(InvestigationAttachmentPath);
+
+        public string ImagingAttachmentName => string.IsNullOrWhiteSpace(ImagingAttachmentPath) 
+            ? string.Empty 
+            : Path.GetFileName(ImagingAttachmentPath);
+
+        [ObservableProperty]
         private ObservableCollection<string> _investigationsList = new()
         {
             "CBC (Complete Blood Count)",
@@ -317,6 +333,8 @@ namespace MedicalApp.ViewModels
                     Investigation = SelectedInvestigation,
                     Imaging = SelectedImaging,
                     ReturnDate = ReturnDate,
+                    InvestigationAttachmentPath = InvestigationAttachmentPath,
+                    ImagingAttachmentPath = ImagingAttachmentPath,
                     VisitDate = DateTime.UtcNow
                 };
 
@@ -592,7 +610,9 @@ namespace MedicalApp.ViewModels
                     IsVitallyStable = IsVitallyStable,
                     Investigation = SelectedInvestigation ?? string.Empty,
                     Imaging = SelectedImaging ?? string.Empty,
-                    ReturnDate = ReturnDate
+                    ReturnDate = ReturnDate,
+                    InvestigationAttachmentPath = InvestigationAttachmentPath ?? string.Empty,
+                    ImagingAttachmentPath = ImagingAttachmentPath ?? string.Empty
                 };
 
                 string outputJson = JsonSerializer.Serialize(drafts, new JsonSerializerOptions { WriteIndented = true });
@@ -634,6 +654,8 @@ namespace MedicalApp.ViewModels
                         SelectedInvestigation = draft.Investigation;
                         SelectedImaging = draft.Imaging;
                         ReturnDate = draft.ReturnDate;
+                        InvestigationAttachmentPath = draft.InvestigationAttachmentPath;
+                        ImagingAttachmentPath = draft.ImagingAttachmentPath;
                         
                         var newCollection = new ObservableCollection<PrescribedMedication>(draft.PrescribedDrugs);
                         newCollection.CollectionChanged += (s, e) => TriggerAutoSave();
@@ -694,6 +716,8 @@ namespace MedicalApp.ViewModels
             SelectedInvestigation = string.Empty;
             SelectedImaging = string.Empty;
             ReturnDate = null;
+            InvestigationAttachmentPath = string.Empty;
+            ImagingAttachmentPath = string.Empty;
             
             var newCollection = new ObservableCollection<PrescribedMedication>();
             newCollection.CollectionChanged += (s, e) => TriggerAutoSave();
@@ -828,6 +852,131 @@ namespace MedicalApp.ViewModels
             }
             TriggerAutoSave();
         }
+
+        [RelayCommand]
+        public void UploadInvestigationAttachment()
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "All Files (*.*)|*.*|Image Files (*.png;*.jpg;*.jpeg;*.gif)|*.png;*.jpg;*.jpeg;*.gif|PDF Files (*.pdf)|*.pdf|Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var sourcePath = openFileDialog.FileName;
+                    var extension = Path.GetExtension(sourcePath);
+                    var destDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "VisitAttachments");
+                    if (!Directory.Exists(destDir))
+                    {
+                        Directory.CreateDirectory(destDir);
+                    }
+
+                    var uniqueName = $"investigation_{Guid.NewGuid()}{extension}";
+                    var destPath = Path.Combine(destDir, uniqueName);
+                    
+                    File.Copy(sourcePath, destPath, overwrite: true);
+                    InvestigationAttachmentPath = destPath;
+                    StatusMessage = "Investigation attachment uploaded successfully!";
+                }
+                catch (Exception ex)
+                {
+                    StatusMessage = $"Failed to upload file: {ex.Message}";
+                }
+            }
+        }
+
+        [RelayCommand]
+        public void UploadImagingAttachment()
+        {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "All Files (*.*)|*.*|Image Files (*.png;*.jpg;*.jpeg;*.gif)|*.png;*.jpg;*.jpeg;*.gif|PDF Files (*.pdf)|*.pdf|Excel Files (*.xls;*.xlsx)|*.xls;*.xlsx"
+            };
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                try
+                {
+                    var sourcePath = openFileDialog.FileName;
+                    var extension = Path.GetExtension(sourcePath);
+                    var destDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "VisitAttachments");
+                    if (!Directory.Exists(destDir))
+                    {
+                        Directory.CreateDirectory(destDir);
+                    }
+
+                    var uniqueName = $"imaging_{Guid.NewGuid()}{extension}";
+                    var destPath = Path.Combine(destDir, uniqueName);
+                    
+                    File.Copy(sourcePath, destPath, overwrite: true);
+                    ImagingAttachmentPath = destPath;
+                    StatusMessage = "Imaging attachment uploaded successfully!";
+                }
+                catch (Exception ex)
+                {
+                    StatusMessage = $"Failed to upload file: {ex.Message}";
+                }
+            }
+        }
+
+        [RelayCommand]
+        public void RemoveInvestigationAttachment()
+        {
+            try
+            {
+                if (File.Exists(InvestigationAttachmentPath))
+                {
+                    File.Delete(InvestigationAttachmentPath);
+                }
+            }
+            catch {}
+            InvestigationAttachmentPath = string.Empty;
+            TriggerAutoSave();
+        }
+
+        [RelayCommand]
+        public void RemoveImagingAttachment()
+        {
+            try
+            {
+                if (File.Exists(ImagingAttachmentPath))
+                {
+                    File.Delete(ImagingAttachmentPath);
+                }
+            }
+            catch {}
+            ImagingAttachmentPath = string.Empty;
+            TriggerAutoSave();
+        }
+
+        [RelayCommand]
+        public void OpenAttachment(string filePath)
+        {
+            if (string.IsNullOrWhiteSpace(filePath) || !File.Exists(filePath))
+            {
+                StatusMessage = "Attachment file not found.";
+                return;
+            }
+
+            try
+            {
+                var psi = new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = filePath,
+                    UseShellExecute = true
+                };
+                System.Diagnostics.Process.Start(psi);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Could not open attachment: {ex.Message}";
+            }
+        }
+
+        partial void OnInvestigationAttachmentPathChanged(string value) => TriggerAutoSave();
+        partial void OnImagingAttachmentPathChanged(string value) => TriggerAutoSave();
 
         public void Dispose()
         {

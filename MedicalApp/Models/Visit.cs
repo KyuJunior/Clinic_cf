@@ -29,6 +29,10 @@ namespace MedicalApp.Models
         // Return Date
         public DateTime? ReturnDate { get; set; }
 
+        // Attachments
+        public string InvestigationAttachmentPath { get; set; } = string.Empty;
+        public string ImagingAttachmentPath { get; set; } = string.Empty;
+
         // Navigation Property
         public Patient? Patient { get; set; }
     }

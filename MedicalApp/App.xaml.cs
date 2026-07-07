@@ -93,6 +93,12 @@ namespace MedicalApp
                 await dbContext.Database.ExecuteSqlRawAsync(
                     "IF COL_LENGTH('dbo.Visits', 'ReturnDate') IS NULL ALTER TABLE dbo.Visits ADD ReturnDate DATETIME NULL"
                 );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'InvestigationAttachmentPath') IS NULL ALTER TABLE dbo.Visits ADD InvestigationAttachmentPath NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'ImagingAttachmentPath') IS NULL ALTER TABLE dbo.Visits ADD ImagingAttachmentPath NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
             }
             catch (Exception ex)
             {
