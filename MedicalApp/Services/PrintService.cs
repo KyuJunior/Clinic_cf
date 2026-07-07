@@ -170,38 +170,57 @@ namespace MedicalApp.Services
                 }
             }
 
-            // 2. Draw Patient Info (scaled from preview dimensions 350x495 to paper dimensions 560x794)
-            var infoPanel = new StackPanel();
-            infoPanel.Children.Add(new TextBlock 
-            { 
-                Text = $"Patient Name: {patient.Name}", 
-                FontSize = 13, 
-                FontWeight = FontWeights.Bold, 
-                Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59)) 
-            });
-            infoPanel.Children.Add(new TextBlock 
-            { 
-                Text = $"Age: {patient.Age} yrs   |   Gender: {patient.Gender}   |   Date: {DateTime.Now:dd/MM/yyyy}", 
-                FontSize = 10, 
-                Foreground = Brushes.SlateGray, 
-                Margin = new Thickness(0, 3, 0, 0) 
-            });
+            // 2. Draw Patient Name
+            var nameBlock = new TextBlock
+            {
+                Text = $"Patient Name: {patient.Name}",
+                FontSize = 13,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59))
+            };
+            canvas.Children.Add(nameBlock);
+            Canvas.SetLeft(nameBlock, settings.PatientNameX * (560.0 / 350.0));
+            Canvas.SetTop(nameBlock, settings.PatientNameY * (794.0 / 495.0));
 
-            canvas.Children.Add(infoPanel);
-            Canvas.SetLeft(infoPanel, settings.PatientInfoX * (560.0 / 350.0));
-            Canvas.SetTop(infoPanel, settings.PatientInfoY * (794.0 / 495.0));
+            // 3. Draw Age & Gender
+            var ageGenderBlock = new TextBlock
+            {
+                Text = $"Age: {patient.Age} yrs   |   Gender: {patient.Gender}",
+                FontSize = 10,
+                Foreground = Brushes.SlateGray
+            };
+            canvas.Children.Add(ageGenderBlock);
+            Canvas.SetLeft(ageGenderBlock, settings.PatientAgeGenderX * (560.0 / 350.0));
+            Canvas.SetTop(ageGenderBlock, settings.PatientAgeGenderY * (794.0 / 495.0));
 
-            // 3. Draw Medications Block (scaled)
+            // 4. Draw Date
+            var dateBlock = new TextBlock
+            {
+                Text = $"Date: {DateTime.Now:dd/MM/yyyy}",
+                FontSize = 10,
+                Foreground = Brushes.SlateGray
+            };
+            canvas.Children.Add(dateBlock);
+            Canvas.SetLeft(dateBlock, settings.PatientDateX * (560.0 / 350.0));
+            Canvas.SetTop(dateBlock, settings.PatientDateY * (794.0 / 495.0));
+
+            // 5. Draw Rx Symbol if enabled
+            if (settings.ShowRxSymbol)
+            {
+                var rxBlock = new TextBlock
+                {
+                    Text = "Rx",
+                    FontSize = 20,
+                    FontWeight = FontWeights.Bold,
+                    Foreground = new SolidColorBrush(Color.FromRgb(13, 148, 136))
+                };
+                canvas.Children.Add(rxBlock);
+                Canvas.SetLeft(rxBlock, settings.RxSymbolX * (560.0 / 350.0));
+                Canvas.SetTop(rxBlock, settings.RxSymbolY * (794.0 / 495.0));
+            }
+
+            // 6. Draw Medications Block (scaled)
             var drugsPanel = new StackPanel();
-            drugsPanel.Children.Add(new TextBlock 
-            { 
-                Text = "Rx", 
-                FontSize = 20, 
-                FontWeight = FontWeights.Bold, 
-                Foreground = new SolidColorBrush(Color.FromRgb(13, 148, 136)),
-                Margin = new Thickness(0, 0, 0, 8) 
-            });
-
             string[] lines = prescriptionText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.RemoveEmptyEntries);
             for (int i = 0; i < lines.Length; i++)
             {

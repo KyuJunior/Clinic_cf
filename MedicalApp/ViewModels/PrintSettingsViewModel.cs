@@ -22,16 +22,37 @@ namespace MedicalApp.ViewModels
         private bool _printBackground;
 
         [ObservableProperty]
-        private double _patientInfoX = 50;
+        private double _patientNameX = 40;
 
         [ObservableProperty]
-        private double _patientInfoY = 120;
+        private double _patientNameY = 100;
 
         [ObservableProperty]
-        private double _drugsX = 50;
+        private double _patientAgeGenderX = 40;
 
         [ObservableProperty]
-        private double _drugsY = 220;
+        private double _patientAgeGenderY = 125;
+
+        [ObservableProperty]
+        private double _patientDateX = 230;
+
+        [ObservableProperty]
+        private double _patientDateY = 100;
+
+        [ObservableProperty]
+        private double _rxSymbolX = 40;
+
+        [ObservableProperty]
+        private double _rxSymbolY = 160;
+
+        [ObservableProperty]
+        private bool _showRxSymbol = true;
+
+        [ObservableProperty]
+        private double _drugsX = 40;
+
+        [ObservableProperty]
+        private double _drugsY = 200;
 
         [ObservableProperty]
         private double _fontSize = 14;
@@ -54,8 +75,20 @@ namespace MedicalApp.ViewModels
                     {
                         RxBackgroundPath = settings.RxBackgroundPath;
                         PrintBackground = settings.PrintBackground;
-                        PatientInfoX = settings.PatientInfoX;
-                        PatientInfoY = settings.PatientInfoY;
+                        
+                        PatientNameX = settings.PatientNameX;
+                        PatientNameY = settings.PatientNameY;
+                        
+                        PatientAgeGenderX = settings.PatientAgeGenderX;
+                        PatientAgeGenderY = settings.PatientAgeGenderY;
+                        
+                        PatientDateX = settings.PatientDateX;
+                        PatientDateY = settings.PatientDateY;
+                        
+                        RxSymbolX = settings.RxSymbolX;
+                        RxSymbolY = settings.RxSymbolY;
+                        ShowRxSymbol = settings.ShowRxSymbol;
+                        
                         DrugsX = settings.DrugsX;
                         DrugsY = settings.DrugsY;
                         FontSize = settings.FontSize;
@@ -110,8 +143,20 @@ namespace MedicalApp.ViewModels
                 {
                     RxBackgroundPath = RxBackgroundPath,
                     PrintBackground = PrintBackground,
-                    PatientInfoX = PatientInfoX,
-                    PatientInfoY = PatientInfoY,
+                    
+                    PatientNameX = PatientNameX,
+                    PatientNameY = PatientNameY,
+                    
+                    PatientAgeGenderX = PatientAgeGenderX,
+                    PatientAgeGenderY = PatientAgeGenderY,
+                    
+                    PatientDateX = PatientDateX,
+                    PatientDateY = PatientDateY,
+                    
+                    RxSymbolX = RxSymbolX,
+                    RxSymbolY = RxSymbolY,
+                    ShowRxSymbol = ShowRxSymbol,
+                    
                     DrugsX = DrugsX,
                     DrugsY = DrugsY,
                     FontSize = FontSize
