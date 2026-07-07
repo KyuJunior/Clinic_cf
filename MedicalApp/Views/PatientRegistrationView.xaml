@@ -11,21 +11,33 @@
     <UserControl.Resources>
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
     </UserControl.Resources>
-    
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="380"/> <!-- Registration Form -->
-            <ColumnDefinition Width="*"/>   <!-- Patient DataGrid & Lookup -->
-        </Grid.ColumnDefinitions>
+    <Grid Margin="10,15,10,10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Back Navigation Header -->
+            <RowDefinition Height="*"/>    <!-- Main Form & Search Grid -->
+        </Grid.RowDefinitions>
 
-        <!-- Left Column: Registration Form -->
-        <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Top">
-            <StackPanel>
-                <TextBlock Text="Register New Patient" Style="{StaticResource Header2}"/>
-                <TextBlock Text="Enter patient record details below to enroll." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
+        <!-- Back Button Header -->
+        <Button Grid.Row="0" HorizontalAlignment="Left" Margin="0,0,0,15"
+                Style="{StaticResource NavButton}" Padding="12,7" 
+                Tag="&#xE72B;" Content="Back to Dashboard"
+                Command="{Binding DataContext.NavigateToHomeCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
 
-                <!-- Name Input & Autocomplete Popup -->
-                <TextBlock Text="Full Name" Style="{StaticResource Subheading}"/>
+        <!-- Main Form & Search Grid -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380"/> <!-- Registration Form -->
+                <ColumnDefinition Width="*"/>   <!-- Patient DataGrid & Lookup -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Left Column: Registration Form -->
+            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Top">
+                <StackPanel>
+                    <TextBlock Text="Register New Patient" Style="{StaticResource Header2}"/>
+                    <TextBlock Text="Enter patient record details below to enroll." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
+
+                    <!-- Name Input & Autocomplete Popup -->
+                    <TextBlock Text="Full Name" Style="{StaticResource Subheading}"/>
                 <Grid Margin="0,0,0,15">
                     <TextBox x:Name="NameInput" Style="{StaticResource ModernTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="Type name to search existing..."/>
                     
@@ -143,4 +155,5 @@
             </Grid>
         </Border>
     </Grid>
+</Grid>
 </UserControl>

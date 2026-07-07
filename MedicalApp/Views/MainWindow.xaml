@@ -15,118 +15,25 @@
     </Window.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/> <!-- Sidebar Navigation (Auto width enables collapsing) -->
-            <ColumnDefinition Width="*"/>    <!-- Main Workspace -->
-        </Grid.ColumnDefinitions>
-
-        <!-- Sidebar Navigation -->
-        <Border Grid.Column="0" Width="260" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,1,0">
-            <Border.Style>
-                <Style TargetType="Border">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsHomeActive}" Value="True">
-                            <Setter Property="Visibility" Value="Collapsed"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </Border.Style>
-            
-            <Grid Margin="20">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-
-                <!-- Brand Logo / Title -->
-                <StackPanel Grid.Row="0" Margin="0,10,0,30">
-                    <TextBlock Text="CardioCenter" FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}"/>
-                    <TextBlock Text="Local Clinical Portal" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                </StackPanel>
-
-                <!-- Navigation List -->
-                <StackPanel Grid.Row="1">
-                    <!-- Home -->
-                    <Button Content="Home Dashboard" Tag="&#xE80F;" Command="{Binding NavigateToHomeCommand}" Margin="0,0,0,8">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource NavButton}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsHomeActive}" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource SelectedTabBrush}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource SelectedTabTextBrush}"/>
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <!-- Patient Registry -->
-                    <Button Content="Patient Registry" Tag="&#xE716;" Command="{Binding NavigateToPatientRegistrationCommand}" Margin="0,0,0,8">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource NavButton}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsPatientRegistryActive}" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource SelectedTabBrush}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource SelectedTabTextBrush}"/>
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <!-- Clinical Examination -->
-                    <Button Content="Clinical Examination" Tag="&#xE1E2;" Command="{Binding NavigateToClinicalExamCommand}" Margin="0,0,0,8">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource NavButton}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsClinicalExamActive}" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource SelectedTabBrush}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource SelectedTabTextBrush}"/>
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <!-- Echocardiogram Hub -->
-                    <Button Content="Echocardiogram Hub" Tag="&#xE722;" Command="{Binding NavigateToEchoUploadCommand}" Margin="0,0,0,8">
-                        <Button.Style>
-                            <Style TargetType="Button" BasedOn="{StaticResource NavButton}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding IsEchoUploadActive}" Value="True">
-                                        <Setter Property="Background" Value="{StaticResource SelectedTabBrush}"/>
-                                        <Setter Property="Foreground" Value="{StaticResource SelectedTabTextBrush}"/>
-                                        <Setter Property="FontWeight" Value="Bold"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </StackPanel>
-
-                <!-- Footer / Status Info -->
-                <StackPanel Grid.Row="2" Margin="0,20,0,0">
-                    <Border Height="1" Background="{StaticResource BorderColor}" Margin="0,0,0,10"/>
-                    <TextBlock Text="Local Client Node" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                    <TextBlock Text="{Binding ConnectionInfo, StringFormat='Connected to: \{0\}'}" FontSize="10" Foreground="{StaticResource PrimaryColor}"/>
-                </StackPanel>
-            </Grid>
-        </Border>
-
         <!-- Main Workspace -->
-        <Grid Grid.Column="1">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="70"/>  <!-- Header Banner -->
+                <RowDefinition Height="Auto"/>  <!-- Header Banner -->
                 <RowDefinition Height="*"/>   <!-- Active View Content -->
             </Grid.RowDefinitions>
 
             <!-- Global Patient Header Banner -->
             <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1">
-                <Grid Margin="25,0">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsHomeActive}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid Margin="25,0" Height="70">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
