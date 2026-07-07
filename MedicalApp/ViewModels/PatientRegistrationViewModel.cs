@@ -35,6 +35,12 @@ namespace MedicalApp.ViewModels
         private string _gender = "Male";
 
         [ObservableProperty]
+        private string _job = string.Empty;
+
+        [ObservableProperty]
+        private string _governorate = string.Empty;
+
+        [ObservableProperty]
         private string _address = string.Empty;
 
         [ObservableProperty]
@@ -54,6 +60,25 @@ namespace MedicalApp.ViewModels
 
         [ObservableProperty]
         private Patient? _activeEditingPatient;
+
+        // Statistics
+        [ObservableProperty]
+        private int _totalPatientsCount;
+
+        [ObservableProperty]
+        private int _newPatientsTodayCount;
+
+        [ObservableProperty]
+        private int _attendingPatientsCount;
+
+        [ObservableProperty]
+        private int _waitingPatientsCount;
+
+        [ObservableProperty]
+        private ObservableCollection<QueueEntry> _waitingVisits = new();
+
+        [ObservableProperty]
+        private bool _showRegistrationModal = false;
 
         public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService)
         {
@@ -81,10 +106,28 @@ namespace MedicalApp.ViewModels
             {
                 var patients = await _patientService.GetAllPatientsAsync();
                 Patients = new ObservableCollection<Patient>(patients);
+
+                // Load active queue entries
+                var activeQueue = await _queueService.GetActiveQueueAsync();
+                
+                // Attending count is total daily entries
+                AttendingPatientsCount = System.Linq.Enumerable.Count(activeQueue);
+                
+                // Waiting count is those pending
+                WaitingPatientsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "Pending");
+                
+                // Total patients
+                TotalPatientsCount = Patients.Count;
+                
+                // New patients today
+                NewPatientsTodayCount = System.Linq.Enumerable.Count(Patients, p => p.CreatedAt.Date == DateTime.Today);
+
+                // Waitlist list for left sidebar
+                WaitingVisits = new ObservableCollection<QueueEntry>(activeQueue);
             }
             catch (Exception ex)
             {
-                StatusMessage = $"Error loading patients: {ex.Message}";
+                StatusMessage = $"Error loading data: {ex.Message}";
             }
         }
 
@@ -155,11 +198,14 @@ namespace MedicalApp.ViewModels
                 Gender = patient.Gender;
                 Address = patient.Address;
                 Phone = patient.Phone;
+                Job = patient.Job;
+                Governorate = patient.Governorate;
                 
                 ActiveEditingPatient = patient;
                 RegistrationButtonText = "Update & Send to Queue";
                 IsSuggestionsOpen = false;
                 NameSuggestions.Clear();
+                ShowRegistrationModal = true;
                 StatusMessage = $"Loaded existing patient details: '{patient.Name}'";
             }
             finally
@@ -179,6 +225,8 @@ namespace MedicalApp.ViewModels
                 Gender = "Male";
                 Address = string.Empty;
                 Phone = string.Empty;
+                Job = string.Empty;
+                Governorate = string.Empty;
                 
                 ActiveEditingPatient = null;
                 RegistrationButtonText = "Register & Send to Queue";
@@ -211,6 +259,8 @@ namespace MedicalApp.ViewModels
                     ActiveEditingPatient.Gender = Gender;
                     ActiveEditingPatient.Address = Address;
                     ActiveEditingPatient.Phone = Phone;
+                    ActiveEditingPatient.Job = Job;
+                    ActiveEditingPatient.Governorate = Governorate;
 
                     await _patientService.UpdatePatientAsync(ActiveEditingPatient);
                     
@@ -229,6 +279,8 @@ namespace MedicalApp.ViewModels
                         Gender = Gender,
                         Address = Address,
                         Phone = Phone,
+                        Job = Job,
+                        Governorate = Governorate,
                         CreatedAt = DateTime.UtcNow
                     };
 
@@ -248,6 +300,8 @@ namespace MedicalApp.ViewModels
                     Age = 0;
                     Address = string.Empty;
                     Phone = string.Empty;
+                    Job = string.Empty;
+                    Governorate = string.Empty;
                     ActiveEditingPatient = null;
                     RegistrationButtonText = "Register & Send to Queue";
                     IsSuggestionsOpen = false;
@@ -258,6 +312,7 @@ namespace MedicalApp.ViewModels
                     _isAutofilling = false;
                 }
 
+                ShowRegistrationModal = false;
                 await LoadPatientsAsync();
             }
             catch (Exception ex)

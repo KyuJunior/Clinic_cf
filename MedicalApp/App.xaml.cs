@@ -99,6 +99,12 @@ namespace MedicalApp
                 await dbContext.Database.ExecuteSqlRawAsync(
                     "IF COL_LENGTH('dbo.Visits', 'ImagingAttachmentPath') IS NULL ALTER TABLE dbo.Visits ADD ImagingAttachmentPath NVARCHAR(MAX) NOT NULL DEFAULT ''"
                 );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'Job') IS NULL ALTER TABLE dbo.Patients ADD Job NVARCHAR(200) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'Governorate') IS NULL ALTER TABLE dbo.Patients ADD Governorate NVARCHAR(200) NOT NULL DEFAULT ''"
+                );
             }
             catch (Exception ex)
             {
@@ -118,7 +124,7 @@ namespace MedicalApp
                 switch (mode)
                 {
                     case "/reg":
-                        LaunchStandaloneWindow("Secretary Window", ServiceProvider.GetRequiredService<PatientRegistrationViewModel>(), 500, 720);
+                        LaunchStandaloneWindow("Secretary Window", ServiceProvider.GetRequiredService<PatientRegistrationViewModel>(), 1100, 700);
                         return;
                     case "/exam":
                         LaunchStandaloneWindow("Doctor Window", ServiceProvider.GetRequiredService<ClinicalExamViewModel>(), 950, 720);

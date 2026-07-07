@@ -31,7 +31,7 @@ namespace MedicalApp.Services
             }
 
             return await context.Patients
-                .Where(p => p.Name.Contains(searchTerm) || p.Phone.Contains(searchTerm))
+                .Where(p => p.Name.Contains(searchTerm) || p.Phone.Contains(searchTerm) || p.Job.Contains(searchTerm) || p.Governorate.Contains(searchTerm))
                 .ToListAsync();
         }
 
