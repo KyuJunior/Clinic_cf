@@ -460,6 +460,54 @@ namespace MedicalApp.ViewModels
             }
         }
 
+        [RelayCommand]
+        public async Task HoldSessionAsync()
+        {
+            if (CurrentPatient == null)
+            {
+                StatusMessage = "No active patient to hold.";
+                return;
+            }
+
+            try
+            {
+                // Save current visit details first if any complaint/diagnosis is entered
+                if (!string.IsNullOrWhiteSpace(ChiefComplaint) || !string.IsNullOrWhiteSpace(Diagnosis))
+                {
+                    await SaveVisitAsync();
+                }
+
+                // Explicitly update queue status to InExam (which means Incomplete / Not Finished)
+                await _queueService.UpdateQueueStatusAsync(CurrentPatient.PatientId, "InExam");
+                StatusMessage = $"Exam session for '{CurrentPatient.Name}' put on hold (Not Finished).";
+
+                // Clear current session
+                SelectedPatientLookup = null;
+                CurrentPatient = null;
+                VisitHistory.Clear();
+
+                ChiefComplaint = string.Empty;
+                HistoryOfPresentIllness = string.Empty;
+                PhysicalExamination = string.Empty;
+                Diagnosis = string.Empty;
+                TreatmentPlan = string.Empty;
+                VitalHR = string.Empty;
+                VitalSBP = string.Empty;
+                VitalDBP = string.Empty;
+                VitalRR = string.Empty;
+                VitalSPO2 = string.Empty;
+                VitalTemp = string.Empty;
+                SelectedInvestigation = string.Empty;
+                SelectedImaging = string.Empty;
+                ReturnDate = null;
+                PrescribedDrugs.Clear();
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error holding exam session: {ex.Message}";
+            }
+        }
+
         async partial void OnDrugSearchTextChanged(string value)
         {
             if (string.IsNullOrWhiteSpace(value) || value.Length < 2)

@@ -557,12 +557,14 @@
                         <Grid Grid.Row="2" Margin="5,10,5,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="140"/>
                                 <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="150"/>
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="Complete Visit" Command="{Binding CompleteSessionDoneCommand}" Height="40" Margin="0,0,10,0"/>
-                            <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Print Rx (A5)" Command="{Binding PrintActiveRxCommand}" Background="#10B981" BorderBrush="#10B981" Height="40" Margin="0,0,10,0"/>
-                            <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print Summary (A4)" Command="{Binding PrintActiveVisitReportCommand}" Background="#6366F1" BorderBrush="#6366F1" Height="40"/>
+                            <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Hold (Not Finished)" Command="{Binding HoldSessionCommand}" Background="#F59E0B" BorderBrush="#F59E0B" Height="40" Margin="0,0,10,0"/>
+                            <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print Rx (A5)" Command="{Binding PrintActiveRxCommand}" Background="#10B981" BorderBrush="#10B981" Height="40" Margin="0,0,10,0"/>
+                            <Button Grid.Column="3" Style="{StaticResource ModernButton}" Content="Print Summary (A4)" Command="{Binding PrintActiveVisitReportCommand}" Background="#6366F1" BorderBrush="#6366F1" Height="40"/>
                         </Grid>
 
                         <!-- Status Messages -->

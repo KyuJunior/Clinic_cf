@@ -20,6 +20,7 @@ namespace MedicalApp.Services
         {
             using var context = await _contextFactory.CreateDbContextAsync();
             return await context.QueueEntries
+                .Include(q => q.Patient)
                 .Where(q => q.Status != "Completed")
                 .OrderBy(q => q.CreatedAt)
                 .ToListAsync();
