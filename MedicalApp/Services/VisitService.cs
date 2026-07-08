@@ -31,5 +31,27 @@ namespace MedicalApp.Services
             await context.Visits.AddAsync(visit);
             await context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<Visit>> GetTodayVisitsAsync()
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var today = DateTime.Today;
+            return await context.Visits
+                .Include(v => v.Patient)
+                .Where(v => v.VisitDate >= today)
+                .OrderByDescending(v => v.VisitDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Visit>> GetUpcomingAppointmentsAsync()
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var today = DateTime.Today;
+            return await context.Visits
+                .Include(v => v.Patient)
+                .Where(v => v.ReturnDate != null && v.ReturnDate >= today)
+                .OrderBy(v => v.ReturnDate)
+                .ToListAsync();
+        }
     }
 }

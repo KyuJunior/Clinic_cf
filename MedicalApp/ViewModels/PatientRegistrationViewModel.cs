@@ -13,7 +13,26 @@ namespace MedicalApp.ViewModels
         private readonly IPatientService _patientService;
         private readonly ISharedStateService _sharedStateService;
         private readonly IQueueService _queueService;
+        private readonly IVisitService _visitService;
         private bool _isAutofilling = false;
+
+        [ObservableProperty]
+        private string _activeSubView = "AllPatients"; // "AllPatients", "TodayVisits", "AppointmentsCalendar", "Finance"
+
+        [ObservableProperty]
+        private ObservableCollection<Visit> _todayVisitsList = new();
+
+        [ObservableProperty]
+        private ObservableCollection<Visit> _upcomingAppointmentsList = new();
+
+        [ObservableProperty]
+        private decimal _totalRevenue = 0;
+
+        [ObservableProperty]
+        private int _paidVisitsCount = 0;
+
+        [ObservableProperty]
+        private int _freeVisitsCount = 0;
 
         [ObservableProperty]
         private string _searchTerm = string.Empty;
@@ -265,11 +284,12 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private bool _showAllergy = true;
 
-        public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService)
+        public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService, IVisitService visitService)
         {
             _patientService = patientService;
             _sharedStateService = sharedStateService;
             _queueService = queueService;
+            _visitService = visitService;
             
             // Sync with current selection
             SelectedPatient = _sharedStateService.CurrentPatient;
@@ -928,6 +948,77 @@ namespace MedicalApp.ViewModels
             catch (Exception ex)
             {
                 StatusMessage = $"خطأ أثناء حفظ الإعدادات: {ex.Message}";
+            }
+        }
+
+        [RelayCommand]
+        public void ShowAllPatientsView()
+        {
+            ActiveSubView = "AllPatients";
+        }
+
+        [RelayCommand]
+        public async Task ShowTodayVisitsViewAsync()
+        {
+            ActiveSubView = "TodayVisits";
+            await RefreshTodayVisitsAsync();
+        }
+
+        [RelayCommand]
+        public async Task ShowAppointmentsCalendarViewAsync()
+        {
+            ActiveSubView = "AppointmentsCalendar";
+            await RefreshAppointmentsAsync();
+        }
+
+        [RelayCommand]
+        public async Task ShowFinanceViewAsync()
+        {
+            ActiveSubView = "Finance";
+            await RefreshFinanceAsync();
+        }
+
+        public async Task RefreshTodayVisitsAsync()
+        {
+            try
+            {
+                var visits = await _visitService.GetTodayVisitsAsync();
+                TodayVisitsList = new ObservableCollection<Visit>(visits);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"خطأ أثناء تحديث زيارات اليوم: {ex.Message}";
+            }
+        }
+
+        public async Task RefreshAppointmentsAsync()
+        {
+            try
+            {
+                var appts = await _visitService.GetUpcomingAppointmentsAsync();
+                UpcomingAppointmentsList = new ObservableCollection<Visit>(appts);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"خطأ أثناء تحديث المواعيد: {ex.Message}";
+            }
+        }
+
+        public async Task RefreshFinanceAsync()
+        {
+            try
+            {
+                var visits = await _visitService.GetTodayVisitsAsync();
+                TodayVisitsList = new ObservableCollection<Visit>(visits);
+
+                // Compute stats
+                TotalRevenue = visits.Where(v => v.IsPaid).Sum(v => v.VisitPrice);
+                PaidVisitsCount = visits.Count(v => v.IsPaid);
+                FreeVisitsCount = visits.Count(v => !v.IsPaid);
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"خطأ أثناء تحديث البيانات المالية: {ex.Message}";
             }
         }
     }

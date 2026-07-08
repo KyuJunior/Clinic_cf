@@ -198,10 +198,22 @@
                 <!-- Row 1: Large Patient Lookup DataGrid -->
                 <Border Grid.Row="1" Style="{StaticResource CardBorder}" Padding="15">
                     <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/> <!-- Search bar -->
-                            <RowDefinition Height="*"/>    <!-- DataGrid -->
-                        </Grid.RowDefinitions>
+                        <!-- Panel 1: All Patients -->
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ActiveSubView}" Value="AllPatients">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/> <!-- Search bar -->
+                                <RowDefinition Height="*"/>    <!-- DataGrid -->
+                            </Grid.RowDefinitions>
 
                         <!-- Search Bar -->
                         <Grid Grid.Row="0" Margin="0,0,0,15">
@@ -431,6 +443,200 @@
                             </DataGrid>
                         </ScrollViewer>
                     </Grid>
+
+                        <!-- Panel 2: Today's Visits -->
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ActiveSubView}" Value="TodayVisits">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="زيارات اليوم" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,0,0,15" HorizontalAlignment="Right"/>
+                            
+                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <DataGrid ItemsSource="{Binding TodayVisitsList}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0" Background="Transparent">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="الوقت" Binding="{Binding VisitDate, StringFormat=\{0:hh:mm tt\}}" Width="100" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="رمز المريض" Binding="{Binding PatientId}" Width="100" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="اسم المريض" Binding="{Binding Patient.Name}" Width="250" IsReadOnly="True">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTemplateColumn Header="نوع الزيارة" Width="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Border CornerRadius="12" Padding="10,4" HorizontalAlignment="Center">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Background" Value="#EF4444"/> <!-- Red for free -->
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding IsPaid}" Value="True">
+                                                                        <Setter Property="Background" Value="#10B981"/> <!-- Green for paid -->
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <TextBlock FontSize="11" FontWeight="Bold" Foreground="White">
+                                                            <TextBlock.Style>
+                                                                <Style TargetType="TextBlock">
+                                                                    <Setter Property="Text" Value="مراجعة مجانية"/>
+                                                                    <Style.Triggers>
+                                                                        <DataTrigger Binding="{Binding IsPaid}" Value="True">
+                                                                            <Setter Property="Text" Value="زيارة مدفوعة"/>
+                                                                        </DataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBlock.Style>
+                                                        </TextBlock>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                        <DataGridTextColumn Header="السعر" Binding="{Binding VisitPrice, StringFormat=\{0:N0\} د.ع}" Width="150" IsReadOnly="True"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+                        </Grid>
+
+                        <!-- Panel 3: Appointments Calendar -->
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ActiveSubView}" Value="AppointmentsCalendar">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="مواعيد المراجعات القادمة" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,0,0,15" HorizontalAlignment="Right"/>
+                            
+                            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <DataGrid ItemsSource="{Binding UpcomingAppointmentsList}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0" Background="Transparent">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="رمز المريض" Binding="{Binding PatientId}" Width="100" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="اسم المريض" Binding="{Binding Patient.Name}" Width="250" IsReadOnly="True">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="رقم الهاتف" Binding="{Binding Patient.Phone}" Width="180" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="تاريخ المراجعة" Binding="{Binding ReturnDate, StringFormat=\{0:yyyy/MM/dd\}}" Width="180" IsReadOnly="True"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+                        </Grid>
+
+                        <!-- Panel 4: Finance -->
+                        <Grid>
+                            <Grid.Style>
+                                <Style TargetType="Grid">
+                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding ActiveSubView}" Value="Finance">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Grid.Style>
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="التقرير المالي اليومي" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,0,0,15" HorizontalAlignment="Right"/>
+                            
+                            <!-- Stats Cards Grid -->
+                            <Grid Grid.Row="1" Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <!-- Revenue -->
+                                <Border Grid.Column="2" Background="#10B981" CornerRadius="8" Padding="15" Margin="8,0,0,0">
+                                    <StackPanel>
+                                        <TextBlock Text="مجموع الإيرادات" FontSize="12" FontWeight="Bold" Foreground="White" TextAlignment="Right"/>
+                                        <TextBlock Text="{Binding TotalRevenue, StringFormat=\{0:N0\} د.ع}" FontSize="20" FontWeight="Bold" Foreground="White" Margin="0,10,0,0" TextAlignment="Right"/>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <!-- Paid Count -->
+                                <Border Grid.Column="1" Background="#3B82F6" CornerRadius="8" Padding="15" Margin="8,0,8,0">
+                                    <StackPanel>
+                                        <TextBlock Text="الزيارات المدفوعة" FontSize="12" FontWeight="Bold" Foreground="White" TextAlignment="Right"/>
+                                        <TextBlock Text="{Binding PaidVisitsCount}" FontSize="20" FontWeight="Bold" Foreground="White" Margin="0,10,0,0" TextAlignment="Right"/>
+                                    </StackPanel>
+                                </Border>
+                                
+                                <!-- Free Count -->
+                                <Border Grid.Column="0" Background="#EF4444" CornerRadius="8" Padding="15" Margin="0,0,8,0">
+                                    <StackPanel>
+                                        <TextBlock Text="المراجعات المجانية" FontSize="12" FontWeight="Bold" Foreground="White" TextAlignment="Right"/>
+                                        <TextBlock Text="{Binding FreeVisitsCount}" FontSize="20" FontWeight="Bold" Foreground="White" Margin="0,10,0,0" TextAlignment="Right"/>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+                            
+                            <!-- Finance Table -->
+                            <ScrollViewer Grid.Row="2" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <DataGrid ItemsSource="{Binding TodayVisitsList}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0" Background="Transparent">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="الوقت" Binding="{Binding VisitDate, StringFormat=\{0:hh:mm tt\}}" Width="100" IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="اسم المريض" Binding="{Binding Patient.Name}" Width="250" IsReadOnly="True">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="نوع الزيارة" Width="150" IsReadOnly="True">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="مراجعة مجانية"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsPaid}" Value="True">
+                                                            <Setter Property="Text" Value="زيارة مدفوعة"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="المبلغ المستلم" Binding="{Binding VisitPrice, StringFormat=\{0:N0\} د.ع}" Width="150" IsReadOnly="True"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+                        </Grid>
+                    </Grid>
                 </Border>
 
                 <!-- Row 2: Bottom Floating Blue Bar -->
@@ -447,13 +653,18 @@
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0" Content="&#xE8A5;" FontFamily="Segoe MDL2 Assets" ToolTip="الرئيسية" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
                                 Command="{Binding DataContext.NavigateToHomeCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                        <Button Grid.Column="1" Content="&#xE77B;" FontFamily="Segoe MDL2 Assets" ToolTip="المرضى" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"/>
-                        <Button Grid.Column="2" Content="&#xE81C;" FontFamily="Segoe MDL2 Assets" ToolTip="السجل" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"/>
+                        <Button Grid.Column="1" Content="&#xE77B;" FontFamily="Segoe MDL2 Assets" ToolTip="المرضى" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                                Command="{Binding ShowAllPatientsViewCommand}"/>
+                        <Button Grid.Column="2" Content="&#xE81C;" FontFamily="Segoe MDL2 Assets" ToolTip="السجل" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                                Command="{Binding ShowTodayVisitsViewCommand}"/>
                         <Button Grid.Column="3" Content="&#xE710;" FontFamily="Segoe MDL2 Assets" ToolTip="اضافة مريض" Style="{StaticResource NavButton}" Foreground="White" FontSize="20" FontWeight="Bold" Padding="0"
                                 Command="{Binding OpenRegistrationModalCommand}"/>
-                        <Button Grid.Column="4" Content="&#xE787;" FontFamily="Segoe MDL2 Assets" ToolTip="التقويم" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"/>
-                        <Button Grid.Column="5" Content="&#xE8C7;" FontFamily="Segoe MDL2 Assets" ToolTip="الحسابات" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"/>
-                        <Button Grid.Column="6" Content="&#xE713;" FontFamily="Segoe MDL2 Assets" ToolTip="الاعدادات" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"/>
+                        <Button Grid.Column="4" Content="&#xE787;" FontFamily="Segoe MDL2 Assets" ToolTip="التقويم" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                                Command="{Binding ShowAppointmentsCalendarViewCommand}"/>
+                        <Button Grid.Column="5" Content="&#xE8C7;" FontFamily="Segoe MDL2 Assets" ToolTip="الحسابات" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                                Command="{Binding ShowFinanceViewCommand}"/>
+                        <Button Grid.Column="6" Content="&#xE713;" FontFamily="Segoe MDL2 Assets" ToolTip="الاعدادات" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                                Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </Grid>
                 </Border>
             </Grid>

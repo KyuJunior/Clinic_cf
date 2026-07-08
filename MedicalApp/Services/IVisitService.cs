@@ -8,5 +8,7 @@ namespace MedicalApp.Services
     {
         Task<IEnumerable<Visit>> GetVisitsByPatientIdAsync(int patientId);
         Task AddVisitAsync(Visit visit);
+        Task<IEnumerable<Visit>> GetTodayVisitsAsync();
+        Task<IEnumerable<Visit>> GetUpcomingAppointmentsAsync();
     }
 }
