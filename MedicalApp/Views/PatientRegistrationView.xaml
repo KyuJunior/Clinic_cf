@@ -410,6 +410,12 @@
                                                         <ContextMenu>
                                                             <MenuItem Header="إرسال إلى الطبيب" Command="{Binding DataContext.SendToQueueCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
                                                             <MenuItem Header="تعديل الملف الشخصي" Command="{Binding DataContext.LoadExistingPatientCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                                            <Separator/>
+                                                            <MenuItem Header="حذف المريض وكافة زياراته" Command="{Binding DataContext.DeletePatientCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                                <MenuItem.Icon>
+                                                                    <TextBlock Text="&#xE74D;" FontFamily="Segoe MDL2 Assets" Foreground="#EF4444" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                                </MenuItem.Icon>
+                                                            </MenuItem>
                                                         </ContextMenu>
                                                     </Button.ContextMenu>
                                                     <Button.Style>

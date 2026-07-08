@@ -783,6 +783,39 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
+        public async Task DeletePatientAsync(Patient? patient)
+        {
+            var target = patient ?? SelectedPatient;
+            if (target == null)
+            {
+                StatusMessage = "الرجاء تحديد المريض المراد حذفه.";
+                return;
+            }
+
+            var result = System.Windows.MessageBox.Show(
+                $"هل أنت متأكد من حذف المريض '{target.Name}' وكافة الزيارات التابعة له؟ لا يمكن التراجع عن هذا الإجراء.",
+                "تأكيد الحذف",
+                System.Windows.MessageBoxButton.YesNo,
+                System.Windows.MessageBoxImage.Warning,
+                System.Windows.MessageBoxResult.No,
+                System.Windows.MessageBoxOptions.RightAlign | System.Windows.MessageBoxOptions.RtlReading);
+
+            if (result == System.Windows.MessageBoxResult.Yes)
+            {
+                try
+                {
+                    await _patientService.DeletePatientAsync(target.PatientId);
+                    StatusMessage = $"تم حذف المريض '{target.Name}' وكافة زياراته بنجاح.";
+                    await LoadPatientsAsync();
+                }
+                catch (Exception ex)
+                {
+                    StatusMessage = $"خطأ أثناء الحذف: {ex.Message}";
+                }
+            }
+        }
+
+        [RelayCommand]
         public void OpenRegistrationModal()
         {
             CancelEdit();
