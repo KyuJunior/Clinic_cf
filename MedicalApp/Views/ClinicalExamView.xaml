@@ -17,7 +17,6 @@
     <Grid Margin="10,15,10,10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Back Navigation Header -->
-            <RowDefinition Height="Auto"/> <!-- Top Panel: Standalone Patient Lookup -->
             <RowDefinition Height="*"/>    <!-- Main Workspace -->
         </Grid.RowDefinitions>
 
@@ -27,28 +26,8 @@
                 Tag="&#xE72B;" Content="Back to Dashboard"
                 Command="{Binding DataContext.NavigateToHomeCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
 
-        <!-- Top Panel: Standalone Patient Lookup -->
-        <Border Grid.Row="1" Style="{StaticResource CardBorder}" Margin="0,0,0,15" Padding="15,10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="240"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Select Patient:" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="13" Foreground="{StaticResource SubtextColor}" Margin="0,0,10,0"/>
-                
-                <TextBox Grid.Column="1" Style="{StaticResource ModernTextBox}" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Tag="Search patient by name/phone..." VerticalContentAlignment="Center" Margin="0,0,10,0"/>
-                
-                <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Search" Command="{Binding SearchPatientsCommand}" Margin="0,0,15,0" Padding="15,6"/>
-                
-                <ComboBox Grid.Column="3" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatientLookup}" DisplayMemberPath="Name" SelectedValuePath="PatientId" Height="36" VerticalContentAlignment="Center"/>
-            </Grid>
-        </Border>
-
         <!-- Main Workspace (Waitlist Queue + Form + Patient Info Sidebar) -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="240"/> <!-- Waitlist Queue Sidebar -->
                 <ColumnDefinition Width="*"/>   <!-- Active Exam Form (Grid) -->
@@ -59,13 +38,31 @@
             <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Stretch">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Quick Lookup -->
                         <RowDefinition Height="*"/> <!-- Waiting Patients -->
                         <RowDefinition Height="Auto"/> <!-- Divider -->
                         <RowDefinition Height="*"/> <!-- Not Finished Patients -->
                     </Grid.RowDefinitions>
 
+                    <!-- Section 0: Quick Lookup -->
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Margin="0,0,0,5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0" Style="{StaticResource ModernTextBox}" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Tag="Search patient..." Height="32" FontSize="11" Margin="0,0,5,0"/>
+                            <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Search" Command="{Binding SearchPatientsCommand}" Height="32" Padding="8,0" FontSize="11"/>
+                        </Grid>
+                        <ComboBox Grid.Row="1" ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatientLookup}" DisplayMemberPath="Name" SelectedValuePath="PatientId" Height="32" FontSize="11" VerticalContentAlignment="Center"/>
+                    </Grid>
+
                     <!-- Section 1: Waiting Patients -->
-                    <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid Grid.Row="1" Margin="0,0,0,10">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
@@ -105,10 +102,10 @@
                     </Grid>
 
                     <!-- Divider -->
-                    <Separator Grid.Row="1" Background="{StaticResource BorderColor}" Height="1.5" Margin="0,5,0,15"/>
+                    <Separator Grid.Row="2" Background="{StaticResource BorderColor}" Height="1.5" Margin="0,5,0,15"/>
 
                     <!-- Section 2: Not Finished Patients -->
-                    <Grid Grid.Row="2">
+                    <Grid Grid.Row="3">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
@@ -194,382 +191,379 @@
 
                         <!-- Scrollable Cards content -->
                         <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <StackPanel Margin="5">
-                                
-                                <!-- Chief Complaint & HPI Card -->
-                                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,15" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
+                            <Grid Margin="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.2*"/> <!-- Column 0: Clinical Notes & Diagnosis -->
+                                    <ColumnDefinition Width="1*"/>   <!-- Column 1: Vitals, Labs & Drugs -->
+                                </Grid.ColumnDefinitions>
 
-                                        <!-- Chief Complaint -->
-                                        <StackPanel Margin="0,0,10,0">
-                                            <Grid Margin="0,0,0,5">
-                                                <TextBlock Text="Chief Complaint" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0" 
-                                                        Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Complaint"/>
-                                            </Grid>
-                                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ChiefComplaint, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
-                                        </StackPanel>
-
-                                        <!-- History of Present Illness (HPI) -->
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                            <Grid Margin="0,0,0,5">
-                                                <TextBlock Text="History of Present Illness (HPI)" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
-                                                        Command="{Binding SimulateVoiceInputCommand}" CommandParameter="HPI"/>
-                                            </Grid>
-                                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-
-                                <!-- Physical Examination & Notes Card -->
-                                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,15" Visibility="{Binding ShowPhysicalExam, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <!-- Physical Examination -->
-                                        <StackPanel Margin="0,0,10,0">
-                                            <Grid Margin="0,0,0,5">
-                                                <TextBlock Text="Physical Examination Findings" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
-                                                        Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Exam"/>
-                                            </Grid>
-                                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
-                                        </StackPanel>
-
-                                        <!-- Treatment Plan -->
-                                        <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                            <Grid Margin="0,0,0,5">
-                                                <TextBlock Text="Treatment Plan / Notes" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
-                                                        Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Plan"/>
-                                            </Grid>
-                                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Height="80" AcceptsReturn="True" TextWrapping="Wrap"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-
-                                <!-- Vital Signs Card -->
-                                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,15" Visibility="{Binding ShowVitals, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <StackPanel>
-                                        <!-- Header with stable toggle -->
-                                        <Grid Margin="0,0,0,10">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="Auto"/>
-                                            </Grid.ColumnDefinitions>
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="&#xEC5A;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                <TextBlock Text="Vital Signs" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                            <Button Grid.Column="1" Style="{StaticResource NavButton}" Content="&#xE81C; History" FontSize="11" Margin="0,0,15,0" Padding="8,4" VerticalAlignment="Center"/>
-                                            <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                                <TextBlock Text="Vitally Stable" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                <CheckBox IsChecked="{Binding IsVitallyStable}" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Grid>
-                                        
-                                        <!-- Vitals Input Grid -->
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <!-- Row 0 -->
-                                            <StackPanel Margin="0,0,10,10">
-                                                <TextBlock Text="HR (bpm)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalHR, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 75"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="1" Margin="5,0,5,10">
-                                                <TextBlock Text="SBP (mmHg)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalSBP, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 120"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Column="2" Margin="10,0,0,10">
-                                                <TextBlock Text="DBP (mmHg)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalDBP, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 80"/>
-                                            </StackPanel>
-
-                                            <!-- Row 1 -->
-                                            <StackPanel Grid.Row="1" Margin="0,0,10,0">
-                                                <TextBlock Text="RR (bpm)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalRR, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 16"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,5,0">
-                                                <TextBlock Text="SPO2 (%)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalSPO2, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 98"/>
-                                            </StackPanel>
-                                            <StackPanel Grid.Row="1" Grid.Column="2" Margin="10,0,0,0">
-                                                <TextBlock Text="Temp (°C)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalTemp, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 37.0"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Investigation & Imaging Card -->
-                                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,15" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <!-- Column 0: Investigation -->
-                                        <StackPanel Margin="0,0,15,0">
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                                <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                <TextBlock Text="Investigation" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                            <ComboBox ItemsSource="{Binding InvestigationsList}" SelectedItem="{Binding SelectedInvestigation}" Height="36" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Button Style="{StaticResource ModernButton}" Content="Download Patient Data" Background="#EC4899" BorderBrush="#EC4899" Padding="8,5" FontSize="11" Margin="0,0,5,0"/>
-                                                <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Upload File" Command="{Binding UploadInvestigationAttachmentCommand}" Background="#0EA5E9" BorderBrush="#0EA5E9" Padding="12,5" FontSize="11" Margin="5,0,5,0"/>
-                                                <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print" Background="#EC4899" BorderBrush="#EC4899" Padding="15,5" FontSize="11" Margin="5,0,0,0"/>
-                                            </Grid>
-
-                                            <!-- Attachment link info if uploaded -->
-                                            <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,5,0,0"
-                                                    Visibility="{Binding InvestigationAttachmentPath, Converter={StaticResource NullToVisibilityConverter}}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,6,0"/>
-                                                    <Button Grid.Column="1" Content="{Binding InvestigationAttachmentName}" Style="{StaticResource NavButton}" Padding="0" HorizontalContentAlignment="Left" Foreground="#0284C7" FontSize="11" FontWeight="SemiBold"
-                                                            Command="{Binding OpenAttachmentCommand}" CommandParameter="{Binding InvestigationAttachmentPath}"/>
-                                                    <Button Grid.Column="2" Style="{StaticResource NavButton}" Width="16" Height="16" Tag="&#xE711;" ToolTip="Remove attachment" Padding="0" Foreground="#EF4444" FontSize="8"
-                                                            Command="{Binding RemoveInvestigationAttachmentCommand}"/>
+                                <!-- Column 0: Clinical Notes & Diagnosis -->
+                                <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                    <!-- Chief Complaint & HPI Card -->
+                                    <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <StackPanel>
+                                            <!-- Chief Complaint -->
+                                            <StackPanel Margin="0,0,0,10">
+                                                <Grid Margin="0,0,0,5">
+                                                    <TextBlock Text="Chief Complaint" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                    <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0" 
+                                                            Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Complaint"/>
                                                 </Grid>
-                                            </Border>
-                                        </StackPanel>
-
-                                        <!-- Column 1: Imaging -->
-                                        <StackPanel Grid.Column="1" Margin="15,0,0,0">
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                                <TextBlock Text="&#xEC7C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                <TextBlock Text="Imaging" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                            <ComboBox ItemsSource="{Binding ImagingList}" SelectedItem="{Binding SelectedImaging}" Height="36" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="Upload File" Command="{Binding UploadImagingAttachmentCommand}" Background="#0EA5E9" BorderBrush="#0EA5E9" Padding="12,5" FontSize="11" Margin="0,0,5,0"/>
-                                                <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print" Background="#EC4899" BorderBrush="#EC4899" Padding="15,5" FontSize="11" Margin="5,0,0,0"/>
-                                            </Grid>
-
-                                            <!-- Attachment link info if uploaded -->
-                                            <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,5,0,0"
-                                                    Visibility="{Binding ImagingAttachmentPath, Converter={StaticResource NullToVisibilityConverter}}">
-                                                <Grid>
-                                                    <Grid.ColumnDefinitions>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                        <ColumnDefinition Width="*"/>
-                                                        <ColumnDefinition Width="Auto"/>
-                                                    </Grid.ColumnDefinitions>
-                                                    <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,6,0"/>
-                                                    <Button Grid.Column="1" Content="{Binding ImagingAttachmentName}" Style="{StaticResource NavButton}" Padding="0" HorizontalContentAlignment="Left" Foreground="#0284C7" FontSize="11" FontWeight="SemiBold"
-                                                            Command="{Binding OpenAttachmentCommand}" CommandParameter="{Binding ImagingAttachmentPath}"/>
-                                                    <Button Grid.Column="2" Style="{StaticResource NavButton}" Width="16" Height="16" Tag="&#xE711;" ToolTip="Remove attachment" Padding="0" Foreground="#EF4444" FontSize="8"
-                                                            Command="{Binding RemoveImagingAttachmentCommand}"/>
-                                                </Grid>
-                                            </Border>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-
-                                <!-- Diagnosis Card -->
-                                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,15" Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <StackPanel>
-                                        <!-- Header -->
-                                        <Grid Margin="0,0,0,8">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="&#xEA86;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                <TextBlock Text="Diagnosis" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                            <Button Style="{StaticResource NavButton}" Content="&#xE81C; History" FontSize="11" Padding="8,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                        </Grid>
-                                        
-                                        <!-- Dx & Return Date Fields -->
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <StackPanel Margin="0,0,10,0">
-                                                <TextBlock Text="Dx (Diseases)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Tag="Diseases"/>
+                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ChiefComplaint, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap"/>
                                             </StackPanel>
 
-                                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
-                                                <TextBlock Text="Return date" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <DatePicker SelectedDate="{Binding ReturnDate}" Height="36" VerticalContentAlignment="Center"/>
-                                            </StackPanel>
-                                        </Grid>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Drugs Card -->
-                                <Border Style="{StaticResource CardBorder}" Margin="0,0,0,15" Visibility="{Binding ShowDrugs, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <StackPanel>
-                                        <!-- Header -->
-                                        <Grid Margin="0,0,0,10">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="&#xE964;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                <TextBlock Text="Drugs" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                            <Button Style="{StaticResource NavButton}" Content="&#xE81C; History" FontSize="11" Padding="8,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                        </Grid>
-
-                                        <!-- Prescription Selector / Buttons -->
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                            <Button Style="{StaticResource ModernButton}" Content="Rx #1" FontSize="11" Padding="12,5" Background="#1D4ED8" BorderBrush="#1D4ED8" Margin="0,0,8,0"/>
-                                            <Button Style="{StaticResource ModernButton}" Content="+ New Rx" FontSize="11" Padding="12,5" Background="#10B981" BorderBrush="#10B981"/>
-                                        </StackPanel>
-
-                                        <!-- Presaved / Trade Dropdowns -->
-                                        <Grid Margin="0,0,0,10">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
+                                            <!-- History of Present Illness (HPI) -->
                                             <StackPanel>
-                                                <TextBlock Text="Presaved Drugs" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                                <ComboBox Height="36" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
-                                                
-                                                <TextBlock Text="Trade Drugs" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                <Grid Margin="0,0,0,5">
+                                                    <TextBlock Text="History of Present Illness (HPI)" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                    <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
+                                                            Command="{Binding SimulateVoiceInputCommand}" CommandParameter="HPI"/>
+                                                </Grid>
+                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Physical Examination & Notes Card -->
+                                    <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowPhysicalExam, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <StackPanel>
+                                            <!-- Physical Examination -->
+                                            <StackPanel Margin="0,0,0,10">
+                                                <Grid Margin="0,0,0,5">
+                                                    <TextBlock Text="Physical Examination Findings" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                    <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
+                                                            Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Exam"/>
+                                                </Grid>
+                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                            </StackPanel>
+
+                                            <!-- Treatment Plan -->
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,5">
+                                                    <TextBlock Text="Treatment Plan / Notes" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                    <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
+                                                            Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Plan"/>
+                                                </Grid>
+                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Diagnosis Card -->
+                                    <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <StackPanel>
+                                            <!-- Header -->
+                                            <Grid Margin="0,0,0,8">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xEA86;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                    <TextBlock Text="Diagnosis" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <Button Style="{StaticResource NavButton}" Content="&#xE81C; History" FontSize="11" Padding="8,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                            </Grid>
+                                            
+                                            <!-- Dx & Return Date Fields -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <StackPanel Margin="0,0,10,0">
+                                                    <TextBlock Text="Dx (Diseases)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Tag="Diseases"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                                                    <TextBlock Text="Return date" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <DatePicker SelectedDate="{Binding ReturnDate}" Height="36" VerticalContentAlignment="Center"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+
+                                <!-- Column 1: Vitals, Investigations & Drugs -->
+                                <StackPanel Grid.Column="1">
+                                    <!-- Vital Signs Card -->
+                                    <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowVitals, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <StackPanel>
+                                            <!-- Header with stable toggle -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xEC5A;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Vital Signs" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <Button Grid.Column="1" Style="{StaticResource NavButton}" Content="&#xE81C; History" FontSize="11" Margin="0,0,15,0" Padding="8,4" VerticalAlignment="Center"/>
+                                                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <TextBlock Text="Vitally Stable" FontSize="12" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                    <CheckBox IsChecked="{Binding IsVitallyStable}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Grid>
+                                            
+                                            <!-- Vitals Input Grid -->
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <!-- Row 0 -->
+                                                <StackPanel Margin="0,0,10,10">
+                                                    <TextBlock Text="HR (bpm)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalHR, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 75"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Margin="5,0,5,10">
+                                                    <TextBlock Text="SBP (mmHg)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalSBP, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 120"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="2" Margin="10,0,0,10">
+                                                    <TextBlock Text="DBP (mmHg)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalDBP, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 80"/>
+                                                </StackPanel>
+
+                                                <!-- Row 1 -->
+                                                <StackPanel Grid.Row="1" Margin="0,0,10,0">
+                                                    <TextBlock Text="RR (bpm)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalRR, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 16"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Row="1" Grid.Column="1" Margin="5,0,5,0">
+                                                    <TextBlock Text="SPO2 (%)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalSPO2, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 98"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Row="1" Grid.Column="2" Margin="10,0,0,0">
+                                                    <TextBlock Text="Temp (°C)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VitalTemp, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 37.0"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <!-- Investigation & Imaging Card -->
+                                    <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <StackPanel>
+                                            <!-- Investigation -->
+                                            <StackPanel Margin="0,0,0,12">
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                    <TextBlock Text="Investigation" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <ComboBox ItemsSource="{Binding InvestigationsList}" SelectedItem="{Binding SelectedInvestigation}" Height="36" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
                                                 <Grid>
                                                     <Grid.ColumnDefinitions>
                                                         <ColumnDefinition Width="*"/>
                                                         <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <TextBox x:Name="DrugInput" Style="{StaticResource ModernTextBox}" 
-                                                             Text="{Binding DrugSearchText, UpdateSourceTrigger=PropertyChanged}" 
-                                                             Tag="Search or type drug name...">
-                                                        <TextBox.InputBindings>
-                                                            <KeyBinding Key="Enter" Command="{Binding AddDrugCommand}"/>
-                                                        </TextBox.InputBindings>
-                                                    </TextBox>
-                                                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Add" 
-                                                            Command="{Binding AddDrugCommand}" Margin="10,0,0,0" Padding="15,6"/>
-                                                    <Popup IsOpen="{Binding IsDrugSuggestionsOpen, Mode=TwoWay}" PlacementTarget="{Binding ElementName=DrugInput}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Slide">
-                                                        <Border Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Width="220" MaxHeight="160" Padding="5">
-                                                            <Border.Effect>
-                                                                <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.15" ShadowDepth="3"/>
-                                                            </Border.Effect>
-                                                            <ListBox ItemsSource="{Binding DrugSuggestions}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch">
-                                                                <ListBox.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <Button Style="{StaticResource NavButton}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="8,6" Content="{Binding}"
-                                                                                Command="{Binding DataContext.SelectSuggestedDrugCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
-                                                                    </DataTemplate>
-                                                                </ListBox.ItemTemplate>
-                                                            </ListBox>
-                                                        </Border>
-                                                    </Popup>
+                                                    <Button Style="{StaticResource ModernButton}" Content="Download" Background="#EC4899" BorderBrush="#EC4899" Padding="8,5" FontSize="11" Margin="0,0,5,0"/>
+                                                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Upload File" Command="{Binding UploadInvestigationAttachmentCommand}" Background="#0EA5E9" BorderBrush="#0EA5E9" Padding="8,5" FontSize="11" Margin="5,0,5,0"/>
+                                                    <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print" Background="#EC4899" BorderBrush="#EC4899" Padding="8,5" FontSize="11" Margin="5,0,0,0"/>
                                                 </Grid>
+
+                                                <!-- Attachment link info if uploaded -->
+                                                <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,5,0,0"
+                                                        Visibility="{Binding InvestigationAttachmentPath, Converter={StaticResource NullToVisibilityConverter}}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,6,0"/>
+                                                        <Button Grid.Column="1" Content="{Binding InvestigationAttachmentName}" Style="{StaticResource NavButton}" Padding="0" HorizontalContentAlignment="Left" Foreground="#0284C7" FontSize="11" FontWeight="SemiBold"
+                                                                Command="{Binding OpenAttachmentCommand}" CommandParameter="{Binding InvestigationAttachmentPath}"/>
+                                                        <Button Grid.Column="2" Style="{StaticResource NavButton}" Width="16" Height="16" Tag="&#xE711;" ToolTip="Remove attachment" Padding="0" Foreground="#EF4444" FontSize="8"
+                                                                Command="{Binding RemoveInvestigationAttachmentCommand}"/>
+                                                    </Grid>
+                                                </Border>
                                             </StackPanel>
-                                        </Grid>
 
-                                        <!-- Table Header -->
-                                        <Grid Margin="0,5,0,5">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="30"/> <!-- Delete btn -->
-                                                <ColumnDefinition Width="2*"/> <!-- Name -->
-                                                <ColumnDefinition Width="*"/>  <!-- Dose -->
-                                                <ColumnDefinition Width="*"/>  <!-- Type -->
-                                                <ColumnDefinition Width="*"/>  <!-- Time -->
-                                                <ColumnDefinition Width="1.5*"/><!-- Note -->
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="1" Text="Name" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                            <TextBlock Grid.Column="2" Text="Dose" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                            <TextBlock Grid.Column="3" Text="Type" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                            <TextBlock Grid.Column="4" Text="Time" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                            <TextBlock Grid.Column="5" Text="Note" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                        </Grid>
-                                        
-                                        <!-- Prescribed Drugs Table Rows -->
-                                        <ItemsControl ItemsSource="{Binding PrescribedDrugs}">
-                                            <ItemsControl.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="0,5" Margin="0,0,0,2">
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition Width="30"/> <!-- Delete btn -->
-                                                                <ColumnDefinition Width="2*"/> <!-- Name -->
-                                                                <ColumnDefinition Width="*"/>  <!-- Dose -->
-                                                                <ColumnDefinition Width="*"/>  <!-- Type -->
-                                                                <ColumnDefinition Width="*"/>  <!-- Time -->
-                                                                <ColumnDefinition Width="1.5*"/><!-- Note -->
-                                                            </Grid.ColumnDefinitions>
+                                            <Separator Margin="0,0,0,12"/>
 
-                                                            <!-- Delete button -->
-                                                            <Button Grid.Column="0" Style="{StaticResource NavButton}" Width="24" Height="24" Tag="&#xE711;" ToolTip="Remove" Padding="0" Foreground="#EF4444" FontSize="9"
-                                                                    Command="{Binding DataContext.RemoveDrugCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                            <!-- Imaging -->
+                                            <StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                                    <TextBlock Text="&#xEC7C;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                                    <TextBlock Text="Imaging" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <ComboBox ItemsSource="{Binding ImagingList}" SelectedItem="{Binding SelectedImaging}" Height="36" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="Upload File" Command="{Binding UploadImagingAttachmentCommand}" Background="#0EA5E9" BorderBrush="#0EA5E9" Padding="8,5" FontSize="11" Margin="0,0,5,0"/>
+                                                    <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print" Background="#EC4899" BorderBrush="#EC4899" Padding="8,5" FontSize="11" Margin="5,0,0,0"/>
+                                                </Grid>
 
-                                                            <!-- Name -->
-                                                            <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+                                                <!-- Attachment link info if uploaded -->
+                                                <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,5,0,0"
+                                                        Visibility="{Binding ImagingAttachmentPath, Converter={StaticResource NullToVisibilityConverter}}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,6,0"/>
+                                                        <Button Grid.Column="1" Content="{Binding ImagingAttachmentName}" Style="{StaticResource NavButton}" Padding="0" HorizontalContentAlignment="Left" Foreground="#0284C7" FontSize="11" FontWeight="SemiBold"
+                                                                Command="{Binding OpenAttachmentCommand}" CommandParameter="{Binding ImagingAttachmentPath}"/>
+                                                        <Button Grid.Column="2" Style="{StaticResource NavButton}" Width="16" Height="16" Tag="&#xE711;" ToolTip="Remove attachment" Padding="0" Foreground="#EF4444" FontSize="8"
+                                                                Command="{Binding RemoveImagingAttachmentCommand}"/>
+                                                    </Grid>
+                                                </Border>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Border>
 
-                                                            <!-- Dose -->
-                                                            <TextBox Grid.Column="2" Style="{StaticResource ModernTextBox}" Text="{Binding Dose, UpdateSourceTrigger=PropertyChanged}" Height="28" Padding="5,2" Margin="0,0,5,0"/>
+                                    <!-- Drugs Card -->
+                                    <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowDrugs, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <StackPanel>
+                                            <!-- Header -->
+                                            <Grid Margin="0,0,0,10">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE964;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                    <TextBlock Text="Drugs" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                                <Button Style="{StaticResource NavButton}" Content="&#xE81C; History" FontSize="11" Padding="8,4" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                            </Grid>
 
-                                                            <!-- Type Dropdown -->
-                                                            <ComboBox Grid.Column="3" Height="28" Margin="0,0,5,0" SelectedValue="{Binding Type}" SelectedValuePath="Content">
-                                                                <ComboBoxItem Content="Select..."/>
-                                                                <ComboBoxItem Content="Tablet"/>
-                                                                <ComboBoxItem Content="Capsule"/>
-                                                                <ComboBoxItem Content="Syrup"/>
-                                                                <ComboBoxItem Content="Injection"/>
-                                                                <ComboBoxItem Content="Drop"/>
-                                                                <ComboBoxItem Content="Ointment"/>
-                                                            </ComboBox>
+                                            <!-- Prescription Selector / Buttons -->
+                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                                <Button Style="{StaticResource ModernButton}" Content="Rx #1" FontSize="11" Padding="12,5" Background="#1D4ED8" BorderBrush="#1D4ED8" Margin="0,0,8,0"/>
+                                                <Button Style="{StaticResource ModernButton}" Content="+ New Rx" FontSize="11" Padding="12,5" Background="#10B981" BorderBrush="#10B981"/>
+                                            </StackPanel>
 
-                                                            <!-- Time Dropdown -->
-                                                            <ComboBox Grid.Column="4" Height="28" Margin="0,0,5,0" SelectedValue="{Binding Time}" SelectedValuePath="Content">
-                                                                <ComboBoxItem Content="Select..."/>
-                                                                <ComboBoxItem Content="Once daily"/>
-                                                                <ComboBoxItem Content="Twice daily"/>
-                                                                <ComboBoxItem Content="3 times daily"/>
-                                                                <ComboBoxItem Content="4 times daily"/>
-                                                                <ComboBoxItem Content="Before meals"/>
-                                                                <ComboBoxItem Content="After meals"/>
-                                                                <ComboBoxItem Content="At bedtime"/>
-                                                            </ComboBox>
+                                            <!-- Presaved / Trade Dropdowns -->
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Presaved Drugs" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <ComboBox Height="36" Margin="0,0,0,10" VerticalContentAlignment="Center"/>
+                                                    
+                                                    <TextBlock Text="Trade Drugs" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <TextBox x:Name="DrugInput" Style="{StaticResource ModernTextBox}" 
+                                                                 Text="{Binding DrugSearchText, UpdateSourceTrigger=PropertyChanged}" 
+                                                                 Tag="Search or type drug name...">
+                                                            <TextBox.InputBindings>
+                                                                <KeyBinding Key="Enter" Command="{Binding AddDrugCommand}"/>
+                                                            </TextBox.InputBindings>
+                                                        </TextBox>
+                                                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Add" 
+                                                                Command="{Binding AddDrugCommand}" Margin="10,0,0,0" Padding="15,6"/>
+                                                        <Popup IsOpen="{Binding IsDrugSuggestionsOpen, Mode=TwoWay}" PlacementTarget="{Binding ElementName=DrugInput}" Placement="Bottom" StaysOpen="False" AllowsTransparency="True" PopupAnimation="Slide">
+                                                            <Border Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Width="220" MaxHeight="160" Padding="5">
+                                                                <Border.Effect>
+                                                                    <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.15" ShadowDepth="3"/>
+                                                                </Border.Effect>
+                                                                <ListBox ItemsSource="{Binding DrugSuggestions}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch">
+                                                                    <ListBox.ItemTemplate>
+                                                                        <DataTemplate>
+                                                                            <Button Style="{StaticResource NavButton}" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left" Padding="8,6" Content="{Binding}"
+                                                                                    Command="{Binding DataContext.SelectSuggestedDrugCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                                                        </DataTemplate>
+                                                                    </ListBox.ItemTemplate>
+                                                                </ListBox>
+                                                            </Border>
+                                                        </Popup>
+                                                    </Grid>
+                                                </StackPanel>
+                                            </Grid>
 
-                                                            <!-- Note -->
-                                                            <TextBox Grid.Column="5" Style="{StaticResource ModernTextBox}" Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Height="28" Padding="5,2"/>
-                                                        </Grid>
-                                                    </Border>
-                                                </DataTemplate>
-                                            </ItemsControl.ItemTemplate>
-                                        </ItemsControl>
-                                    </StackPanel>
-                                </Border>
-                            </StackPanel>
-                        </ScrollViewer>
+                                            <!-- Table Header -->
+                                            <Grid Margin="0,5,0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="30"/> <!-- Delete btn -->
+                                                    <ColumnDefinition Width="2*"/> <!-- Name -->
+                                                    <ColumnDefinition Width="*"/>  <!-- Dose -->
+                                                    <ColumnDefinition Width="*"/>  <!-- Type -->
+                                                    <ColumnDefinition Width="*"/>  <!-- Time -->
+                                                    <ColumnDefinition Width="1.5*"/><!-- Note -->
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="1" Text="Name" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                                                <TextBlock Grid.Column="2" Text="Dose" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                                                <TextBlock Grid.Column="3" Text="Type" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                                                <TextBlock Grid.Column="4" Text="Time" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                                                <TextBlock Grid.Column="5" Text="Note" FontWeight="Bold" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                                            </Grid>
+                                            
+                                            <!-- Prescribed Drugs Table Rows -->
+                                            <ItemsControl ItemsSource="{Binding PrescribedDrugs}">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="0,5" Margin="0,0,0,2">
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="30"/> <!-- Delete btn -->
+                                                                    <ColumnDefinition Width="2*"/> <!-- Name -->
+                                                                    <ColumnDefinition Width="*"/>  <!-- Dose -->
+                                                                    <ColumnDefinition Width="*"/>  <!-- Type -->
+                                                                    <ColumnDefinition Width="*"/>  <!-- Time -->
+                                                                    <ColumnDefinition Width="1.5*"/><!-- Note -->
+                                                                </Grid.ColumnDefinitions>
+
+                                                                <!-- Delete button -->
+                                                                <Button Grid.Column="0" Style="{StaticResource NavButton}" Width="24" Height="24" Tag="&#xE711;" ToolTip="Remove" Padding="0" Foreground="#EF4444" FontSize="9"
+                                                                        Command="{Binding DataContext.RemoveDrugCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+
+                                                                <!-- Name -->
+                                                                <TextBlock Grid.Column="1" Text="{Binding Name}" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center" TextWrapping="Wrap" Margin="0,0,10,0"/>
+
+                                                                <!-- Dose -->
+                                                                <TextBox Grid.Column="2" Style="{StaticResource ModernTextBox}" Text="{Binding Dose, UpdateSourceTrigger=PropertyChanged}" Height="28" Padding="5,2" Margin="0,0,5,0"/>
+
+                                                                <!-- Type Dropdown -->
+                                                                <ComboBox Grid.Column="3" Height="28" Margin="0,0,5,0" SelectedValue="{Binding Type}" SelectedValuePath="Content">
+                                                                    <ComboBoxItem Content="Select..."/>
+                                                                    <ComboBoxItem Content="Tablet"/>
+                                                                    <ComboBoxItem Content="Capsule"/>
+                                                                    <ComboBoxItem Content="Syrup"/>
+                                                                    <ComboBoxItem Content="Injection"/>
+                                                                    <ComboBoxItem Content="Drop"/>
+                                                                    <ComboBoxItem Content="Ointment"/>
+                                                                </ComboBox>
+
+                                                                <!-- Time Dropdown -->
+                                                                <ComboBox Grid.Column="4" Height="28" Margin="0,0,5,0" SelectedValue="{Binding Time}" SelectedValuePath="Content">
+                                                                    <ComboBoxItem Content="Select..."/>
+                                                                    <ComboBoxItem Content="Once daily"/>
+                                                                    <ComboBoxItem Content="Twice daily"/>
+                                                                    <ComboBoxItem Content="3 times daily"/>
+                                                                    <ComboBoxItem Content="4 times daily"/>
+                                                                    <ComboBoxItem Content="Before meals"/>
+                                                                    <ComboBoxItem Content="After meals"/>
+                                                                    <ComboBoxItem Content="At bedtime"/>
+                                                                </ComboBox>
+
+                                                                <!-- Note -->
+                                                                <TextBox Grid.Column="5" Style="{StaticResource ModernTextBox}" Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Height="28" Padding="5,2"/>
+                                                            </Grid>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </StackPanel>
+                                    </Border>
+                                </StackPanel>
+                            </Grid>
+                        </ScrollViewer>>
 
                         <!-- Bottom Action Buttons -->
                         <Grid Grid.Row="2" Margin="5,10,5,0">
