@@ -604,6 +604,88 @@
                     <!-- Scrollable Sidebar Content -->
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <StackPanel>
+                            <!-- General Patient Info Expander -->
+                            <Expander Header="General Medical Info (الملف الطبي العام)" IsExpanded="True"
+                                      Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" 
+                                      Margin="0,0,0,15" Padding="10" ExpandDirection="Down">
+                                <StackPanel Margin="5">
+                                    <!-- Blood Group & Allergy -->
+                                    <Grid Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                            <TextBlock Text="فصيلة الدم" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                            <TextBlock Text="{Binding CurrentPatient.BloodGroup, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                                            <TextBlock Text="الحساسية" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding CurrentPatient.Allergy, TargetNullValue='لا يوجد'}" FontSize="12" FontWeight="Bold" Foreground="#EF4444" HorizontalAlignment="Left"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Separator Margin="0,5"/>
+
+                                    <!-- Weight & Height -->
+                                    <Grid Margin="0,5,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                            <TextBlock Text="الوزن" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                            <TextBlock Text="{Binding CurrentPatient.Weight, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                                            <TextBlock Text="الطول" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding CurrentPatient.Height, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Separator Margin="0,5"/>
+
+                                    <!-- Smoking & Alcohol -->
+                                    <Grid Margin="0,5,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                            <TextBlock Text="التدخين" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                            <TextBlock Text="{Binding CurrentPatient.Smoking, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                                            <TextBlock Text="الكحول" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding CurrentPatient.Alcohol, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <Separator Margin="0,5"/>
+
+                                    <!-- Referred By & Marital Status -->
+                                    <Grid Margin="0,5,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                            <TextBlock Text="من طرف" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                            <TextBlock Text="{Binding CurrentPatient.ReferredBy, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
+                                            <TextBlock Text="الحالة الزوجية" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Left"/>
+                                            <TextBlock Text="{Binding CurrentPatient.MaritalStatus, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
+                                        </StackPanel>
+                                    </Grid>
+
+                                    <!-- Notes -->
+                                    <Separator Margin="0,5"/>
+                                    <TextBlock Text="ملاحظات عامة" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,5,0,2" HorizontalAlignment="Right"/>
+                                    <TextBlock Text="{Binding CurrentPatient.Notes, TargetNullValue='لا يوجد ملاحظات'}" FontSize="12" TextWrapping="Wrap" Foreground="{StaticResource TextColor}" TextAlignment="Right" HorizontalAlignment="Right"/>
+                                </StackPanel>
+                            </Expander>
+
                             <!-- Expandable Visits Timeline -->
                             <TextBlock Text="Visits History" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,8"/>
                             <ItemsControl ItemsSource="{Binding VisitHistory}" Margin="0,0,0,15">
