@@ -30,6 +30,9 @@
                             <DataTrigger Binding="{Binding IsHomeActive}" Value="True">
                                 <Setter Property="Visibility" Value="Collapsed"/>
                             </DataTrigger>
+                            <DataTrigger Binding="{Binding IsClinicalExamActive}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
