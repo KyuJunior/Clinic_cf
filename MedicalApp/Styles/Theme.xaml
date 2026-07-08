@@ -214,4 +214,123 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <!-- Gray Outlined Secondary Button Style -->
+    <Style x:Key="SecondaryButton" TargetType="Button">
+        <Setter Property="Background" Value="White"/>
+        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Padding" Value="12,6"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="6" 
+                            Background="{TemplateBinding Background}" 
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#F1F5F9"/> <!-- Slate 100 -->
+                            <Setter Property="BorderBrush" Value="{StaticResource SubtextColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
+                            <Setter Property="Foreground" Value="{StaticResource SubtextColor}"/>
+                            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Warning/Accent Styled Button -->
+    <Style x:Key="WarningButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+        <Setter Property="Background" Value="#D97706"/> <!-- Amber 600 -->
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="8" 
+                            Background="{TemplateBinding Background}" 
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#B45309"/> <!-- Amber 700 -->
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{StaticResource BorderColor}"/>
+                            <Setter Property="Foreground" Value="{StaticResource SubtextColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Plain Icon Button Style -->
+    <Style x:Key="IconButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="4">
+                        <TextBlock Text="{TemplateBinding Tag}" 
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="{TemplateBinding FontSize}" 
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#E2E8F0"/> <!-- Slate 200 -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Link Button Style -->
+    <Style x:Key="LinkButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="#0284C7"/> <!-- Sky 700 -->
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <TextBlock Name="Text" Text="{TemplateBinding Content}" 
+                               Foreground="{TemplateBinding Foreground}"
+                               TextDecorations="Underline"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Left"
+                               TextTrimming="CharacterEllipsis"/>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Text" Property="Foreground" Value="#0369A1"/> <!-- Sky 800 -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

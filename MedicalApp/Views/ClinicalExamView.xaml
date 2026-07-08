@@ -200,22 +200,22 @@
                                         <StackPanel>
                                             <!-- Chief Complaint -->
                                             <StackPanel Margin="0,0,0,10">
-                                                <Grid Margin="0,0,0,5">
-                                                    <TextBlock Text="Chief Complaint" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                    <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0" 
+                                                <TextBlock Text="Chief Complaint" Style="{StaticResource Subheading}" Margin="0,0,0,5"/>
+                                                <Grid>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ChiefComplaint, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap" Padding="10,8,30,8"/>
+                                                    <Button Style="{StaticResource IconButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Width="24" Height="24" Padding="0" FontSize="14" Foreground="{StaticResource SubtextColor}"
                                                             Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Complaint"/>
                                                 </Grid>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ChiefComplaint, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap"/>
                                             </StackPanel>
 
                                             <!-- History of Present Illness (HPI) -->
                                             <StackPanel>
-                                                <Grid Margin="0,0,0,5">
-                                                    <TextBlock Text="History of Present Illness (HPI)" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                    <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
+                                                <TextBlock Text="History of Present Illness (HPI)" Style="{StaticResource Subheading}" Margin="0,0,0,5"/>
+                                                <Grid>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap" Padding="10,8,30,8"/>
+                                                    <Button Style="{StaticResource IconButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Width="24" Height="24" Padding="0" FontSize="14" Foreground="{StaticResource SubtextColor}"
                                                             Command="{Binding SimulateVoiceInputCommand}" CommandParameter="HPI"/>
                                                 </Grid>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Border>
@@ -225,22 +225,22 @@
                                         <StackPanel>
                                             <!-- Physical Examination -->
                                             <StackPanel Margin="0,0,0,10">
-                                                <Grid Margin="0,0,0,5">
-                                                    <TextBlock Text="Physical Examination Findings" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                    <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
+                                                <TextBlock Text="Physical Examination Findings" Style="{StaticResource Subheading}" Margin="0,0,0,5"/>
+                                                <Grid>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap" Padding="10,8,30,8"/>
+                                                    <Button Style="{StaticResource IconButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Width="24" Height="24" Padding="0" FontSize="14" Foreground="{StaticResource SubtextColor}"
                                                             Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Exam"/>
                                                 </Grid>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap"/>
                                             </StackPanel>
 
                                             <!-- Treatment Plan -->
                                             <StackPanel>
-                                                <Grid Margin="0,0,0,5">
-                                                    <TextBlock Text="Treatment Plan / Notes" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                    <Button Style="{StaticResource NavButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Center" Width="28" Height="28" Padding="0"
+                                                <TextBlock Text="Treatment Plan / Notes" Style="{StaticResource Subheading}" Margin="0,0,0,5"/>
+                                                <Grid>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap" Padding="10,8,30,8"/>
+                                                    <Button Style="{StaticResource IconButton}" Tag="&#xE720;" ToolTip="Simulate voice input" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,4,4,0" Width="24" Height="24" Padding="0" FontSize="14" Foreground="{StaticResource SubtextColor}"
                                                             Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Plan"/>
                                                 </Grid>
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Height="60" AcceptsReturn="True" TextWrapping="Wrap"/>
                                             </StackPanel>
                                         </StackPanel>
                                     </Border>
@@ -346,8 +346,7 @@
 
                                     <!-- Investigation & Imaging Card -->
                                     <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <!-- Investigation -->
+                                        <StackPanel>                                            <!-- Investigation -->
                                             <StackPanel Margin="0,0,0,12">
                                                 <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                                     <TextBlock Text="&#xE9F9;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,6,0"/>
@@ -360,13 +359,13 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Button Style="{StaticResource ModernButton}" Content="Download" Background="#EC4899" BorderBrush="#EC4899" Padding="8,5" FontSize="11" Margin="0,0,5,0"/>
-                                                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Upload File" Command="{Binding UploadInvestigationAttachmentCommand}" Background="#0EA5E9" BorderBrush="#0EA5E9" Padding="8,5" FontSize="11" Margin="5,0,5,0"/>
-                                                    <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print" Background="#EC4899" BorderBrush="#EC4899" Padding="8,5" FontSize="11" Margin="5,0,0,0"/>
+                                                    <Button Style="{StaticResource SecondaryButton}" Content="Download" Padding="8,5" FontSize="11" Margin="0,0,5,0"/>
+                                                    <Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Upload File" Command="{Binding UploadInvestigationAttachmentCommand}" Padding="8,5" FontSize="11" Margin="5,0,5,0"/>
+                                                    <Button Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Print" Padding="8,5" FontSize="11" Margin="5,0,0,0"/>
                                                 </Grid>
 
                                                 <!-- Attachment link info if uploaded -->
-                                                <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,5,0,0"
+                                                <Border Background="#F1F5F9" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,8,0,0"
                                                         Visibility="{Binding InvestigationAttachmentPath, Converter={StaticResource NullToVisibilityConverter}}">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
@@ -374,10 +373,10 @@
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,6,0"/>
-                                                        <Button Grid.Column="1" Content="{Binding InvestigationAttachmentName}" Style="{StaticResource NavButton}" Padding="0" HorizontalContentAlignment="Left" Foreground="#0284C7" FontSize="11" FontWeight="SemiBold"
+                                                        <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,8,0"/>
+                                                        <Button Grid.Column="1" Content="{Binding InvestigationAttachmentName}" Style="{StaticResource LinkButton}"
                                                                 Command="{Binding OpenAttachmentCommand}" CommandParameter="{Binding InvestigationAttachmentPath}"/>
-                                                        <Button Grid.Column="2" Style="{StaticResource NavButton}" Width="16" Height="16" Tag="&#xE711;" ToolTip="Remove attachment" Padding="0" Foreground="#EF4444" FontSize="8"
+                                                        <Button Grid.Column="2" Style="{StaticResource IconButton}" Width="20" Height="20" Tag="&#xE711;" ToolTip="Remove attachment" Foreground="#EF4444" FontSize="10"
                                                                 Command="{Binding RemoveInvestigationAttachmentCommand}"/>
                                                     </Grid>
                                                 </Border>
@@ -398,12 +397,12 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
-                                                    <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="Upload File" Command="{Binding UploadImagingAttachmentCommand}" Background="#0EA5E9" BorderBrush="#0EA5E9" Padding="8,5" FontSize="11" Margin="0,0,5,0"/>
-                                                    <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print" Background="#EC4899" BorderBrush="#EC4899" Padding="8,5" FontSize="11" Margin="5,0,0,0"/>
+                                                    <Button Grid.Column="0" Style="{StaticResource SecondaryButton}" Content="Upload File" Command="{Binding UploadImagingAttachmentCommand}" Padding="8,5" FontSize="11" Margin="0,0,5,0"/>
+                                                    <Button Grid.Column="2" Style="{StaticResource SecondaryButton}" Content="Print" Padding="8,5" FontSize="11" Margin="5,0,0,0"/>
                                                 </Grid>
 
                                                 <!-- Attachment link info if uploaded -->
-                                                <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,5,0,0"
+                                                <Border Background="#F1F5F9" BorderBrush="#E2E8F0" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,8,0,0"
                                                         Visibility="{Binding ImagingAttachmentPath, Converter={StaticResource NullToVisibilityConverter}}">
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
@@ -411,10 +410,10 @@
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,6,0"/>
-                                                        <Button Grid.Column="1" Content="{Binding ImagingAttachmentName}" Style="{StaticResource NavButton}" Padding="0" HorizontalContentAlignment="Left" Foreground="#0284C7" FontSize="11" FontWeight="SemiBold"
+                                                        <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,8,0"/>
+                                                        <Button Grid.Column="1" Content="{Binding ImagingAttachmentName}" Style="{StaticResource LinkButton}"
                                                                 Command="{Binding OpenAttachmentCommand}" CommandParameter="{Binding ImagingAttachmentPath}"/>
-                                                        <Button Grid.Column="2" Style="{StaticResource NavButton}" Width="16" Height="16" Tag="&#xE711;" ToolTip="Remove attachment" Padding="0" Foreground="#EF4444" FontSize="8"
+                                                        <Button Grid.Column="2" Style="{StaticResource IconButton}" Width="20" Height="20" Tag="&#xE711;" ToolTip="Remove attachment" Foreground="#EF4444" FontSize="10"
                                                                 Command="{Binding RemoveImagingAttachmentCommand}"/>
                                                     </Grid>
                                                 </Border>
@@ -425,8 +424,8 @@
                                     <!-- Drugs Card -->
                                     <Border Style="{StaticResource CardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowDrugs, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <StackPanel>
-                                            <!-- Header -->
-                                            <Grid Margin="0,0,0,10">
+                                            <!-- Title & History button -->
+                                            <Grid Margin="0,0,0,8">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xE964;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                                     <TextBlock Text="Drugs" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
@@ -436,8 +435,8 @@
 
                                             <!-- Prescription Selector / Buttons -->
                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
-                                                <Button Style="{StaticResource ModernButton}" Content="Rx #1" FontSize="11" Padding="12,5" Background="#1D4ED8" BorderBrush="#1D4ED8" Margin="0,0,8,0"/>
-                                                <Button Style="{StaticResource ModernButton}" Content="+ New Rx" FontSize="11" Padding="12,5" Background="#10B981" BorderBrush="#10B981"/>
+                                                <Button Style="{StaticResource ModernButton}" Content="Rx #1" FontSize="11" Padding="12,6" Margin="0,0,8,0"/>
+                                                <Button Style="{StaticResource SecondaryButton}" Content="+ New Rx" FontSize="11" Padding="12,6"/>
                                             </StackPanel>
 
                                             <!-- Presaved / Trade Dropdowns -->
@@ -564,15 +563,16 @@
                         <!-- Bottom Action Buttons -->
                         <Grid Grid.Row="2" Margin="5,10,5,0">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="160"/>
-                                <ColumnDefinition Width="120"/>
-                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="Auto"/> <!-- Complete Visit -->
+                                <ColumnDefinition Width="Auto"/> <!-- Hold (Not Finished) -->
+                                <ColumnDefinition Width="*"/>    <!-- Spacer -->
+                                <ColumnDefinition Width="Auto"/> <!-- Print Rx (A5) -->
+                                <ColumnDefinition Width="Auto"/> <!-- Print Summary (A4) -->
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="Complete Visit" Command="{Binding CompleteSessionDoneCommand}" Height="40" Margin="0,0,10,0"/>
-                            <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Hold (Not Finished)" Command="{Binding HoldSessionCommand}" Background="#F59E0B" BorderBrush="#F59E0B" Height="40" Margin="0,0,10,0"/>
-                            <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="Print Rx (A5)" Command="{Binding PrintActiveRxCommand}" Background="#10B981" BorderBrush="#10B981" Height="40" Margin="0,0,10,0"/>
-                            <Button Grid.Column="3" Style="{StaticResource ModernButton}" Content="Print Summary (A4)" Command="{Binding PrintActiveVisitReportCommand}" Background="#6366F1" BorderBrush="#6366F1" Height="40"/>
+                            <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="Complete Visit" Command="{Binding CompleteSessionDoneCommand}" Height="40" Padding="18,10" Margin="0,0,10,0"/>
+                            <Button Grid.Column="1" Style="{StaticResource WarningButton}" Content="Hold (Not Finished)" Command="{Binding HoldSessionCommand}" Height="40" Padding="18,10"/>
+                            <Button Grid.Column="3" Style="{StaticResource SecondaryButton}" Foreground="{StaticResource PrimaryColor}" BorderBrush="{StaticResource PrimaryColor}" Content="Print Rx (A5)" Command="{Binding PrintActiveRxCommand}" Height="40" Padding="18,10" Margin="0,0,10,0"/>
+                            <Button Grid.Column="4" Style="{StaticResource SecondaryButton}" Foreground="{StaticResource PrimaryColor}" BorderBrush="{StaticResource PrimaryColor}" Content="Print Summary (A4)" Command="{Binding PrintActiveVisitReportCommand}" Height="40" Padding="18,10"/>
                         </Grid>
 
                         <!-- Status Messages -->
@@ -619,80 +619,91 @@
                                       Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1" 
                                       Margin="0,0,0,15" Padding="10" ExpandDirection="Down">
                                 <StackPanel Margin="5">
-                                    <!-- Blood Group & Allergy -->
-                                    <Grid Margin="0,0,0,8">
+                                    <!-- Blood Group -->
+                                    <Grid Margin="0,0,0,10">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
                                         </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                            <TextBlock Text="فصيلة الدم" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
-                                            <TextBlock Text="{Binding CurrentPatient.BloodGroup, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
-                                            <TextBlock Text="الحساسية" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="{Binding CurrentPatient.Allergy, TargetNullValue='لا يوجد'}" FontSize="12" FontWeight="Bold" Foreground="#EF4444" HorizontalAlignment="Left"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="فصيلة الدم :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding CurrentPatient.BloodGroup, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
                                     </Grid>
 
-                                    <Separator Margin="0,5"/>
-
-                                    <!-- Weight & Height -->
-                                    <Grid Margin="0,5,0,8">
+                                    <!-- Allergy -->
+                                    <Grid Margin="0,0,0,10">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
                                         </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                            <TextBlock Text="الوزن" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
-                                            <TextBlock Text="{Binding CurrentPatient.Weight, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
-                                            <TextBlock Text="الطول" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="{Binding CurrentPatient.Height, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="الحساسية :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding CurrentPatient.Allergy, TargetNullValue='لا يوجد'}" FontSize="12" FontWeight="Bold" Foreground="#EF4444" HorizontalAlignment="Left" TextWrapping="Wrap"/>
                                     </Grid>
 
-                                    <Separator Margin="0,5"/>
-
-                                    <!-- Smoking & Alcohol -->
-                                    <Grid Margin="0,5,0,8">
+                                    <!-- Weight -->
+                                    <Grid Margin="0,0,0,10">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
                                         </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                            <TextBlock Text="التدخين" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
-                                            <TextBlock Text="{Binding CurrentPatient.Smoking, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
-                                            <TextBlock Text="الكحول" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="{Binding CurrentPatient.Alcohol, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="الوزن :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding CurrentPatient.Weight, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
                                     </Grid>
 
-                                    <Separator Margin="0,5"/>
-
-                                    <!-- Referred By & Marital Status -->
-                                    <Grid Margin="0,5,0,8">
+                                    <!-- Height -->
+                                    <Grid Margin="0,0,0,10">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
                                         </Grid.ColumnDefinitions>
-                                        <StackPanel Grid.Column="1" HorizontalAlignment="Right">
-                                            <TextBlock Text="من طرف" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
-                                            <TextBlock Text="{Binding CurrentPatient.ReferredBy, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right"/>
-                                        </StackPanel>
-                                        <StackPanel Grid.Column="0" HorizontalAlignment="Left">
-                                            <TextBlock Text="الحالة الزوجية" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Left"/>
-                                            <TextBlock Text="{Binding CurrentPatient.MaritalStatus, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
-                                        </StackPanel>
+                                        <TextBlock Grid.Column="1" Text="الطول :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding CurrentPatient.Height, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
                                     </Grid>
 
-                                    <!-- Notes -->
-                                    <Separator Margin="0,5"/>
-                                    <TextBlock Text="ملاحظات عامة" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,5,0,2" HorizontalAlignment="Right"/>
-                                    <TextBlock Text="{Binding CurrentPatient.Notes, TargetNullValue='لا يوجد ملاحظات'}" FontSize="12" TextWrapping="Wrap" Foreground="{StaticResource TextColor}" TextAlignment="Right" HorizontalAlignment="Right"/>
+                                    <!-- Smoking -->
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="1" Text="التدخين :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding CurrentPatient.Smoking, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
+                                    </Grid>
+
+                                    <!-- Alcohol -->
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="1" Text="الكحول :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding CurrentPatient.Alcohol, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
+                                    </Grid>
+
+                                    <!-- Referred By -->
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="1" Text="من طرف :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding CurrentPatient.ReferredBy, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
+                                    </Grid>
+
+                                    <!-- Marital Status -->
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"/>
+                                            <ColumnDefinition Width="3*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="1" Text="الحالة الزوجية :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right"/>
+                                        <TextBlock Grid.Column="0" Text="{Binding CurrentPatient.MaritalStatus, TargetNullValue='غير محدد'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Left"/>
+                                    </Grid>
+
+                                    <!-- General Notes -->
+                                    <StackPanel Margin="0,5,0,0">
+                                        <TextBlock Text="ملاحظات عامة :" FontSize="12" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                        <TextBlock Text="{Binding CurrentPatient.Notes, TargetNullValue='لا يوجد ملاحظات'}" FontSize="12" TextWrapping="Wrap" Foreground="{StaticResource TextColor}" TextAlignment="Right" HorizontalAlignment="Right"/>
+                                    </StackPanel>
                                 </StackPanel>
                             </Expander>
 
