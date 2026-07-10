@@ -12,6 +12,7 @@ namespace MedicalApp.ViewModels
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly ISharedStateService _sharedStateService;
+        private readonly IThemeService _themeService;
 
         [ObservableProperty]
         private object? _currentView;
@@ -27,11 +28,23 @@ namespace MedicalApp.ViewModels
         private readonly Lazy<PatientRegistrationViewModel> _patientRegistrationVm;
         private readonly Lazy<ClinicalExamViewModel> _clinicalExamVm;
         private readonly Lazy<PrintSettingsViewModel> _printSettingsVm;
+        private object? _lastView;
 
-        public MainViewModel(IServiceProvider serviceProvider, ISharedStateService sharedStateService, IConfiguration configuration)
+        public bool IsDarkMode => _themeService.IsDarkMode;
+
+        [RelayCommand]
+        public void ToggleTheme()
+        {
+            _themeService.ToggleTheme();
+        }
+
+        public MainViewModel(IServiceProvider serviceProvider, ISharedStateService sharedStateService, IConfiguration configuration, IThemeService themeService)
         {
             _serviceProvider = serviceProvider;
             _sharedStateService = sharedStateService;
+            _themeService = themeService;
+
+            System.Windows.WeakEventManager<IThemeService, EventArgs>.AddHandler(_themeService, nameof(IThemeService.ThemeChanged), (s, ev) => OnPropertyChanged(nameof(IsDarkMode)));
 
             // Parse connection string to display actual server/database source dynamically
             var connString = configuration.GetConnectionString("DefaultConnection") ?? string.Empty;
@@ -69,6 +82,18 @@ namespace MedicalApp.ViewModels
 
         partial void OnCurrentViewChanged(object? value)
         {
+            if (_lastView is ClinicalExamViewModel oldExamVm)
+            {
+                oldExamVm.StopPolling();
+            }
+
+            if (value is ClinicalExamViewModel newExamVm)
+            {
+                newExamVm.StartPolling();
+            }
+
+            _lastView = value;
+
             OnPropertyChanged(nameof(IsHomeActive));
             OnPropertyChanged(nameof(IsPatientRegistryActive));
             OnPropertyChanged(nameof(IsClinicalExamActive));

@@ -14,7 +14,16 @@ namespace MedicalApp.ViewModels
         private readonly ISharedStateService _sharedStateService;
         private readonly IQueueService _queueService;
         private readonly IVisitService _visitService;
+        private readonly IThemeService _themeService;
         private bool _isAutofilling = false;
+
+        public bool IsDarkMode => _themeService.IsDarkMode;
+
+        [RelayCommand]
+        public void ToggleTheme()
+        {
+            _themeService.ToggleTheme();
+        }
 
         [ObservableProperty]
         private string _activeSubView = "AllPatients"; // "AllPatients", "TodayVisits", "AppointmentsCalendar", "Finance"
@@ -198,12 +207,45 @@ namespace MedicalApp.ViewModels
         private bool _isGearMenuOpen = false;
 
         [ObservableProperty]
+        private bool _isFiltersSidebarOpen = false;
+
+        [ObservableProperty]
+        private string _searchGender = "الكل";
+
+        [ObservableProperty]
+        private int? _searchMinAge = null;
+
+        [ObservableProperty]
+        private int? _searchMaxAge = null;
+
+        [ObservableProperty]
+        private string _searchGovernorate = "الكل";
+
+        [ObservableProperty]
+        private DateTime? _searchStartDate = null;
+
+        [ObservableProperty]
+        private DateTime? _searchEndDate = null;
+
+        [ObservableProperty]
+        private string _searchSortField = "Name";
+
+        [ObservableProperty]
+        private bool _searchSortDescending = false;
+
+        [ObservableProperty]
         private bool _isGridGearOpen = false;
 
         [RelayCommand]
         public void ToggleGridGear()
         {
             IsGridGearOpen = !IsGridGearOpen;
+        }
+
+        [RelayCommand]
+        public void ToggleFiltersSidebar()
+        {
+            IsFiltersSidebarOpen = !IsFiltersSidebarOpen;
         }
 
         [ObservableProperty]
@@ -284,12 +326,15 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private bool _showAllergy = true;
 
-        public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService, IVisitService visitService)
+        public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService, IVisitService visitService, IThemeService themeService)
         {
             _patientService = patientService;
             _sharedStateService = sharedStateService;
             _queueService = queueService;
             _visitService = visitService;
+            _themeService = themeService;
+
+            System.Windows.WeakEventManager<IThemeService, EventArgs>.AddHandler(_themeService, nameof(IThemeService.ThemeChanged), (s, ev) => OnPropertyChanged(nameof(IsDarkMode)));
             
             // Sync with current selection
             SelectedPatient = _sharedStateService.CurrentPatient;
@@ -374,18 +419,47 @@ namespace MedicalApp.ViewModels
             }
         }
 
+        async partial void OnSearchTermChanged(string value)
+        {
+            await SearchAsync();
+        }
+
         [RelayCommand]
         public async Task SearchAsync()
         {
             try
             {
-                var results = await _patientService.SearchPatientsAsync(SearchTerm);
+                var results = await _patientService.SearchPatientsAdvancedAsync(
+                    SearchTerm,
+                    SearchGender,
+                    SearchMinAge,
+                    SearchMaxAge,
+                    SearchGovernorate,
+                    SearchStartDate,
+                    SearchEndDate,
+                    SearchSortField,
+                    SearchSortDescending);
                 Patients = new ObservableCollection<Patient>(results);
             }
             catch (Exception ex)
             {
                 StatusMessage = $"Error searching: {ex.Message}";
             }
+        }
+
+        [RelayCommand]
+        public async Task ResetFiltersAsync()
+        {
+            SearchGender = "الكل";
+            SearchMinAge = null;
+            SearchMaxAge = null;
+            SearchGovernorate = "الكل";
+            SearchStartDate = null;
+            SearchEndDate = null;
+            SearchSortField = "Name";
+            SearchSortDescending = false;
+
+            await SearchAsync();
         }
 
         partial void OnNameChanged(string value)
@@ -614,6 +688,16 @@ namespace MedicalApp.ViewModels
         {
             ShowCheckInModal = false;
             PendingCheckInPatient = null;
+        }
+
+        [RelayCommand]
+        public void SelectNameSuggestion(Patient patient)
+        {
+            if (patient == null) return;
+            IsSuggestionsOpen = false;
+            NameSuggestions.Clear();
+            ShowRegistrationModal = false;
+            PrepareCheckIn(patient);
         }
 
         [RelayCommand]

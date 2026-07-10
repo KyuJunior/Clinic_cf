@@ -20,10 +20,30 @@
                 <TextBlock Text="Select a clinical room or registry desk below to manage clinic sessions and patient workflow." Style="{StaticResource Subheading}" FontSize="14" HorizontalAlignment="Center"/>
             </StackPanel>
             
-            <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,20,0"
-                    Style="{StaticResource NavButton}" Padding="10" Width="40" Height="40"
-                    Tag="&#xE713;" ToolTip="Print &amp; Calibration Settings"
-                    Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <!-- Top Right Action Buttons -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,10,20,0">
+                <!-- Theme Toggle Button -->
+                <Button Width="40" Height="40" Padding="0" Margin="0,0,10,0"
+                        Command="{Binding ToggleThemeCommand}">
+                    <Button.Style>
+                        <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
+                            <Setter Property="Tag" Value="&#xE708;"/> <!-- Moon icon -->
+                            <Setter Property="ToolTip" Value="Switch to Dark Mode"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDarkMode}" Value="True">
+                                    <Setter Property="Tag" Value="&#xE706;"/> <!-- Sun icon -->
+                                    <Setter Property="ToolTip" Value="Switch to Light Mode"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- Settings Button -->
+                <Button Style="{StaticResource NavButton}" Padding="10" Width="40" Height="40"
+                        Tag="&#xE713;" ToolTip="Print &amp; Calibration Settings"
+                        Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+            </StackPanel>
         </Grid>
 
         <!-- Selection Cards Grid -->
@@ -43,10 +63,10 @@
                         <RowDefinition Height="Auto"/> <!-- Enter Button -->
                     </Grid.RowDefinitions>
                     
-                    <TextBlock Grid.Row="0" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,20,0,25"/>
-                    <TextBlock Grid.Row="1" Text="Secretary" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                    <TextBlock Grid.Row="0" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,20,0,25"/>
+                    <TextBlock Grid.Row="1" Text="Secretary" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,12"/>
                     <TextBlock Grid.Row="2" Text="Enroll new patients, look up existing patient files with autocomplete search-as-you-type, and send patients to today's active waitlist queue." 
-                               FontSize="12" Foreground="{StaticResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
+                               FontSize="12" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
                     
                     <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Enter Secretary Room" Command="{Binding NavigateToRegistryCommand}" Height="40" HorizontalAlignment="Stretch"/>
                 </Grid>
@@ -62,10 +82,10 @@
                         <RowDefinition Height="Auto"/> <!-- Enter Button -->
                     </Grid.RowDefinitions>
                     
-                    <TextBlock Grid.Row="0" Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,20,0,25"/>
-                    <TextBlock Grid.Row="1" Text="Doctor" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,12"/>
+                    <TextBlock Grid.Row="0" Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,20,0,25"/>
+                    <TextBlock Grid.Row="1" Text="Doctor" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,12"/>
                     <TextBlock Grid.Row="2" Text="Manage queued patients in real-time, view full clinical exam timeline logs, write notes, and direct patients to completion." 
-                               FontSize="12" Foreground="{StaticResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
+                               FontSize="12" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
                     
                     <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Enter Doctor Room" Command="{Binding NavigateToExamCommand}" Height="40" HorizontalAlignment="Stretch"/>
                 </Grid>

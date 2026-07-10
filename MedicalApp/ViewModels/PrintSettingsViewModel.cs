@@ -57,6 +57,51 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private double _fontSize = 14;
 
+        [ObservableProperty]
+        private int _activeTab = 0; // 0=Print, 1=Clinic, 2=Database, 3=Staff, 4=Templates
+
+        // Clinic Profile Settings
+        [ObservableProperty]
+        private string _clinicNameAr = "عيادتي التخصصية";
+
+        [ObservableProperty]
+        private string _clinicNameEn = "My Specialty Clinic";
+
+        [ObservableProperty]
+        private string _clinicPhone = "+964 770 123 4567";
+
+        [ObservableProperty]
+        private string _clinicAddress = "Baghdad, Iraq";
+
+        [ObservableProperty]
+        private string _clinicSpecialty = "Gynecology & Obstetrics | التوليد وأمراض النساء";
+
+        // Database & Backups
+        [ObservableProperty]
+        private string _dbBackupPath = @"C:\Myapps\Backups";
+
+        [ObservableProperty]
+        private string _dbBackupInterval = "Daily | يومي";
+
+        [ObservableProperty]
+        private bool _dbAutoBackupEnabled = true;
+
+        // Staff Settings
+        [ObservableProperty]
+        private string _adminPassword = "••••••••";
+
+        [ObservableProperty]
+        private bool _requireLogin = false;
+
+        [RelayCommand]
+        public void SwitchTab(string tabIndex)
+        {
+            if (int.TryParse(tabIndex, out int index))
+            {
+                ActiveTab = index;
+            }
+        }
+
         public PrintSettingsViewModel(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
@@ -92,6 +137,22 @@ namespace MedicalApp.ViewModels
                         DrugsX = settings.DrugsX;
                         DrugsY = settings.DrugsY;
                         FontSize = settings.FontSize;
+
+                        // Clinic Profile
+                        ClinicNameAr = settings.ClinicNameAr ?? "عيادتي التخصصية";
+                        ClinicNameEn = settings.ClinicNameEn ?? "My Specialty Clinic";
+                        ClinicPhone = settings.ClinicPhone ?? "+964 770 123 4567";
+                        ClinicAddress = settings.ClinicAddress ?? "Baghdad, Iraq";
+                        ClinicSpecialty = settings.ClinicSpecialty ?? "Gynecology & Obstetrics | التوليد وأمراض النساء";
+
+                        // Database & Backups
+                        DbBackupPath = settings.DbBackupPath ?? @"C:\Myapps\Backups";
+                        DbBackupInterval = settings.DbBackupInterval ?? "Daily | يومي";
+                        DbAutoBackupEnabled = settings.DbAutoBackupEnabled;
+
+                        // Staff Settings
+                        AdminPassword = settings.AdminPassword ?? "••••••••";
+                        RequireLogin = settings.RequireLogin;
                     }
                 }
             }
@@ -159,7 +220,20 @@ namespace MedicalApp.ViewModels
                     
                     DrugsX = DrugsX,
                     DrugsY = DrugsY,
-                    FontSize = FontSize
+                    FontSize = FontSize,
+
+                    ClinicNameAr = ClinicNameAr,
+                    ClinicNameEn = ClinicNameEn,
+                    ClinicPhone = ClinicPhone,
+                    ClinicAddress = ClinicAddress,
+                    ClinicSpecialty = ClinicSpecialty,
+
+                    DbBackupPath = DbBackupPath,
+                    DbBackupInterval = DbBackupInterval,
+                    DbAutoBackupEnabled = DbAutoBackupEnabled,
+
+                    AdminPassword = AdminPassword,
+                    RequireLogin = RequireLogin
                 };
 
                 string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });

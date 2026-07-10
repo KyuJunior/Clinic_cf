@@ -2,38 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
-    <!-- Color Palette -->
-    <SolidColorBrush x:Key="PrimaryColor" Color="#0D9488"/> <!-- Teal 600 -->
-    <SolidColorBrush x:Key="PrimaryHoverColor" Color="#0F766E"/> <!-- Teal 700 -->
-    <SolidColorBrush x:Key="SecondaryColor" Color="#0EA5E9"/> <!-- Sky 500 -->
-    <SolidColorBrush x:Key="BackgroundColor" Color="#F1F5F9"/> <!-- Slate 100 -->
-    <SolidColorBrush x:Key="CardBackgroundColor" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="TextColor" Color="#1E293B"/> <!-- Slate 800 -->
-    <SolidColorBrush x:Key="SubtextColor" Color="#475569"/> <!-- Slate 600 -->
-    <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/> <!-- Slate 200 -->
-    <SolidColorBrush x:Key="AccentColor" Color="#F43F5E"/> <!-- Rose 500 -->
-    <SolidColorBrush x:Key="SelectedTabBrush" Color="#F0FDFA"/> <!-- Soft teal selection background -->
-    <SolidColorBrush x:Key="SelectedTabTextBrush" Color="#0D9488"/> <!-- Teal 600 selection text -->
- 
-    <!-- Material Design Theme Compatibility Brushes (Legacy and Modern) -->
-    <SolidColorBrush x:Key="MaterialDesignPaper" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="MaterialDesignBackground" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="MaterialDesignCardBackground" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="MaterialDesignBody" Color="#1E293B"/>
-    <SolidColorBrush x:Key="MaterialDesignBodyLight" Color="#475569"/>
-    <SolidColorBrush x:Key="MaterialDesignTextBoxBorder" Color="#E2E8F0"/>
- 
-    <SolidColorBrush x:Key="MaterialDesign.Brush.Paper" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="MaterialDesign.Brush.Background" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="MaterialDesign.Brush.Card.Background" Color="#FFFFFF"/>
-    <SolidColorBrush x:Key="MaterialDesign.Brush.Body" Color="#1E293B"/>
-    <SolidColorBrush x:Key="MaterialDesign.Brush.TextBox.Border" Color="#E2E8F0"/>
-    <SolidColorBrush x:Key="MaterialDesign.Brush.Primary" Color="#0D9488"/>
-    <SolidColorBrush x:Key="MaterialDesign.Brush.Secondary" Color="#0EA5E9"/>
-
     <!-- Global Calendar Style to guarantee solid background inside DatePicker Popup -->
     <Style TargetType="Calendar" BasedOn="{StaticResource {x:Type Calendar}}">
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
     </Style>
 
     <!-- Fonts -->
@@ -44,7 +16,7 @@
         <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
         <Setter Property="FontSize" Value="22"/>
         <Setter Property="FontWeight" Value="Bold"/>
-        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
         <Setter Property="Margin" Value="0,0,0,15"/>
     </Style>
 
@@ -52,20 +24,20 @@
         <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
         <Setter Property="FontSize" Value="16"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
-        <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryColor}"/>
         <Setter Property="Margin" Value="0,0,0,10"/>
     </Style>
 
     <Style x:Key="Subheading" TargetType="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Foreground" Value="{StaticResource SubtextColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
         <Setter Property="Margin" Value="0,0,0,5"/>
     </Style>
 
     <!-- Rounded Button Style -->
     <Style x:Key="ModernButton" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource PrimaryColor}"/>
+        <Setter Property="Background" Value="{DynamicResource PrimaryColor}"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
         <Setter Property="FontSize" Value="13"/>
@@ -83,11 +55,11 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="{StaticResource PrimaryHoverColor}"/>
+                            <Setter Property="Background" Value="{DynamicResource PrimaryHoverColor}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="{StaticResource BorderColor}"/>
-                            <Setter Property="Foreground" Value="{StaticResource SubtextColor}"/>
+                            <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -98,7 +70,7 @@
     <!-- Side Menu Navigation Button -->
     <Style x:Key="NavButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
         <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Padding" Value="15,11"/>
@@ -134,12 +106,12 @@
 
     <!-- Rounded TextBox Style -->
     <Style x:Key="ModernTextBox" TargetType="TextBox">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
         <Setter Property="BorderThickness" Value="1.5"/>
         <Setter Property="Padding" Value="10,8"/>
         <Setter Property="FontSize" Value="13"/>
-        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
@@ -151,7 +123,7 @@
                         <Grid Margin="2">
                             <!-- Watermark/Placeholder -->
                             <TextBlock x:Name="Watermark" 
-                                       Foreground="{StaticResource SubtextColor}" 
+                                       Foreground="{DynamicResource SubtextColor}" 
                                        FontSize="{TemplateBinding FontSize}"
                                        VerticalAlignment="Center" 
                                        Margin="8,0,0,0"
@@ -169,7 +141,7 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsFocused" Value="True">
-                            <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PrimaryColor}"/>
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryColor}"/>
                         </Trigger>
                         <MultiTrigger>
                             <MultiTrigger.Conditions>
@@ -186,8 +158,8 @@
 
     <!-- Card/Container border -->
     <Style x:Key="CardBorder" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource CardBackgroundColor}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="CornerRadius" Value="12"/>
         <Setter Property="Padding" Value="20"/>
@@ -200,10 +172,10 @@
 
     <!-- DataGrid Custom Styling -->
     <Style TargetType="DataGrid">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="RowBackground" Value="White"/>
-        <Setter Property="AlternatingRowBackground" Value="#F8FAFC"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
+        <Setter Property="RowBackground" Value="{DynamicResource CardBackgroundColor}"/>
+        <Setter Property="AlternatingRowBackground" Value="{DynamicResource BackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
         <Setter Property="GridLinesVisibility" Value="None"/>
         <Setter Property="RowHeaderWidth" Value="0"/>
         <Setter Property="AutoGenerateColumns" Value="False"/>
@@ -213,17 +185,17 @@
     </Style>
 
     <Style TargetType="DataGridColumnHeader">
-        <Setter Property="Background" Value="#F1F5F9"/>
-        <Setter Property="Foreground" Value="{StaticResource SubtextColor}"/>
+        <Setter Property="Background" Value="{DynamicResource BackgroundColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
         <Setter Property="FontWeight" Value="SemiBold"/>
         <Setter Property="Padding" Value="12,10"/>
         <Setter Property="BorderThickness" Value="0,0,0,1"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
     </Style>
 
     <Style TargetType="DataGridCell">
         <Setter Property="Padding" Value="12,10"/>
-        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
         <Setter Property="Background" Value="Transparent"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Template">
@@ -237,17 +209,17 @@
         </Setter>
         <Style.Triggers>
             <Trigger Property="IsSelected" Value="True">
-                <Setter Property="Background" Value="#F0FDFA"/> <!-- Teal 50 -->
-                <Setter Property="Foreground" Value="{StaticResource PrimaryColor}"/>
+                <Setter Property="Background" Value="{DynamicResource SelectedTabBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource SelectedTabTextBrush}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
     <!-- Gray Outlined Secondary Button Style -->
     <Style x:Key="SecondaryButton" TargetType="Button">
-        <Setter Property="Background" Value="White"/>
-        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
         <Setter Property="FontSize" Value="12"/>
@@ -266,13 +238,13 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter Property="Background" Value="#F1F5F9"/> <!-- Slate 100 -->
-                            <Setter Property="BorderBrush" Value="{StaticResource SubtextColor}"/>
+                            <Setter Property="Background" Value="{DynamicResource BackgroundColor}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource SubtextColor}"/>
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="{StaticResource BackgroundColor}"/>
-                            <Setter Property="Foreground" Value="{StaticResource SubtextColor}"/>
-                            <Setter Property="BorderBrush" Value="{StaticResource BorderColor}"/>
+                            <Setter Property="Background" Value="{DynamicResource BackgroundColor}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
+                            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -297,8 +269,8 @@
                             <Setter Property="Background" Value="#B45309"/> <!-- Amber 700 -->
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Background" Value="{StaticResource BorderColor}"/>
-                            <Setter Property="Foreground" Value="{StaticResource SubtextColor}"/>
+                            <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -309,7 +281,7 @@
     <!-- Plain Icon Button Style -->
     <Style x:Key="IconButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource TextColor}"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
         <Setter Property="BorderThickness" Value="0"/>
         <Setter Property="Padding" Value="4"/>
         <Setter Property="Cursor" Value="Hand"/>
@@ -361,4 +333,126 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+    <!-- Implicit style for ComboBoxItem to ensure correct theme-aware colors in dropdowns -->
+    <Style TargetType="ComboBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="8,6"/>
+        <Setter Property="HorizontalContentAlignment" Value="Right"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{DynamicResource BackgroundColor}"/>
+            </Trigger>
+            <Trigger Property="IsSelected" Value="True">
+                <Setter Property="Background" Value="{DynamicResource SelectedTabBrush}"/>
+                <Setter Property="Foreground" Value="{DynamicResource SelectedTabTextBrush}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Override MaterialDesignOutlinedTextBox style to force correct dark theme colors -->
+    <Style x:Key="MaterialDesignOutlinedTextBox" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignOutlinedTextBox}">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="materialDesign:HintAssist.Foreground" Value="{DynamicResource SubtextColor}"/>
+        <Setter Property="Padding" Value="10,8"/>
+    </Style>
+
+    <!-- Override MaterialDesignOutlinedComboBox style to force correct dark theme colors -->
+    <Style x:Key="MaterialDesignOutlinedComboBox" TargetType="ComboBox" BasedOn="{StaticResource MaterialDesignOutlinedComboBox}">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="materialDesign:HintAssist.Foreground" Value="{DynamicResource SubtextColor}"/>
+        <Setter Property="Padding" Value="10,8"/>
+    </Style>
+
+    <!-- Override MaterialDesignOutlinedDatePicker style to force correct dark theme colors -->
+    <Style x:Key="MaterialDesignOutlinedDatePicker" TargetType="DatePicker" BasedOn="{StaticResource MaterialDesignOutlinedDatePicker}">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="materialDesign:HintAssist.Foreground" Value="{DynamicResource SubtextColor}"/>
+        <Setter Property="Padding" Value="10,8"/>
+    </Style>
+    <!-- Segmented Tab Button Style -->
+    <Style x:Key="SegmentedTabButton" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
+        <Setter Property="FontFamily" Value="{StaticResource MainFont}"/>
+        <Setter Property="FontSize" Value="11"/>
+        <Setter Property="Padding" Value="6,8"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Name="Border" CornerRadius="6" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="{DynamicResource SelectedTabBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource SelectedTabTextBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Premium Toggle Switch Button Style -->
+    <Style x:Key="ModernSwitchToggleButton" TargetType="ToggleButton">
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="18"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid>
+                        <!-- Track -->
+                        <Border Name="Track" CornerRadius="9" Background="{DynamicResource BorderColor}" BorderThickness="0"/>
+                        <!-- Thumb -->
+                        <Ellipse Name="Thumb" Width="14" Height="14" Fill="White" HorizontalAlignment="Left" Margin="2,0" VerticalAlignment="Center">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform X="0"/>
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Track" Property="Background" Value="{DynamicResource PrimaryColor}"/>
+                            <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right"/>
+                            <Setter TargetName="Thumb" Property="Margin" Value="0,0,2,0"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Mini Settings Toggle Button Style -->
+    <Style x:Key="MiniSettingsToggleButton" TargetType="Button">
+        <Setter Property="Background" Value="#0284C7"/> <!-- Sky 600 -->
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="24"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Name="Border" CornerRadius="4" Background="{TemplateBinding Background}">
+                        <TextBlock Text="&#xE71C;" FontFamily="Segoe MDL2 Assets" FontSize="11" Foreground="{TemplateBinding Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#0369A1"/> <!-- Sky 700 -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
+

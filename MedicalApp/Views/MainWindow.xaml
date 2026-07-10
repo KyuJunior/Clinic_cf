@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="LAN Medical Client-Server Portal" Height="780" Width="1240"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BackgroundColor}">
+        Background="{DynamicResource BackgroundColor}">
     
     <Window.Resources>
         <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
@@ -23,7 +23,7 @@
             </Grid.RowDefinitions>
 
             <!-- Global Patient Header Banner -->
-            <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1">
+            <Border Grid.Row="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Style.Triggers>
@@ -39,29 +39,47 @@
                 <Grid Margin="25,0" Height="70">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/> <!-- Connection Badge -->
+                        <ColumnDefinition Width="Auto"/> <!-- Theme Toggle -->
                     </Grid.ColumnDefinitions>
 
                     <!-- Selected Patient Info -->
                     <StackPanel Grid.Column="0" VerticalAlignment="Center" Orientation="Horizontal">
-                        <TextBlock Text="Active Patient: " FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource SubtextColor}"/>
+                        <TextBlock Text="Active Patient: " FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource SubtextColor}"/>
                         <TextBlock Text="{Binding SelectedPatient.Name, TargetNullValue='No Patient Selected'}" 
-                                   FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="5,0,0,0"/>
+                                   FontSize="15" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="5,0,0,0"/>
                         
                         <StackPanel Orientation="Horizontal" Visibility="{Binding SelectedPatient, Converter={StaticResource NullToVisibilityConverter}}" Margin="20,0,0,0">
-                            <TextBlock Text="Age: " FontSize="14" Foreground="{StaticResource SubtextColor}"/>
-                            <TextBlock Text="{Binding SelectedPatient.Age}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" Margin="2,0,15,0"/>
-                            <TextBlock Text="Gender: " FontSize="14" Foreground="{StaticResource SubtextColor}"/>
-                            <TextBlock Text="{Binding SelectedPatient.Gender}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" Margin="2,0,15,0"/>
-                            <TextBlock Text="Phone: " FontSize="14" Foreground="{StaticResource SubtextColor}"/>
-                            <TextBlock Text="{Binding SelectedPatient.Phone}" FontSize="14" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" Margin="2,0,0,0"/>
+                            <TextBlock Text="Age: " FontSize="14" Foreground="{DynamicResource SubtextColor}"/>
+                            <TextBlock Text="{Binding SelectedPatient.Age}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}" Margin="2,0,15,0"/>
+                            <TextBlock Text="Gender: " FontSize="14" Foreground="{DynamicResource SubtextColor}"/>
+                            <TextBlock Text="{Binding SelectedPatient.Gender}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}" Margin="2,0,15,0"/>
+                            <TextBlock Text="Phone: " FontSize="14" Foreground="{DynamicResource SubtextColor}"/>
+                            <TextBlock Text="{Binding SelectedPatient.Phone}" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}" Margin="2,0,0,0"/>
                         </StackPanel>
                     </StackPanel>
 
                     <!-- Connection Badge -->
-                    <Border Grid.Column="1" VerticalAlignment="Center" Background="#E0F2FE" Padding="10,5" CornerRadius="6">
-                        <TextBlock Text="Database Connected" FontSize="11" FontWeight="SemiBold" Foreground="#0369A1"/>
+                    <Border Grid.Column="1" VerticalAlignment="Center" Background="{DynamicResource InfoBadgeBackground}" Padding="10,5" CornerRadius="6">
+                        <TextBlock Text="Database Connected" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource InfoBadgeText}"/>
                     </Border>
+
+                    <!-- Theme Toggle -->
+                    <Button Grid.Column="2" Width="36" Height="36" Padding="0" VerticalAlignment="Center" Margin="15,0,0,0"
+                            Command="{Binding ToggleThemeCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
+                                <Setter Property="Tag" Value="&#xE708;"/> <!-- Moon icon -->
+                                <Setter Property="ToolTip" Value="Switch to Dark Mode"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsDarkMode}" Value="True">
+                                        <Setter Property="Tag" Value="&#xE706;"/> <!-- Sun icon -->
+                                        <Setter Property="ToolTip" Value="Switch to Light Mode"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
                 </Grid>
             </Border>
 

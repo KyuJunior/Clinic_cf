@@ -3,18 +3,19 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             d:DesignHeight="600" d:DesignWidth="1000"
+             d:DesignHeight="700" d:DesignWidth="1100"
              Background="Transparent">
     
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </UserControl.Resources>
 
-    <Grid Margin="10,15,10,10">
+    <Grid Margin="15">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Back Navigation Header -->
-            <RowDefinition Height="*"/>    <!-- Settings & Preview Columns -->
+            <RowDefinition Height="*"/>    <!-- Left Sidebar Tab Navigation + Main content -->
         </Grid.RowDefinitions>
 
         <!-- Back Button Header -->
@@ -23,183 +24,422 @@
                 Tag="&#xE72B;" Content="Back to Dashboard"
                 Command="{Binding NavigateBackCommand}"/>
 
-        <!-- Main Body -->
+        <!-- Main Workspace -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="420"/> <!-- Calibration Controls -->
-                <ColumnDefinition Width="*"/>   <!-- Live A5 Layout Preview -->
+                <ColumnDefinition Width="230"/> <!-- Left Sidebar: Tab Choices -->
+                <ColumnDefinition Width="*"/>   <!-- Right Pane: Active Tab content -->
             </Grid.ColumnDefinitions>
 
-            <!-- Column 0: Calibration Controls -->
-            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Stretch">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel Margin="5">
-                        <TextBlock Text="Print Template Calibration" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
-                        <TextBlock Text="Adjust print alignment offsets and backgrounds for pre-printed A5 prescription sheets." Style="{StaticResource Subheading}" Margin="0,0,0,20" TextWrapping="Wrap"/>
+            <!-- Sidebar Navigation panel -->
+            <Border Grid.Column="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1.5" CornerRadius="10" Padding="8" VerticalAlignment="Stretch">
+                <StackPanel>
+                    <TextBlock Text="System Settings" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="10,10,10,5"/>
+                    <TextBlock Text="إعدادات النظام العام" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="10,0,10,20"/>
 
-                        <!-- Image Upload section -->
-                        <TextBlock Text="Prescription Background Template" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,8"/>
-                        <Grid Margin="0,0,0,15">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding RxBackgroundPath, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="11"/>
-                            <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Upload A5 Image" Command="{Binding UploadImageCommand}" Padding="15,8"/>
-                        </Grid>
-
-                        <CheckBox Content="Print background image on paper" IsChecked="{Binding PrintBackground}" Margin="0,0,0,20" FontWeight="SemiBold"/>
-
-                        <Border Height="1" Background="{StaticResource BorderColor}" Margin="0,0,0,15"/>
-
-                        <!-- Sliders for Patient Name -->
-                        <TextBlock Text="Patient Name Coordinates" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,3"/>
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Margin="0,0,5,0">
-                                <TextBlock Text="{Binding PatientNameX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="300" Value="{Binding PatientNameX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                                <TextBlock Text="{Binding PatientNameY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="450" Value="{Binding PatientNameY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- Sliders for Patient Age & Gender -->
-                        <TextBlock Text="Age &amp; Gender Coordinates" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,3"/>
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Margin="0,0,5,0">
-                                <TextBlock Text="{Binding PatientAgeGenderX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="300" Value="{Binding PatientAgeGenderX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                                <TextBlock Text="{Binding PatientAgeGenderY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="450" Value="{Binding PatientAgeGenderY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- Sliders for Date -->
-                        <TextBlock Text="Prescription Date Coordinates" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,3"/>
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Margin="0,0,5,0">
-                                <TextBlock Text="{Binding PatientDateX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="300" Value="{Binding PatientDateX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                                <TextBlock Text="{Binding PatientDateY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="450" Value="{Binding PatientDateY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- Sliders for Rx Symbol -->
-                        <Grid Margin="0,0,0,3">
-                            <TextBlock Text="Rx Symbol Header" FontWeight="Bold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center"/>
-                            <CheckBox Content="Show" IsChecked="{Binding ShowRxSymbol}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                        </Grid>
-                        <Grid Margin="0,0,0,12" Visibility="{Binding ShowRxSymbol, Converter={StaticResource BoolToVis}}">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Margin="0,0,5,0">
-                                <TextBlock Text="{Binding RxSymbolX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="300" Value="{Binding RxSymbolX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                                <TextBlock Text="{Binding RxSymbolY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="450" Value="{Binding RxSymbolY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <!-- Sliders for Drugs list -->
-                        <TextBlock Text="Drugs List Coordinates" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,3"/>
-                        <Grid Margin="0,0,0,12">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Margin="0,0,5,0">
-                                <TextBlock Text="{Binding DrugsX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="0" Maximum="300" Value="{Binding DrugsX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                                <TextBlock Text="{Binding DrugsY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                <Slider Minimum="50" Maximum="450" Value="{Binding DrugsY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                            </StackPanel>
-                        </Grid>
-
-                        <StackPanel Margin="0,0,0,20">
-                            <Grid Margin="0,0,0,4">
-                                <TextBlock Text="Medication Font Size" FontSize="12" Foreground="{StaticResource SubtextColor}"/>
-                                <TextBlock Text="{Binding FontSize, StringFormat='\{0:F0\} pt'}" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Right"/>
-                            </Grid>
-                            <Slider Minimum="10" Maximum="24" Value="{Binding FontSize}" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                    <!-- Tab 0 Button -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE767;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="Print Calibration | الطباعة" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
                         </StackPanel>
+                    </Button>
 
-                        <Button Style="{StaticResource ModernButton}" Content="Save Calibration Settings" Command="{Binding SaveSettingsCommand}" Height="40" HorizontalAlignment="Stretch"/>
-                    </StackPanel>
-                </ScrollViewer>
+                    <!-- Tab 1 Button -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE780;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="Clinic Profile | ملف العيادة" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Tab 2 Button -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE926;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="Database &amp; Backup | الحفظ" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Tab 3 Button -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="3">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xE727;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="Security &amp; Staff | الأمان" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                        </StackPanel>
+                    </Button>
+
+                    <!-- Tab 4 Button -->
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="4">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="&#xEC50;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="Report Templates | القوالب" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
             </Border>
 
-            <!-- Column 1: Live A5 Layout Preview -->
-            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,0,0" Background="#F1F5F9" VerticalAlignment="Stretch">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+            <!-- Right Pane: Active Tab content area -->
+            <Grid Grid.Column="1" Margin="15,0,0,0">
+                
+                <!-- TAB 0: PRINT CALIBRATION -->
+                <Grid x:Name="PrintTabGrid">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveTab}" Value="0">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="420"/> <!-- Calibration Controls -->
+                        <ColumnDefinition Width="*"/>   <!-- Live A5 Layout Preview -->
+                    </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="Live A5 Calibration Grid Preview" Style="{StaticResource Header2}" Margin="0,0,0,15" HorizontalAlignment="Center"/>
+                    <!-- Left: Calibration Controls -->
+                    <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Stretch">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel Margin="5">
+                                <TextBlock Text="Print Template Calibration" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
+                                <TextBlock Text="Adjust print alignment offsets and backgrounds for pre-printed A5 prescription sheets." Style="{StaticResource Subheading}" Margin="0,0,0,20" TextWrapping="Wrap"/>
 
-                    <!-- Simulated A5 Sheet -->
-                    <Border Grid.Row="1" Width="350" Height="495" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="4" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <Border.Effect>
-                            <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.15" ShadowDepth="4"/>
-                        </Border.Effect>
-                        <Grid>
-                            <Canvas ClipToBounds="True">
-                                <!-- Background Image Overlay (faded preview) -->
-                                <Image Source="{Binding RxBackgroundPath}" Width="350" Height="495" Stretch="Fill" Opacity="0.45"/>
+                                <!-- Image Upload section -->
+                                <TextBlock Text="Prescription Background Template" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,8"/>
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding RxBackgroundPath, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="11"/>
+                                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Upload A5 Image" Command="{Binding UploadImageCommand}" Padding="15,8"/>
+                                </Grid>
 
-                                <!-- Simulated Patient Name -->
-                                <TextBlock Canvas.Left="{Binding PatientNameX}" Canvas.Top="{Binding PatientNameY}" 
-                                           Text="Patient Name: John Doe" FontSize="11" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                <CheckBox Content="Print background image on paper" IsChecked="{Binding PrintBackground}" Margin="0,0,0,20" FontWeight="SemiBold"/>
 
-                                <!-- Simulated Date -->
-                                <TextBlock Canvas.Left="{Binding PatientDateX}" Canvas.Top="{Binding PatientDateY}" 
-                                           Text="Date: 07/07/2026" FontSize="9" Foreground="#64748B"/>
+                                <Border Height="1" Background="{DynamicResource BorderColor}" Margin="0,0,0,15"/>
 
-                                <!-- Simulated Age & Gender -->
-                                <TextBlock Canvas.Left="{Binding PatientAgeGenderX}" Canvas.Top="{Binding PatientAgeGenderY}" 
-                                           Text="Age: 45 yrs | Gender: Male" FontSize="9" Foreground="#64748B"/>
+                                <!-- Sliders for Patient Name -->
+                                <TextBlock Text="Patient Name Coordinates" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,3"/>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,5,0">
+                                        <TextBlock Text="{Binding PatientNameX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="300" Value="{Binding PatientNameX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                        <TextBlock Text="{Binding PatientNameY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="450" Value="{Binding PatientNameY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                </Grid>
 
-                                <!-- Simulated Rx Header -->
-                                <TextBlock Canvas.Left="{Binding RxSymbolX}" Canvas.Top="{Binding RxSymbolY}" 
-                                           Text="Rx" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" 
-                                           Visibility="{Binding ShowRxSymbol, Converter={StaticResource BoolToVis}}"/>
+                                <!-- Sliders for Patient Age & Gender -->
+                                <TextBlock Text="Age &amp; Gender Coordinates" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,3"/>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,5,0">
+                                        <TextBlock Text="{Binding PatientAgeGenderX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="300" Value="{Binding PatientAgeGenderX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                        <TextBlock Text="{Binding PatientAgeGenderY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="450" Value="{Binding PatientAgeGenderY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                </Grid>
 
-                                <!-- Simulated Prescription/Drugs Block -->
-                                <StackPanel Canvas.Left="{Binding DrugsX}" Canvas.Top="{Binding DrugsY}">
-                                    <TextBlock Text="1. Amoxicillin 500mg (1x3 Daily)" FontSize="{Binding FontSize}" FontWeight="SemiBold" Foreground="#1E293B"/>
-                                    <TextBlock Text="2. Paracetamol 1000mg (As needed for pain)" FontSize="{Binding FontSize}" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,4,0,0"/>
+                                <!-- Sliders for Date -->
+                                <TextBlock Text="Prescription Date Coordinates" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,3"/>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,5,0">
+                                        <TextBlock Text="{Binding PatientDateX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="300" Value="{Binding PatientDateX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                        <TextBlock Text="{Binding PatientDateY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="450" Value="{Binding PatientDateY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Sliders for Rx Symbol -->
+                                <Grid Margin="0,0,0,3">
+                                    <TextBlock Text="Rx Symbol Header" FontWeight="Bold" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+                                    <CheckBox Content="Show" IsChecked="{Binding ShowRxSymbol}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                </Grid>
+                                <Grid Margin="0,0,0,12" Visibility="{Binding ShowRxSymbol, Converter={StaticResource BoolToVis}}">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,5,0">
+                                        <TextBlock Text="{Binding RxSymbolX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="300" Value="{Binding RxSymbolX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                        <TextBlock Text="{Binding RxSymbolY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="450" Value="{Binding RxSymbolY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Sliders for Drugs list -->
+                                <TextBlock Text="Drugs List Coordinates" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,3"/>
+                                <Grid Margin="0,0,0,12">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel Margin="0,0,5,0">
+                                        <TextBlock Text="{Binding DrugsX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="0" Maximum="300" Value="{Binding DrugsX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                        <TextBlock Text="{Binding DrugsY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                        <Slider Minimum="50" Maximum="450" Value="{Binding DrugsY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <StackPanel Margin="0,0,0,20">
+                                    <Grid Margin="0,0,0,4">
+                                        <TextBlock Text="Medication Font Size" FontSize="12" Foreground="{DynamicResource SubtextColor}"/>
+                                        <TextBlock Text="{Binding FontSize, StringFormat='\{0:F0\} pt'}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <Slider Minimum="10" Maximum="24" Value="{Binding FontSize}" TickFrequency="1" IsSnapToTickEnabled="True"/>
                                 </StackPanel>
-                            </Canvas>
+
+                                <Button Style="{StaticResource ModernButton}" Content="Save Calibration Settings" Command="{Binding SaveSettingsCommand}" Height="40" HorizontalAlignment="Stretch"/>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Right: Live A5 Layout Preview -->
+                    <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,0,0" Background="{DynamicResource BackgroundColor}" VerticalAlignment="Stretch">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="Live A5 Calibration Grid Preview" Style="{StaticResource Header2}" Margin="0,0,0,15" HorizontalAlignment="Center"/>
+                            <Border Grid.Row="1" Width="350" Height="495" Background="White" BorderBrush="#CBD5E1" BorderThickness="1.5" CornerRadius="4" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="15" Color="Black" Opacity="0.15" ShadowDepth="4"/>
+                                </Border.Effect>
+                                <Grid>
+                                    <Canvas ClipToBounds="True">
+                                        <Image Source="{Binding RxBackgroundPath}" Width="350" Height="495" Stretch="Fill" Opacity="0.45"/>
+                                        <TextBlock Canvas.Left="{Binding PatientNameX}" Canvas.Top="{Binding PatientNameY}" Text="Patient Name: John Doe" FontSize="11" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                        <TextBlock Canvas.Left="{Binding PatientDateX}" Canvas.Top="{Binding PatientDateY}" Text="Date: 07/07/2026" FontSize="9" Foreground="#64748B"/>
+                                        <TextBlock Canvas.Left="{Binding PatientAgeGenderX}" Canvas.Top="{Binding PatientAgeGenderY}" Text="Age: 45 yrs | Gender: Male" FontSize="9" Foreground="#64748B"/>
+                                        <TextBlock Canvas.Left="{Binding RxSymbolX}" Canvas.Top="{Binding RxSymbolY}" Text="Rx" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Visibility="{Binding ShowRxSymbol, Converter={StaticResource BoolToVis}}"/>
+                                        <StackPanel Canvas.Left="{Binding DrugsX}" Canvas.Top="{Binding DrugsY}">
+                                            <TextBlock Text="1. Amoxicillin 500mg (1x3 Daily)" FontSize="{Binding FontSize}" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                            <TextBlock Text="2. Paracetamol 1000mg (As needed for pain)" FontSize="{Binding FontSize}" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,4,0,0"/>
+                                        </StackPanel>
+                                    </Canvas>
+                                </Grid>
+                            </Border>
                         </Grid>
                     </Border>
                 </Grid>
-            </Border>
+
+                <!-- TAB 1: CLINIC PROFILE -->
+                <Grid x:Name="ClinicTabGrid">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveTab}" Value="1">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Border Style="{StaticResource CardBorder}" VerticalAlignment="Top" Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="Clinic Branding &amp; Information" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
+                            <TextBlock Text="Configure clinical details that will be printed on report sheets, stamps, and receipts." Style="{StaticResource Subheading}" Margin="0,0,0,25"/>
+
+                            <!-- Clinic Name Ar -->
+                            <TextBlock Text="الاسم العربي للعيادة (Clinic Name Arabic) *" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ClinicNameAr, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                            <!-- Clinic Name En -->
+                            <TextBlock Text="English Clinic Name *" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ClinicNameEn, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                            <!-- Specialty -->
+                            <TextBlock Text="Specialty / Subtitle *" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ClinicSpecialty, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                            <!-- Phone -->
+                            <TextBlock Text="Contact Number / Phone *" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ClinicPhone, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,15"/>
+
+                            <!-- Address -->
+                            <TextBlock Text="Address / Location *" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ClinicAddress, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,25"/>
+
+                            <Button Style="{StaticResource ModernButton}" Content="Save Profile Settings" Command="{Binding SaveSettingsCommand}" Width="200" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- TAB 2: DATABASE & BACKUP -->
+                <Grid x:Name="DatabaseTabGrid">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveTab}" Value="2">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Border Style="{StaticResource CardBorder}" VerticalAlignment="Top" Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="Database &amp; Auto-Backup Setup" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
+                            <TextBlock Text="Set backup locations, retention logs, and automate backups to secure patient data." Style="{StaticResource Subheading}" Margin="0,0,0,25"/>
+
+                            <!-- Connection Status -->
+                            <Border Background="{DynamicResource BackgroundColor}" Padding="15" CornerRadius="8" Margin="0,0,0,20">
+                                <StackPanel>
+                                    <TextBlock Text="Active Database Connection Source:" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                                    <TextBlock Text="SQLite Database File (active: MedicalApp.db)" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Backup Path -->
+                            <TextBlock Text="Backup Storage Directory *" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <Grid Margin="0,0,0,15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding DbBackupPath}" Margin="0,0,10,0"/>
+                                <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Browse" Padding="15,0"/>
+                            </Grid>
+
+                            <!-- Auto Backup Toggle -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" IsChecked="{Binding DbAutoBackupEnabled}" Width="38" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Enable automatic backups on application close" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Backup Interval -->
+                            <TextBlock Text="Backup Interval Scheduler" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" materialDesign:TextFieldAssist.TextFieldCornerRadius="6" Width="200" HorizontalAlignment="Left" SelectedValue="{Binding DbBackupInterval, Mode=TwoWay}" Margin="0,0,0,25">
+                                <ComboBoxItem Content="Daily | يومي"/>
+                                <ComboBoxItem Content="Weekly | أسبوعي"/>
+                                <ComboBoxItem Content="Monthly | شهري"/>
+                            </ComboBox>
+
+                            <StackPanel Orientation="Horizontal">
+                                <Button Style="{StaticResource ModernButton}" Content="Save Database Config" Command="{Binding SaveSettingsCommand}" Margin="0,0,15,0"/>
+                                <Button Style="{StaticResource SecondaryButton}" Content="Create Manual Backup Now" BorderBrush="{DynamicResource PrimaryColor}" Foreground="{DynamicResource PrimaryColor}"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- TAB 3: SECURITY & STAFF -->
+                <Grid x:Name="SecurityTabGrid">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveTab}" Value="3">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Border Style="{StaticResource CardBorder}" VerticalAlignment="Top" Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="Security &amp; Access Controls" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
+                            <TextBlock Text="Restrict access to authorized users and configure passwords for doctor/staff accounts." Style="{StaticResource Subheading}" Margin="0,0,0,25"/>
+
+                            <!-- Auto Login Toggle -->
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,20">
+                                <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" IsChecked="{Binding RequireLogin}" Width="38" Height="20" Margin="0,0,10,0"/>
+                                <TextBlock Text="Require login credentials when launching application" FontSize="12" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                            </StackPanel>
+
+                            <!-- Admin Password -->
+                            <TextBlock Text="Administrator Pin/Password" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding AdminPassword}" Width="300" HorizontalAlignment="Left" Margin="0,0,25,0"/>
+
+                            <!-- Active Accounts List (Placeholder) -->
+                            <TextBlock Text="Active System Access Accounts (Read-only)" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,8"/>
+                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Padding="12" Margin="0,0,0,25">
+                                <StackPanel>
+                                    <Grid Margin="0,4">
+                                        <TextBlock Text="Dr. Yaser (Owner | Doctor Dashboard)" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Full Access" Foreground="#10B981" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                    <Border Height="1" Background="{StaticResource BorderColor}" Margin="0,4"/>
+                                    <Grid Margin="0,4">
+                                        <TextBlock Text="Secretary Room (Staff | Queue Registry)" FontWeight="SemiBold"/>
+                                        <TextBlock Text="Waitlist Only" Foreground="#0284C7" HorizontalAlignment="Right"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Style="{StaticResource ModernButton}" Content="Save Security Settings" Command="{Binding SaveSettingsCommand}" Width="200" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!-- TAB 4: TEMPLATES -->
+                <Grid x:Name="TemplatesTabGrid">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveTab}" Value="4">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Border Style="{StaticResource CardBorder}" VerticalAlignment="Top" Padding="20">
+                        <StackPanel>
+                            <TextBlock Text="Clinical Summary Report Templates" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
+                            <TextBlock Text="Configure layout blocks, headers, and metadata to print for clinical summary cards." Style="{StaticResource Subheading}" Margin="0,0,0,25"/>
+
+                            <!-- Language -->
+                            <TextBlock Text="Report Printing Default Language" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                            <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" materialDesign:TextFieldAssist.TextFieldCornerRadius="6" Width="250" HorizontalAlignment="Left" SelectedIndex="2" Margin="0,0,0,20">
+                                <ComboBoxItem Content="English Only"/>
+                                <ComboBoxItem Content="Arabic Only | اللغة العربية"/>
+                                <ComboBoxItem Content="Bilingual | ثنائي اللغة"/>
+                            </ComboBox>
+
+                            <!-- Active fields checkboxes -->
+                            <TextBlock Text="Report Printing Fields Configuration" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,10"/>
+                            <StackPanel Margin="5,0,0,25">
+                                <CheckBox Content="Print Patient Age &amp; Vital Signs (HR, BP, Temp)" IsChecked="True" Margin="0,0,0,8"/>
+                                <CheckBox Content="Print Gestational Obstetric Table (LMP, EDD, GA)" IsChecked="True" Margin="0,0,0,8"/>
+                                <CheckBox Content="Print Diagnosis Notes &amp; Clinical Summary" IsChecked="True" Margin="0,0,0,8"/>
+                                <CheckBox Content="Print Clinic Header Logo &amp; Branding Stamps" IsChecked="True" Margin="0,0,0,8"/>
+                            </StackPanel>
+
+                            <Button Style="{StaticResource ModernButton}" Content="Save Template Config" Command="{Binding SaveSettingsCommand}" Width="200" HorizontalAlignment="Left"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

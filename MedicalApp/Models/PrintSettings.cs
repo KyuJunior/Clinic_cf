@@ -22,5 +22,21 @@ namespace MedicalApp.Models
         public double DrugsY { get; set; } = 200;
 
         public double FontSize { get; set; } = 14;
+
+        // Clinic Profile Settings (Placeholders)
+        public string ClinicNameAr { get; set; } = "عيادتي التخصصية";
+        public string ClinicNameEn { get; set; } = "My Specialty Clinic";
+        public string ClinicPhone { get; set; } = "+964 770 123 4567";
+        public string ClinicAddress { get; set; } = "Baghdad, Iraq";
+        public string ClinicSpecialty { get; set; } = "Gynecology & Obstetrics | التوليد وأمراض النساء";
+
+        // Database & Backups (Placeholders)
+        public string DbBackupPath { get; set; } = @"C:\Myapps\Backups";
+        public string DbBackupInterval { get; set; } = "Daily | يومي";
+        public bool DbAutoBackupEnabled { get; set; } = true;
+
+        // Staff Settings (Placeholders)
+        public string AdminPassword { get; set; } = "••••••••";
+        public bool RequireLogin { get; set; } = false;
     }
 }

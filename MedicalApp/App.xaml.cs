@@ -250,6 +250,7 @@ namespace MedicalApp
                 options.UseSqlServer(connectionString));
 
             services.AddSingleton<ISharedStateService, SharedStateService>();
+            services.AddSingleton<IThemeService, ThemeService>();
             services.AddTransient<IPatientService, PatientService>();
             services.AddTransient<IVisitService, VisitService>();
             services.AddTransient<IQueueService, QueueService>();

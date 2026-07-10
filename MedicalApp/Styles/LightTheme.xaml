@@ -1,0 +1,78 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+
+    <!-- Light Theme Color Palette -->
+    <SolidColorBrush x:Key="PrimaryColor" Color="#0D9488"/> <!-- Teal 600 -->
+    <SolidColorBrush x:Key="PrimaryHoverColor" Color="#0F766E"/> <!-- Teal 700 -->
+    <SolidColorBrush x:Key="SecondaryColor" Color="#0EA5E9"/> <!-- Sky 500 -->
+    <SolidColorBrush x:Key="BackgroundColor" Color="#F1F5F9"/> <!-- Slate 100 -->
+    <SolidColorBrush x:Key="CardBackgroundColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="TextColor" Color="#1E293B"/> <!-- Slate 800 -->
+    <SolidColorBrush x:Key="SubtextColor" Color="#475569"/> <!-- Slate 600 -->
+    <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/> <!-- Slate 200 -->
+    <SolidColorBrush x:Key="AccentColor" Color="#F43F5E"/> <!-- Rose 500 -->
+    <SolidColorBrush x:Key="SelectedTabBrush" Color="#F0FDFA"/> <!-- Soft teal selection background -->
+    <SolidColorBrush x:Key="SelectedTabTextBrush" Color="#0D9488"/> <!-- Teal 600 selection text -->
+ 
+    <!-- Material Design Theme Compatibility Brushes (Legacy and Modern) -->
+    <SolidColorBrush x:Key="MaterialDesignPaper" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="MaterialDesignBackground" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="MaterialDesignCardBackground" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="MaterialDesignBody" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesignBodyLight" Color="#475569"/>
+    <SolidColorBrush x:Key="MaterialDesignTextBoxBorder" Color="#E2E8F0"/>
+ 
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Paper" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Background" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Card.Background" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Surface" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.SurfaceVariant" Color="#F1F5F9"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Body" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.OnSurface" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.OnSurfaceVariant" Color="#475569"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.OnBackground" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Text" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Foreground" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.TextBox.Border" Color="#E2E8F0"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Primary" Color="#0D9488"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Secondary" Color="#0EA5E9"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Text.Primary" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.Text.Secondary" Color="#475569"/>
+
+    <!-- Control-specific MD3 Brushes -->
+    <SolidColorBrush x:Key="MaterialDesign.Brush.TextBox.Foreground" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.TextBox.Background" Color="Transparent"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.TextBox.Hint" Color="#94A3B8"/>
+
+    <SolidColorBrush x:Key="MaterialDesign.Brush.ComboBox.Foreground" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.ComboBox.Background" Color="Transparent"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.ComboBox.Hint" Color="#94A3B8"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.ComboBox.Border" Color="#E2E8F0"/>
+
+    <SolidColorBrush x:Key="MaterialDesign.Brush.DatePicker.Foreground" Color="#1E293B"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.DatePicker.Background" Color="Transparent"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.DatePicker.Hint" Color="#94A3B8"/>
+    <SolidColorBrush x:Key="MaterialDesign.Brush.DatePicker.Border" Color="#E2E8F0"/>
+
+    <!-- Highlight and Active Session Cards -->
+    <SolidColorBrush x:Key="HighlightCardBackground" Color="#FFFBEB"/> <!-- Amber 50 -->
+    <SolidColorBrush x:Key="HighlightCardBorder" Color="#FCD34D"/> <!-- Amber 300 -->
+    <SolidColorBrush x:Key="HighlightCardText" Color="#B45309"/> <!-- Amber 700 -->
+    <SolidColorBrush x:Key="HighlightCardSubtext" Color="#D97706"/> <!-- Amber 600 -->
+
+    <!-- Informational Alert Cards -->
+    <SolidColorBrush x:Key="InfoAlertBackground" Color="#EFF6FF"/> <!-- Blue 50 -->
+    <SolidColorBrush x:Key="InfoAlertBorder" Color="#BFDBFE"/> <!-- Blue 200 -->
+    <SolidColorBrush x:Key="InfoAlertText" Color="#1E40AF"/> <!-- Blue 800 -->
+    <SolidColorBrush x:Key="InfoAlertSubtext" Color="#2563EB"/> <!-- Blue 600 -->
+    <SolidColorBrush x:Key="InfoAlertIcon" Color="#1D4ED8"/> <!-- Blue 700 -->
+
+    <!-- Status Badges -->
+    <SolidColorBrush x:Key="SuccessBadgeBackground" Color="#D1FAE5"/> <!-- Green 100 -->
+    <SolidColorBrush x:Key="SuccessBadgeText" Color="#065F46"/> <!-- Green 800 -->
+    <SolidColorBrush x:Key="InfoBadgeBackground" Color="#E0F2FE"/> <!-- Blue 100 -->
+    <SolidColorBrush x:Key="InfoBadgeText" Color="#0369A1"/> <!-- Blue 700 -->
+    <SolidColorBrush x:Key="WarningBadgeBackground" Color="#FEE2E2"/> <!-- Red 100 -->
+    <SolidColorBrush x:Key="WarningBadgeText" Color="#991B1B"/> <!-- Red 800 -->
+</ResourceDictionary>

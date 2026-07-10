@@ -28,4 +28,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="dr_yaser_profile.png" />
+  </ItemGroup>
+
 </Project>

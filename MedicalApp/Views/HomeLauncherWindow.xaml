@@ -6,7 +6,7 @@
         mc:Ignorable="d"
         Title="CardioCenter 360 - Launcher Portal" Height="520" Width="1020"
         WindowStartupLocation="CenterScreen"
-        Background="{StaticResource BackgroundColor}">
+        Background="{DynamicResource BackgroundColor}">
     
     <Grid>
         <Grid.RowDefinitions>
@@ -16,7 +16,7 @@
         </Grid.RowDefinitions>
 
         <!-- Top Pink/Teal Header Banner -->
-        <Border Grid.Row="0" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1">
+        <Border Grid.Row="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1">
             <Grid Margin="25,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -24,17 +24,17 @@
                 </Grid.ColumnDefinitions>
 
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock Text="Cardio" FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}"/>
-                    <TextBlock Text="Center" FontSize="20" FontWeight="Light" Foreground="{StaticResource PrimaryColor}"/>
-                    <Border Background="{StaticResource SelectedTabBrush}" CornerRadius="4" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
-                        <TextBlock Text="Launcher Portal 360" FontSize="10" FontWeight="Bold" Foreground="{StaticResource SelectedTabTextBrush}"/>
+                    <TextBlock Text="Cardio" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}"/>
+                    <TextBlock Text="Center" FontSize="20" FontWeight="Light" Foreground="{DynamicResource PrimaryColor}"/>
+                    <Border Background="{DynamicResource SelectedTabBrush}" CornerRadius="4" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="Launcher Portal 360" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource SelectedTabTextBrush}"/>
                     </Border>
                 </StackPanel>
 
-                <Border Grid.Column="1" VerticalAlignment="Center" Background="#D1FAE5" Padding="10,5" CornerRadius="6">
+                <Border Grid.Column="1" VerticalAlignment="Center" Background="{DynamicResource SuccessBadgeBackground}" Padding="10,5" CornerRadius="6">
                     <StackPanel Orientation="Horizontal">
-                        <Ellipse Width="6" Height="6" Fill="#059669" Margin="0,0,6,0" VerticalAlignment="Center"/>
-                        <TextBlock Text="Database Connected" FontSize="11" FontWeight="SemiBold" Foreground="#065F46" VerticalAlignment="Center"/>
+                        <Ellipse Width="6" Height="6" Fill="{DynamicResource SuccessBadgeText}" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                        <TextBlock Text="Database Connected" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource SuccessBadgeText}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Border>
             </Grid>
@@ -57,10 +57,10 @@
                         <RowDefinition Height="Auto"/> <!-- Enter Button -->
                     </Grid.RowDefinitions>
                     
-                    <TextBlock Grid.Row="0" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="44" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,20"/>
-                    <TextBlock Grid.Row="1" Text="Secretary" FontSize="16" FontWeight="Bold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    <TextBlock Grid.Row="0" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="44" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,20"/>
+                    <TextBlock Grid.Row="1" Text="Secretary" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                     <TextBlock Grid.Row="2" Text="Enroll new patients, search existing records using autocomplete lookup, and queue them to today's active waitlist." 
-                               FontSize="12" Foreground="{StaticResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="16" Margin="0,0,0,20"/>
+                               FontSize="12" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="16" Margin="0,0,0,20"/>
                     
                     <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Open Secretary Window" Command="{Binding LaunchRegistryCommand}" Height="38" HorizontalAlignment="Stretch"/>
                 </Grid>
@@ -76,10 +76,10 @@
                         <RowDefinition Height="Auto"/> <!-- Enter Button -->
                     </Grid.RowDefinitions>
                     
-                    <TextBlock Grid.Row="0" Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="44" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,20"/>
-                    <TextBlock Grid.Row="1" Text="Doctor" FontSize="16" FontWeight="Bold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    <TextBlock Grid.Row="0" Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="44" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,20"/>
+                    <TextBlock Grid.Row="1" Text="Doctor" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                     <TextBlock Grid.Row="2" Text="Manage waitlisted patients in real-time, record complaints/diagnoses, and direct patients to completed status." 
-                               FontSize="12" Foreground="{StaticResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="16" Margin="0,0,0,20"/>
+                               FontSize="12" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="16" Margin="0,0,0,20"/>
                     
                     <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Open Doctor Window" Command="{Binding LaunchExamCommand}" Height="38" HorizontalAlignment="Stretch"/>
                 </Grid>
@@ -87,14 +87,14 @@
         </Grid>
 
         <!-- Status Footer -->
-        <Border Grid.Row="2" Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,1,0,0" Padding="15,0">
+        <Border Grid.Row="2" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,1,0,0" Padding="15,0">
             <Grid VerticalAlignment="Center">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="CardioCenter Clinic Launcher Portal" FontSize="10" Foreground="{StaticResource SubtextColor}"/>
-                <TextBlock Grid.Column="1" Text="{Binding ConnectionInfo, StringFormat='Active Node: \{0\}'}" FontSize="10" Foreground="{StaticResource SubtextColor}" FontWeight="SemiBold"/>
+                <TextBlock Grid.Column="0" Text="CardioCenter Clinic Launcher Portal" FontSize="10" Foreground="{DynamicResource SubtextColor}"/>
+                <TextBlock Grid.Column="1" Text="{Binding ConnectionInfo, StringFormat='Active Node: \{0\}'}" FontSize="10" Foreground="{DynamicResource SubtextColor}" FontWeight="SemiBold"/>
             </Grid>
         </Border>
     </Grid>

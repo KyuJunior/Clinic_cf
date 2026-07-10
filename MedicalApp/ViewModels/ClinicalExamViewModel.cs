@@ -23,6 +23,29 @@ namespace MedicalApp.ViewModels
         private readonly IPrintService _printService;
         private readonly IDbContextFactory<Data.AppDbContext> _dbContextFactory;
         private readonly System.Windows.Threading.DispatcherTimer _pollingTimer;
+        private readonly IThemeService _themeService;
+
+        public bool IsDarkMode => _themeService.IsDarkMode;
+
+        [RelayCommand]
+        public void ToggleTheme()
+        {
+            _themeService.ToggleTheme();
+        }
+
+        [RelayCommand]
+        public void OpenStartNewVisitWindow()
+        {
+            var window = new MedicalApp.Views.StartNewVisitWindow(_patientService)
+            {
+                Owner = System.Windows.Application.Current.MainWindow
+            };
+            
+            if (window.ShowDialog() == true)
+            {
+                _ = PollQueueAsync();
+            }
+        }
 
         private static readonly string DraftsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "session_drafts.json");
         private bool _isSavingOrLoadingDraft;
@@ -44,6 +67,12 @@ namespace MedicalApp.ViewModels
 
         [ObservableProperty]
         private int _completedCountToday;
+
+        [ObservableProperty]
+        private bool _isQueueTabActive = true;
+
+        [ObservableProperty]
+        private bool _isSoonTabActive;
 
         // Standalone Patient Lookup fields
         [ObservableProperty]
@@ -82,6 +111,9 @@ namespace MedicalApp.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<PrescribedMedication> _prescribedDrugs = new();
+
+        public bool HasNoPrescribedDrugs => PrescribedDrugs == null || PrescribedDrugs.Count == 0;
+        public bool HasPrescribedDrugs => PrescribedDrugs != null && PrescribedDrugs.Count > 0;
 
         [ObservableProperty]
         private string _statusMessage = string.Empty;
@@ -188,7 +220,8 @@ namespace MedicalApp.ViewModels
             ISharedStateService sharedStateService, 
             IQueueService queueService,
             IPrintService printService,
-            IDbContextFactory<Data.AppDbContext> dbContextFactory)
+            IDbContextFactory<Data.AppDbContext> dbContextFactory,
+            IThemeService themeService)
         {
             _visitService = visitService;
             _patientService = patientService;
@@ -196,8 +229,15 @@ namespace MedicalApp.ViewModels
             _queueService = queueService;
             _printService = printService;
             _dbContextFactory = dbContextFactory;
+            _themeService = themeService;
 
-            _prescribedDrugs.CollectionChanged += (s, e) => TriggerAutoSave();
+            System.Windows.WeakEventManager<IThemeService, EventArgs>.AddHandler(_themeService, nameof(IThemeService.ThemeChanged), (s, ev) => OnPropertyChanged(nameof(IsDarkMode)));
+
+            _prescribedDrugs.CollectionChanged += (s, e) => {
+                TriggerAutoSave();
+                OnPropertyChanged(nameof(HasNoPrescribedDrugs));
+                OnPropertyChanged(nameof(HasPrescribedDrugs));
+            };
             _addedInvestigations.CollectionChanged += (s, e) => TriggerAutoSave();
             _addedImagings.CollectionChanged += (s, e) => TriggerAutoSave();
 
@@ -278,6 +318,12 @@ namespace MedicalApp.ViewModels
             {
                 ClearFormFieldsWithoutAutoSave();
             }
+            OnPropertyChanged(nameof(ShowObstetricsCard));
+        }
+
+        async partial void OnSearchTermChanged(string value)
+        {
+            await SearchPatientsAsync();
         }
 
         [RelayCommand]
@@ -326,6 +372,9 @@ namespace MedicalApp.ViewModels
                 StatusMessage = "No patient selected. Please select a patient first.";
                 return;
             }
+
+            SyncPhysicalExamination();
+            SyncTreatmentPlan();
 
             if (string.IsNullOrWhiteSpace(ChiefComplaint) && string.IsNullOrWhiteSpace(Diagnosis))
             {
@@ -441,6 +490,21 @@ namespace MedicalApp.ViewModels
             catch (Exception ex)
             {
                 StatusMessage = $"Error starting exam session: {ex.Message}";
+            }
+        }
+
+        public async Task MoveToQueueStatusAsync(QueueEntry entry, string newStatus)
+        {
+            if (entry == null || string.IsNullOrEmpty(newStatus)) return;
+            try
+            {
+                await _queueService.UpdateQueueStatusAsync(entry.PatientId, newStatus);
+                StatusMessage = $"Patient {entry.PatientName} status changed to {newStatus}.";
+                await PollQueueAsync();
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error moving patient: {ex.Message}";
             }
         }
 
@@ -703,6 +767,9 @@ namespace MedicalApp.ViewModels
                     }
                 }
 
+                SyncPhysicalExamination();
+                SyncTreatmentPlan();
+
                 drafts[CurrentPatient.PatientId] = new PatientVisitDraft
                 {
                     PatientId = CurrentPatient.PatientId,
@@ -757,6 +824,8 @@ namespace MedicalApp.ViewModels
                         PhysicalExamination = draft.PhysicalExamination;
                         Diagnosis = draft.Diagnosis;
                         TreatmentPlan = draft.TreatmentPlan;
+                        ParsePhysicalExamination(PhysicalExamination ?? string.Empty);
+                        ParseTreatmentPlan(TreatmentPlan ?? string.Empty);
                         VitalHR = draft.VitalsHR;
                         VitalSBP = draft.VitalsSBP;
                         VitalDBP = draft.VitalsDBP;
@@ -1303,9 +1372,19 @@ namespace MedicalApp.ViewModels
             TriggerAutoSave();
         }
 
+        public void StartPolling()
+        {
+            _pollingTimer?.Start();
+        }
+
+        public void StopPolling()
+        {
+            _pollingTimer?.Stop();
+        }
+
         public void Dispose()
         {
-            _pollingTimer.Stop();
+            StopPolling();
             _sharedStateService.CurrentPatientChanged -= OnSharedPatientChanged;
             GC.SuppressFinalize(this);
         }

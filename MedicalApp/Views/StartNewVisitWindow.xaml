@@ -1,0 +1,145 @@
+<Window x:Class="MedicalApp.Views.StartNewVisitWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:converters="clr-namespace:MedicalApp.Converters"
+        mc:Ignorable="d"
+        Title="Start New Visit | بدء زيارة جديدة" Height="520" Width="760"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="{DynamicResource BackgroundColor}"
+        Foreground="{DynamicResource TextColor}"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
+        <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Border Padding="20">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Search bar -->
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="*"/>    <!-- DataGrid -->
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/> <!-- Selection / Options -->
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/> <!-- Buttons -->
+            </Grid.RowDefinitions>
+
+            <!-- Top Row: Search Header -->
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBox Grid.Column="0" Name="SearchTextBox" 
+                         Style="{StaticResource ModernTextBox}" 
+                         Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" 
+                         Tag="بحث باسم المريض أو رقم الهاتف... Search by name or phone..." 
+                         VerticalContentAlignment="Center"
+                         KeyDown="SearchTextBox_KeyDown"/>
+                
+                <Button Grid.Column="2" Name="SearchButton" 
+                        Style="{StaticResource ModernButton}" 
+                        Content="بحث | Search" 
+                        Click="SearchButton_Click" 
+                        Padding="25,0" Height="36"/>
+            </Grid>
+
+            <!-- DataGrid Table -->
+            <Border Grid.Row="2" Style="{StaticResource CardBorder}" Padding="5">
+                <DataGrid ItemsSource="{Binding Patients}" 
+                          SelectedItem="{Binding SelectedPatient}" 
+                          AutoGenerateColumns="False" 
+                          CanUserAddRows="False" 
+                          HeadersVisibility="Column" 
+                          GridLinesVisibility="Horizontal" 
+                          BorderThickness="0" 
+                          Background="Transparent"
+                          SelectionMode="Single"
+                          RowHeaderWidth="0">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="الاسم | Name" Binding="{Binding Name}" Width="230" IsReadOnly="True">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="Margin" Value="10,0"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                        <DataGridTextColumn Header="العمر | Age" Binding="{Binding Age}" Width="70" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="الجنس | Gender" Binding="{Binding Gender}" Width="90" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="رقم الهاتف | Phone" Binding="{Binding Phone}" Width="140" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="المحافظة | Governorate" Binding="{Binding Governorate}" Width="120" IsReadOnly="True"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+
+            <!-- Selection and Pricing Options -->
+            <Border Grid.Row="4" Style="{StaticResource CardBorder}" Background="{DynamicResource CardBackgroundColor}" Padding="15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: Selected Patient Info -->
+                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                        <TextBlock Text="Selected Patient | المريض المحدد:" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                        <ContentControl Content="{Binding SelectedPatient}">
+                            <ContentControl.ContentTemplate>
+                                <DataTemplate>
+                                    <TextBlock Margin="0,5,0,0" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}">
+                                        <Run Text="{Binding Name}"/>
+                                        <Run Text=" ( "/>
+                                        <Run Text="{Binding Age}"/>
+                                        <Run Text=" yrs | "/>
+                                        <Run Text="{Binding Gender}"/>
+                                        <Run Text=" )"/>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </ContentControl.ContentTemplate>
+                        </ContentControl>
+                        <TextBlock Text="No patient selected | الرجاء اختيار مريض من الجدول" 
+                                   Margin="0,5,0,0" FontSize="13" FontWeight="SemiBold" Foreground="#EF4444"
+                                   Visibility="{Binding SelectedPatient, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=Inverse}"/>
+                    </StackPanel>
+
+                    <!-- Right: Visit Type / Pricing -->
+                    <StackPanel Grid.Column="1" FlowDirection="RightToLeft" VerticalAlignment="Center">
+                        <TextBlock Text="نوع الزيارة | Visit Type" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,6" HorizontalAlignment="Right"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                            <RadioButton Content="مدفوعة | Paid" IsChecked="{Binding IsPaidVisit}" Margin="0,0,20,0" FontWeight="SemiBold"/>
+                            <RadioButton Content="مجانية | Free" IsChecked="{Binding IsFreeVisit}" FontWeight="SemiBold"/>
+                        </StackPanel>
+
+                        <!-- Price Field, visible only when IsPaidVisit is true -->
+                        <Grid Visibility="{Binding IsPaidVisit, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="السعر | Price: " VerticalAlignment="Center" Margin="0,0,10,0" FontSize="12" Foreground="{DynamicResource SubtextColor}"/>
+                            <TextBox Grid.Column="1" Style="{StaticResource ModernTextBox}" Text="{Binding VisitPrice, UpdateSourceTrigger=PropertyChanged}" Height="32" VerticalContentAlignment="Center" Width="120" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Buttons -->
+            <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Name="CancelButton" Style="{StaticResource SecondaryButton}" Content="إلغاء | Cancel" Click="CancelButton_Click" Width="120" Height="36" Margin="0,0,10,0"/>
+                <Button Name="StartVisitButton" Style="{StaticResource ModernButton}" Content="بدء الزيارة | Start Visit" Click="StartVisitButton_Click" Width="160" Height="36" 
+                        IsEnabled="{Binding SelectedPatient, Converter={StaticResource NullToBoolConverter}}"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

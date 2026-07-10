@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:MedicalApp.Converters"
              xmlns:views="clr-namespace:MedicalApp.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1100"
              Background="Transparent">
@@ -54,7 +55,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Column 0: Left Sidebar -->
-            <Border Grid.Column="0" Background="#F8FAFC" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,1.5,0">
+            <Border Grid.Column="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,1.5,0">
                 <Grid Margin="10,15">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>    <!-- Waiting Visits -->
@@ -76,7 +77,7 @@
                         <ListBox Grid.Row="1" ItemsSource="{Binding WaitingVisits}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,6" Background="White">
+                                    <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,6" Background="{DynamicResource CardBackgroundColor}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/> <!-- Time -->
@@ -115,7 +116,7 @@
                             <ListBox Grid.Row="1" ItemsSource="{Binding IncompleteVisits}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,6" Background="White">
+                                        <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,6" Background="{DynamicResource CardBackgroundColor}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/> <!-- Time -->
@@ -219,8 +220,9 @@
                         <Grid Grid.Row="0" Margin="0,0,0,15">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/> <!-- Settings Gear -->
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>    <!-- Search Box -->
+                                <ColumnDefinition Width="Auto"/> <!-- Filters Toggle -->
+                                <ColumnDefinition Width="Auto"/> <!-- Search Button -->
                             </Grid.ColumnDefinitions>
 
                             <!-- Settings Gear Button for Grid Columns -->
@@ -229,7 +231,7 @@
                                 
                                 <!-- 3-Column Popup switches list to control all column visibilities -->
                                 <Popup IsOpen="{Binding IsGridGearOpen, Mode=TwoWay}" StaysOpen="False" Placement="Bottom">
-                                    <Border Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Padding="15" Width="620">
+                                    <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Padding="15" Width="620">
                                         <Border.Effect>
                                             <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.15" ShadowDepth="3"/>
                                         </Border.Effect>
@@ -295,12 +297,117 @@
                             </Grid>
 
                             <TextBox Grid.Column="1" Style="{StaticResource ModernTextBox}" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Tag="بحث باسم المريض أو رقم الهاتف..." Margin="0,0,10,0" VerticalContentAlignment="Center"/>
-                            <Button Grid.Column="2" Style="{StaticResource ModernButton}" Content="بحث" Command="{Binding SearchCommand}" Padding="20,8"/>
+                            <Button Grid.Column="2" Command="{Binding ToggleFiltersSidebarCommand}" Width="36" Height="36" Margin="0,0,10,0" ToolTip="تصفية متقدمة">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
+                                        <Setter Property="Tag" Value="&#xE71C;"/> <!-- Filter icon -->
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsFiltersSidebarOpen}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource SelectedTabBrush}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource SelectedTabTextBrush}"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                            <Button Grid.Column="3" Style="{StaticResource ModernButton}" Content="بحث" Command="{Binding SearchCommand}" Padding="20,8"/>
                         </Grid>
 
-                        <!-- DataGrid Table -->
-                        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-                            <DataGrid ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0" Background="Transparent">
+                        <!-- DataGrid Table with Collapsible Sidebar -->
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/> <!-- Sidebar -->
+                                <ColumnDefinition Width="*"/>    <!-- Content Table -->
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Collapsible Filters Sidebar (RTL flow direction, so it will slide from right side of the screen) -->
+                            <Border Grid.Column="0" Width="260" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1,0,0,0" CornerRadius="8" Padding="15" Margin="0,0,15,0"
+                                    Visibility="{Binding IsFiltersSidebarOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <StackPanel FlowDirection="RightToLeft">
+                                        <TextBlock Text="فلترة البحث المتقدم" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Right" Margin="0,0,0,15"/>
+                                        
+                                        <!-- Gender Filter -->
+                                        <TextBlock Text="الجنس" FontSize="11" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Content" SelectedValue="{Binding SearchGender}" Height="36" Margin="0,0,0,12">
+                                            <ComboBoxItem Content="الكل"/>
+                                            <ComboBoxItem Content="ذكر"/>
+                                            <ComboBoxItem Content="أنثى"/>
+                                        </ComboBox>
+
+                                        <!-- Age Range Filter -->
+                                        <TextBlock Text="العمر" FontSize="11" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                        <Grid Margin="0,0,0,12">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="10"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Column="0" Style="{StaticResource ModernTextBox}" Text="{Binding SearchMinAge}" Tag="الأدنى" HorizontalContentAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="-" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource SubtextColor}"/>
+                                            <TextBox Grid.Column="2" Style="{StaticResource ModernTextBox}" Text="{Binding SearchMaxAge}" Tag="الأقصى" HorizontalContentAlignment="Center"/>
+                                        </Grid>
+
+                                        <!-- Governorate Filter -->
+                                        <TextBlock Text="المحافظة" FontSize="11" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Content" SelectedValue="{Binding SearchGovernorate}" Height="36" Margin="0,0,0,12">
+                                            <ComboBoxItem Content="الكل"/>
+                                            <ComboBoxItem Content="بغداد"/>
+                                            <ComboBoxItem Content="البصرة"/>
+                                            <ComboBoxItem Content="نينوى"/>
+                                            <ComboBoxItem Content="اربيل"/>
+                                            <ComboBoxItem Content="النجف"/>
+                                            <ComboBoxItem Content="كربلاء"/>
+                                            <ComboBoxItem Content="بابل"/>
+                                            <ComboBoxItem Content="الأنبار"/>
+                                            <ComboBoxItem Content="ديالى"/>
+                                            <ComboBoxItem Content="كركوك"/>
+                                            <ComboBoxItem Content="صلاح الدين"/>
+                                            <ComboBoxItem Content="السليمانية"/>
+                                            <ComboBoxItem Content="دهوك"/>
+                                            <ComboBoxItem Content="واسط"/>
+                                            <ComboBoxItem Content="ميسان"/>
+                                            <ComboBoxItem Content="ذي قار"/>
+                                            <ComboBoxItem Content="المثنى"/>
+                                            <ComboBoxItem Content="القادسية"/>
+                                        </ComboBox>
+
+                                        <!-- Visit Date Range -->
+                                        <TextBlock Text="تاريخ الزيارة" FontSize="11" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                        <DatePicker Style="{StaticResource MaterialDesignOutlinedDatePicker}" SelectedDate="{Binding SearchStartDate}" materialDesign:HintAssist.Hint="من تاريخ" Height="36" Margin="0,0,0,8"/>
+                                        <DatePicker Style="{StaticResource MaterialDesignOutlinedDatePicker}" SelectedDate="{Binding SearchEndDate}" materialDesign:HintAssist.Hint="إلى تاريخ" Height="36" Margin="0,0,0,12"/>
+
+                                        <Separator Margin="0,5,0,12" Background="{DynamicResource BorderColor}"/>
+
+                                        <!-- Sort options -->
+                                        <TextBlock Text="ترتيب حسب" FontSize="11" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Tag" SelectedValue="{Binding SearchSortField}" Height="36" Margin="0,0,0,8">
+                                            <ComboBoxItem Content="الاسم" Tag="Name"/>
+                                            <ComboBoxItem Content="العمر" Tag="Age"/>
+                                            <ComboBoxItem Content="تاريخ التسجيل" Tag="RegistrationDate"/>
+                                            <ComboBoxItem Content="تاريخ آخر زيارة" Tag="LastVisitDate"/>
+                                        </ComboBox>
+                                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Tag" SelectedValue="{Binding SearchSortDescending}" Height="36" Margin="0,0,0,15">
+                                            <ComboBoxItem Content="تصاعدي" Tag="False"/>
+                                            <ComboBoxItem Content="تنازلي" Tag="True"/>
+                                        </ComboBox>
+
+                                        <!-- Action Buttons -->
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Button Grid.Column="0" Content="تطبيق" Command="{Binding SearchCommand}" Style="{StaticResource ModernButton}" Height="32" Margin="0,0,5,0"/>
+                                            <Button Grid.Column="1" Content="إعادة تعيين" Command="{Binding ResetFiltersCommand}" Style="{StaticResource SecondaryButton}" Height="32" Margin="5,0,0,0"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </ScrollViewer>
+                            </Border>
+
+                            <!-- Patient DataGrid (Column 1) -->
+                            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                                <DataGrid ItemsSource="{Binding Patients}" SelectedItem="{Binding SelectedPatient}" AutoGenerateColumns="False" CanUserAddRows="False" HeadersVisibility="Column" GridLinesVisibility="Horizontal" BorderThickness="0" Background="Transparent">
                                 <DataGrid.Columns>
                                     <!-- Patient Code -->
                                     <DataGridTextColumn Header="الرمز" Binding="{Binding PatientId}" Width="60" IsReadOnly="True"
@@ -443,6 +550,7 @@
                             </DataGrid>
                         </ScrollViewer>
                     </Grid>
+                </Grid>
 
                         <!-- Panel 2: Today's Visits -->
                         <Grid>
@@ -672,7 +780,7 @@
 
         <!-- Overlay Modal Dialog: Register / Edit Patient -->
         <Grid Background="#80000000" Visibility="{Binding ShowRegistrationModal, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="720" MaxHeight="620" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="720" MaxHeight="620" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.3" ShadowDepth="5"/>
                 </Border.Effect>
@@ -698,7 +806,7 @@
                             
                             <!-- 2-Column Popup switches list matching mockup -->
                             <Popup IsOpen="{Binding IsGearMenuOpen, Mode=TwoWay}" StaysOpen="False" Placement="Bottom">
-                                <Border Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Padding="15" Width="460">
+                                <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Padding="15" Width="460">
                                     <Border.Effect>
                                         <DropShadowEffect BlurRadius="10" Color="Black" Opacity="0.15" ShadowDepth="3"/>
                                     </Border.Effect>
@@ -771,7 +879,38 @@
 
                                 <!-- Name -->
                                 <TextBlock Text="الاسم *" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="الاسم" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                <Grid Margin="0,0,0,10">
+                                    <TextBox x:Name="RegNameTextBox" Style="{StaticResource ModernTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="الاسم" HorizontalContentAlignment="Right"/>
+                                    
+                                    <!-- Suggestions Popup -->
+                                    <Popup IsOpen="{Binding IsSuggestionsOpen, Mode=TwoWay}" StaysOpen="False" PlacementTarget="{Binding ElementName=RegNameTextBox}" Placement="Bottom" Width="{Binding ElementName=RegNameTextBox, Path=ActualWidth}">
+                                        <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Padding="5" MaxHeight="220">
+                                            <Border.Effect>
+                                                <DropShadowEffect BlurRadius="12" Color="Black" Opacity="0.25" ShadowDepth="4"/>
+                                            </Border.Effect>
+                                            <ListBox ItemsSource="{Binding NameSuggestions}" Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                                                <ListBox.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Button Style="{StaticResource MaterialDesignFlatButton}" 
+                                                                Command="{Binding DataContext.SelectNameSuggestionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                                CommandParameter="{Binding}"
+                                                                HorizontalContentAlignment="Right"
+                                                                FlowDirection="RightToLeft"
+                                                                Padding="10,6" Height="Auto"
+                                                                Margin="0,2">
+                                                            <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+                                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="{DynamicResource TextColor}" FontSize="12"/>
+                                                                <TextBlock Text=" (" Foreground="{DynamicResource SubtextColor}" FontSize="12"/>
+                                                                <TextBlock Text="{Binding Age}" Foreground="{DynamicResource SubtextColor}" FontSize="11" VerticalAlignment="Center"/>
+                                                                <TextBlock Text=" سنة | yrs)" Foreground="{DynamicResource SubtextColor}" FontSize="11" VerticalAlignment="Center"/>
+                                                            </StackPanel>
+                                                        </Button>
+                                                    </DataTemplate>
+                                                </ListBox.ItemTemplate>
+                                            </ListBox>
+                                        </Border>
+                                    </Popup>
+                                </Grid>
 
                                 <!-- Age in Years -->
                                 <TextBlock Text="العمر (سنوات) *" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
@@ -1008,7 +1147,7 @@
 
         <!-- Overlay Modal Dialog: Visit Check-in -->
         <Grid Background="#80000000" Visibility="{Binding ShowCheckInModal, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="White" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.3" ShadowDepth="5"/>
                 </Border.Effect>

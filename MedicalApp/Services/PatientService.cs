@@ -35,6 +35,86 @@ namespace MedicalApp.Services
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Patient>> SearchPatientsAdvancedAsync(
+            string searchTerm,
+            string gender = null,
+            int? minAge = null,
+            int? maxAge = null,
+            string governorate = null,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            string sortBy = null,
+            bool isDescending = false)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            var query = context.Patients.Include(p => p.Visits).AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(p => p.Name.Contains(searchTerm) || p.Phone.Contains(searchTerm) || p.Job.Contains(searchTerm) || p.Governorate.Contains(searchTerm));
+            }
+
+            if (!string.IsNullOrWhiteSpace(gender) && gender != "الكل" && gender != "All")
+            {
+                query = query.Where(p => p.Gender == gender);
+            }
+
+            if (minAge.HasValue)
+            {
+                query = query.Where(p => p.Age >= minAge.Value);
+            }
+
+            if (maxAge.HasValue)
+            {
+                query = query.Where(p => p.Age <= maxAge.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(governorate) && governorate != "الكل" && governorate != "All")
+            {
+                query = query.Where(p => p.Governorate == governorate);
+            }
+
+            if (startDate.HasValue)
+            {
+                var startVal = startDate.Value.Date;
+                query = query.Where(p => p.Visits.Any(v => v.VisitDate >= startVal));
+            }
+
+            if (endDate.HasValue)
+            {
+                var endVal = endDate.Value.Date.AddDays(1).AddTicks(-1);
+                query = query.Where(p => p.Visits.Any(v => v.VisitDate <= endVal));
+            }
+
+            if (!string.IsNullOrWhiteSpace(sortBy))
+            {
+                if (sortBy == "Name")
+                {
+                    query = isDescending ? query.OrderByDescending(p => p.Name) : query.OrderBy(p => p.Name);
+                }
+                else if (sortBy == "Age")
+                {
+                    query = isDescending ? query.OrderByDescending(p => p.Age) : query.OrderBy(p => p.Age);
+                }
+                else if (sortBy == "RegistrationDate")
+                {
+                    query = isDescending ? query.OrderByDescending(p => p.CreatedAt) : query.OrderBy(p => p.CreatedAt);
+                }
+                else if (sortBy == "LastVisitDate")
+                {
+                    query = isDescending 
+                        ? query.OrderByDescending(p => p.Visits.Max(v => (DateTime?)v.VisitDate) ?? DateTime.MinValue)
+                        : query.OrderBy(p => p.Visits.Max(v => (DateTime?)v.VisitDate) ?? DateTime.MinValue);
+                }
+            }
+            else
+            {
+                query = query.OrderBy(p => p.Name);
+            }
+
+            return await query.ToListAsync();
+        }
+
         public async Task<Patient?> GetPatientByIdAsync(int id)
         {
             using var context = await _contextFactory.CreateDbContextAsync();

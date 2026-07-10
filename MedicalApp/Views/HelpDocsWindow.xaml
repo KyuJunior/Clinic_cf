@@ -1,0 +1,71 @@
+<Window x:Class="MedicalApp.Views.HelpDocsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="System Help &amp; Documentation | المساعدة والتعليمات" Height="460" Width="550"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="{DynamicResource BackgroundColor}"
+        Foreground="{DynamicResource TextColor}"
+        ResizeMode="NoResize">
+
+    <Border Padding="25">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/> <!-- Title Header -->
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="*"/>    <!-- Scrollable content -->
+                <RowDefinition Height="15"/>
+                <RowDefinition Height="Auto"/> <!-- Close Button -->
+            </Grid.RowDefinitions>
+
+            <!-- Title Header -->
+            <StackPanel Grid.Row="0">
+                <TextBlock Text="System Guide &amp; Help" Style="{StaticResource Header1}"/>
+                <TextBlock Text="دليل استخدام النظام والمساعدة" Style="{StaticResource Subheading}"/>
+            </StackPanel>
+
+            <!-- Scrollable Guide Content -->
+            <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,0,10,0">
+                    
+                    <!-- Section 1: Waitlist Queue -->
+                    <Border Style="{StaticResource CardBorder}" Background="{DynamicResource CardBackgroundColor}" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="1. Queue &amp; Drag-Drop | إدارة قائمة الانتظار" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,0,0,8"/>
+                            <TextBlock Text="• Drag patient cards from 'Waiting' to 'In Progress' to start a session." FontSize="12" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                            <TextBlock Text="• You can drag cards back to 'Waiting' or move them between lists as needed." FontSize="12" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                            <TextBlock Text="• إسحب بطاقة المريض من قائمة الانتظار وضعه في خانة المعاينة لبدء الجلسة." FontSize="12" FlowDirection="RightToLeft" Foreground="{DynamicResource SubtextColor}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Section 2: Patient Registration -->
+                    <Border Style="{StaticResource CardBorder}" Background="{DynamicResource CardBackgroundColor}" Padding="15" Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="2. Patient Registration | تسجيل المرضى" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,0,0,8"/>
+                            <TextBlock Text="• Switch to the Secretary Desk to add or update patient records." FontSize="12" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                            <TextBlock Text="• While typing a name in the form, name suggestions are displayed automatically." FontSize="12" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                            <TextBlock Text="• يمكنك التبديل إلى مكتب السكرتارية لإضافة ملفات المرضى وتحديثها مع إكمال تلقائي." FontSize="12" FlowDirection="RightToLeft" Foreground="{DynamicResource SubtextColor}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Section 3: Settings & Printing -->
+                    <Border Style="{StaticResource CardBorder}" Background="{DynamicResource CardBackgroundColor}" Padding="15" Margin="0,0,0,5">
+                        <StackPanel>
+                            <TextBlock Text="3. Settings &amp; Calibration | إعدادات المعايرة والطباعة" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,0,0,8"/>
+                            <TextBlock Text="• Click the settings icon in the top header menu to calibrate printer margins." FontSize="12" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                            <TextBlock Text="• Configure headers, footers, and active fields for obstetric/clinical reports." FontSize="12" Margin="0,0,0,4" TextWrapping="Wrap"/>
+                            <TextBlock Text="• اضغط على إيقونة الإعدادات لضبط أبعاد ومحاذاة الطباعة وتخصيص تقارير المرضى." FontSize="12" FlowDirection="RightToLeft" Foreground="{DynamicResource SubtextColor}" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                        </StackPanel>
+                    </Border>
+
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Close Button -->
+            <Button Grid.Row="4" Style="{StaticResource ModernButton}" Content="إغلاق | Close" Click="CloseButton_Click" HorizontalAlignment="Right" Width="100" Height="36"/>
+        </Grid>
+    </Border>
+</Window>

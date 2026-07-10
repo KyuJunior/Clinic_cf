@@ -4,7 +4,7 @@
         Title="Print Layout Settings &amp; Preview" Height="780" Width="920"
         WindowStartupLocation="CenterOwner"
         ShowInTaskbar="False"
-        Background="#F1F5F9"
+        Background="{DynamicResource BackgroundColor}"
         ResizeMode="CanResize">
     
     <Grid Margin="15">
@@ -20,19 +20,19 @@
                 <TextBlock Text="Configure printer properties and preferences." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
 
                 <!-- Printer Selection -->
-                <TextBlock Text="Printer" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,5"/>
-                <ComboBox x:Name="PrinterComboBox" Height="36" Margin="0,0,0,15" VerticalContentAlignment="Center"/>
+                <TextBlock Text="Printer" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,5"/>
+                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" x:Name="PrinterComboBox" Height="36" Margin="0,0,0,15" VerticalContentAlignment="Center"/>
 
                 <!-- Orientation -->
-                <TextBlock Text="Orientation" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,5"/>
-                <ComboBox x:Name="OrientationComboBox" Height="36" Margin="0,0,0,15" VerticalContentAlignment="Center">
+                <TextBlock Text="Orientation" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,5"/>
+                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" x:Name="OrientationComboBox" Height="36" Margin="0,0,0,15" VerticalContentAlignment="Center">
                     <ComboBoxItem Content="Portrait" IsSelected="True"/>
                     <ComboBoxItem Content="Landscape"/>
                 </ComboBox>
 
                 <!-- Copies -->
-                <TextBlock Text="Copies" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,5"/>
-                <ComboBox x:Name="CopiesComboBox" Height="36" Margin="0,0,0,15" VerticalContentAlignment="Center" IsEditable="True">
+                <TextBlock Text="Copies" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,5"/>
+                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" x:Name="CopiesComboBox" Height="36" Margin="0,0,0,15" VerticalContentAlignment="Center" IsEditable="True">
                     <ComboBoxItem Content="1" IsSelected="True"/>
                     <ComboBoxItem Content="2"/>
                     <ComboBoxItem Content="3"/>
@@ -41,8 +41,8 @@
                 </ComboBox>
 
                 <!-- Color Mode -->
-                <TextBlock Text="Color Mode" FontWeight="Bold" Foreground="{StaticResource TextColor}" Margin="0,0,0,5"/>
-                <ComboBox x:Name="ColorComboBox" Height="36" Margin="0,0,0,25" VerticalContentAlignment="Center">
+                <TextBlock Text="Color Mode" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,5"/>
+                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" x:Name="ColorComboBox" Height="36" Margin="0,0,0,25" VerticalContentAlignment="Center">
                     <ComboBoxItem Content="Color" IsSelected="True"/>
                     <ComboBoxItem Content="Black &amp; White"/>
                 </ComboBox>
@@ -54,7 +54,7 @@
         </Border>
 
         <!-- Column 1: Live Document Preview -->
-        <Border Grid.Column="1" Style="{StaticResource CardBorder}" Background="White" VerticalAlignment="Stretch">
+        <Border Grid.Column="1" Style="{StaticResource CardBorder}" Background="{DynamicResource CardBackgroundColor}" VerticalAlignment="Stretch">
             <FlowDocumentPageViewer Name="DocViewer" Zoom="85"/>
         </Border>
     </Grid>
