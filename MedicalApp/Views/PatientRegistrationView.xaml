@@ -88,8 +88,11 @@
                                             <!-- Time -->
                                             <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat=\{0:hh:mm tt\}}" FontSize="10" Foreground="#0284C7" VerticalAlignment="Center"/>
 
-                                            <!-- Name in Green -->
-                                            <TextBlock Grid.Column="1" Text="{Binding PatientName}" FontSize="12" FontWeight="SemiBold" Foreground="#10B981" Margin="6,0" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Right"/>
+                                            <!-- Name in Green and Doctor Name -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="6,0">
+                                                <TextBlock Text="{Binding PatientName}" FontSize="12" FontWeight="SemiBold" Foreground="#10B981" TextWrapping="Wrap" TextAlignment="Right"/>
+                                                <TextBlock Text="{Binding DoctorName, StringFormat='مع: \{0\}'}" FontSize="9.5" Foreground="{DynamicResource SubtextColor}" TextAlignment="Right" Margin="0,2,0,0"/>
+                                            </StackPanel>
 
                                             <!-- Status Icon -->
                                             <TextBlock Grid.Column="2" Text="&#xE814;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#10B981" VerticalAlignment="Center"/>
@@ -127,8 +130,11 @@
                                                 <!-- Time -->
                                                 <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat=\{0:hh:mm tt\}}" FontSize="10" Foreground="#0284C7" VerticalAlignment="Center"/>
 
-                                                <!-- Name in Orange/Blue -->
-                                                <TextBlock Grid.Column="1" Text="{Binding PatientName}" FontSize="12" FontWeight="SemiBold" Foreground="#F59E0B" Margin="6,0" TextWrapping="Wrap" VerticalAlignment="Center" TextAlignment="Right"/>
+                                                <!-- Name in Orange/Blue and Doctor Name -->
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="6,0">
+                                                    <TextBlock Text="{Binding PatientName}" FontSize="12" FontWeight="SemiBold" Foreground="#F59E0B" TextWrapping="Wrap" TextAlignment="Right"/>
+                                                    <TextBlock Text="{Binding DoctorName, StringFormat='عند: \{0\}'}" FontSize="9.5" Foreground="{DynamicResource SubtextColor}" TextAlignment="Right" Margin="0,2,0,0"/>
+                                                </StackPanel>
 
                                                 <!-- Status Icon (In Session) -->
                                                 <TextBlock Grid.Column="2" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#F59E0B" VerticalAlignment="Center"/>
