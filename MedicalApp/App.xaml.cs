@@ -165,6 +165,30 @@ namespace MedicalApp
                 await dbContext.Database.ExecuteSqlRawAsync(
                     "IF COL_LENGTH('dbo.Visits', 'VisitPrice') IS NULL ALTER TABLE dbo.Visits ADD VisitPrice DECIMAL(18,2) NOT NULL DEFAULT 0"
                 );
+
+                // Add Doctors table if not exist
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF OBJECT_ID('dbo.Doctors', 'U') IS NULL " +
+                    "CREATE TABLE dbo.Doctors (" +
+                    "    DoctorId INT IDENTITY(1,1) PRIMARY KEY," +
+                    "    Name NVARCHAR(200) NOT NULL UNIQUE," +
+                    "    Specialty NVARCHAR(200) NOT NULL DEFAULT ''" +
+                    ")"
+                );
+
+                // Seed default doctor if table empty
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF NOT EXISTS (SELECT 1 FROM dbo.Doctors) " +
+                    "INSERT INTO dbo.Doctors (Name, Specialty) VALUES ('Dr. Yaser', 'Obstetrics & Gynecology')"
+                );
+
+                // Add DoctorName column to QueueEntries and Visits if not exist
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.QueueEntries', 'DoctorName') IS NULL ALTER TABLE dbo.QueueEntries ADD DoctorName NVARCHAR(200) NOT NULL DEFAULT 'Dr. Yaser'"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'DoctorName') IS NULL ALTER TABLE dbo.Visits ADD DoctorName NVARCHAR(200) NOT NULL DEFAULT 'Dr. Yaser'"
+                );
             }
             catch (Exception ex)
             {

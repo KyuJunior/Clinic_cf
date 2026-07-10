@@ -223,6 +223,7 @@
                                 <ColumnDefinition Width="*"/>    <!-- Search Box -->
                                 <ColumnDefinition Width="Auto"/> <!-- Filters Toggle -->
                                 <ColumnDefinition Width="Auto"/> <!-- Search Button -->
+                                <ColumnDefinition Width="Auto"/> <!-- Manage Doctors -->
                             </Grid.ColumnDefinitions>
 
                             <!-- Settings Gear Button for Grid Columns -->
@@ -311,6 +312,7 @@
                                 </Button.Style>
                             </Button>
                             <Button Grid.Column="3" Style="{StaticResource ModernButton}" Content="بحث" Command="{Binding SearchCommand}" Padding="20,8"/>
+                            <Button Grid.Column="4" Style="{StaticResource SecondaryButton}" BorderBrush="{StaticResource PrimaryColor}" Foreground="{StaticResource PrimaryColor}" Content="إدارة الأطباء | Manage Doctors" Height="36" Margin="10,0,0,0" Command="{Binding OpenDoctorsModalCommand}"/>
                         </Grid>
 
                         <!-- DataGrid Table with Collapsible Sidebar -->
@@ -1185,6 +1187,13 @@
                             <TextBlock Text="سعر الزيارة" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                             <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VisitPrice, UpdateSourceTrigger=PropertyChanged}" Tag="25000" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                         </StackPanel>
+
+                        <!-- Doctor Selector -->
+                        <TextBlock Text="الطبيب المعالج (Select Doctor) *" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <ComboBox ItemsSource="{Binding Doctors}"
+                                  SelectedItem="{Binding SelectedDoctor, Mode=TwoWay}"
+                                  DisplayMemberPath="Name"
+                                  Height="36" Margin="0,0,0,15" FlowDirection="RightToLeft"/>
                     </StackPanel>
 
                     <!-- Action Buttons -->
@@ -1196,6 +1205,104 @@
                         <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CancelCheckInCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
                         <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تأكيد وتسجيل الدخول" Command="{Binding ConfirmCheckInCommand}" Height="36" Margin="5,0,0,0"/>
                     </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Overlay Modal Dialog: Admin Password Verification -->
+        <Grid Background="#80000000" Visibility="{Binding ShowAdminPasswordModal, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="380" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.3" ShadowDepth="5"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Header -->
+                        <RowDefinition Height="*"/>    <!-- Input -->
+                        <RowDefinition Height="Auto"/> <!-- Buttons -->
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="التحقق من صلاحية المشرف (Admin Verification)" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Right" Margin="0,0,0,15"/>
+
+                    <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                        <TextBlock Text="أدخل رمز التحقق للمشرف" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <!-- Password Box attempt -->
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding AdminPasswordAttempt, UpdateSourceTrigger=PropertyChanged}" Tag="رمز المشرف" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                        <TextBlock Text="{Binding DoctorValidationErrorMessage}" Foreground="#EF4444" FontSize="11" TextAlignment="Right"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CloseDoctorsModalCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
+                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تحقق" Command="{Binding ConfirmAdminPasswordCommand}" Height="36" Margin="5,0,0,0"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Overlay Modal Dialog: Manage Doctors -->
+        <Grid Background="#80000000" Visibility="{Binding ShowDoctorsModal, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="480" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.3" ShadowDepth="5"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Header -->
+                        <RowDefinition Height="Auto"/> <!-- Doctor Add Form -->
+                        <RowDefinition Height="*"/>    <!-- Doctors List -->
+                        <RowDefinition Height="Auto"/> <!-- Buttons -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <TextBlock Grid.Row="0" Text="إدارة الأطباء (Manage Doctors)" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Right" Margin="0,0,0,20"/>
+
+                    <!-- Form -->
+                    <StackPanel Grid.Row="1" Margin="0,0,0,15">
+                        <TextBlock Text="اسم الطبيب الجديد" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding NewDoctorName, UpdateSourceTrigger=PropertyChanged}" Tag="مثال: د. يوسف" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+
+                        <TextBlock Text="الاختصاص" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding NewDoctorSpecialty, UpdateSourceTrigger=PropertyChanged}" Tag="مثال: طب عام" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+
+                        <Button Style="{StaticResource ModernButton}" Content="إضافة طبيب" Command="{Binding AddDoctorCommand}" Height="36" HorizontalAlignment="Right" Width="120" Margin="0,0,0,10"/>
+                        
+                        <TextBlock Text="{Binding DoctorValidationErrorMessage}" FontSize="11" Foreground="{StaticResource PrimaryColor}" TextAlignment="Right" Margin="0,0,0,10"/>
+                        <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0.5" Height="1" Margin="0,5,0,15"/>
+                    </StackPanel>
+
+                    <!-- List of Registered Doctors -->
+                    <Grid Grid.Row="2" MaxHeight="160" Margin="0,0,0,20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="الأطباء المسجلون حالياً" FontSize="12" FontWeight="Bold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right" Margin="0,0,0,8"/>
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                            <ListBox ItemsSource="{Binding Doctors}" Background="Transparent" BorderThickness="0" HorizontalContentAlignment="Stretch">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,0,1" Padding="6,8" FlowDirection="RightToLeft">
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="{Binding Name}" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
+                                                <TextBlock Grid.Column="1" Text="{Binding Specialty}" Foreground="{DynamicResource SubtextColor}" FontSize="11" Margin="15,0,0,0"/>
+                                            </Grid>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </ScrollViewer>
+                    </Grid>
+
+                    <!-- Close Button -->
+                    <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="إغلاق" Command="{Binding CloseDoctorsModalCommand}" Height="36" HorizontalAlignment="Stretch"/>
                 </Grid>
             </Border>
         </Grid>

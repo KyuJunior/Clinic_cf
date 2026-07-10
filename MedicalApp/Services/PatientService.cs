@@ -37,13 +37,13 @@ namespace MedicalApp.Services
 
         public async Task<IEnumerable<Patient>> SearchPatientsAdvancedAsync(
             string searchTerm,
-            string gender = null,
+            string? gender = null,
             int? minAge = null,
             int? maxAge = null,
-            string governorate = null,
+            string? governorate = null,
             DateTime? startDate = null,
             DateTime? endDate = null,
-            string sortBy = null,
+            string? sortBy = null,
             bool isDescending = false)
         {
             using var context = await _contextFactory.CreateDbContextAsync();
@@ -152,6 +152,19 @@ namespace MedicalApp.Services
         {
             using var context = await _contextFactory.CreateDbContextAsync();
             await context.Visits.AddAsync(visit);
+            await context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Doctor>> GetAllDoctorsAsync()
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            return await context.Doctors.ToListAsync();
+        }
+
+        public async Task AddDoctorAsync(Doctor doctor)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync();
+            await context.Doctors.AddAsync(doctor);
             await context.SaveChangesAsync();
         }
     }

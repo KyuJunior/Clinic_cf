@@ -326,6 +326,30 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private bool _showAllergy = true;
 
+        [ObservableProperty]
+        private System.Collections.ObjectModel.ObservableCollection<Doctor> _doctors = new();
+
+        [ObservableProperty]
+        private Doctor? _selectedDoctor;
+
+        [ObservableProperty]
+        private bool _showDoctorsModal = false;
+
+        [ObservableProperty]
+        private bool _showAdminPasswordModal = false;
+
+        [ObservableProperty]
+        private string _adminPasswordAttempt = string.Empty;
+
+        [ObservableProperty]
+        private string _newDoctorName = string.Empty;
+
+        [ObservableProperty]
+        private string _newDoctorSpecialty = string.Empty;
+
+        [ObservableProperty]
+        private string _doctorValidationErrorMessage = string.Empty;
+
         public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService, IVisitService visitService, IThemeService themeService)
         {
             _patientService = patientService;
@@ -345,8 +369,35 @@ namespace MedicalApp.ViewModels
             // Load initial patients asynchronously
             _ = LoadPatientsAsync();
 
+            // Load doctors list
+            _ = LoadDoctorsAsync();
+
             // Periodically refresh the waitlist and incomplete queue
             _ = PollQueueAsync();
+        }
+
+        public async Task LoadDoctorsAsync()
+        {
+            try
+            {
+                var docList = await _patientService.GetAllDoctorsAsync();
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Doctors.Clear();
+                    foreach (var doc in docList)
+                    {
+                        Doctors.Add(doc);
+                    }
+                    if (Doctors.Count > 0 && SelectedDoctor == null)
+                    {
+                        SelectedDoctor = Doctors[0];
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Error loading doctors: {ex.Message}";
+            }
         }
 
         // When selection changes, update the shared singleton state
@@ -713,21 +764,24 @@ namespace MedicalApp.ViewModels
                     decimal.TryParse(VisitPrice, out price);
                 }
 
+                string selectedDoctorName = SelectedDoctor?.Name ?? "Dr. Yaser";
+
                 // Create the visit record for today
                 var visit = new Visit
                 {
                     PatientId = PendingCheckInPatient.PatientId,
                     VisitDate = DateTime.UtcNow, // Date & Time today
                     IsPaid = IsPaidVisit,
-                    VisitPrice = price
+                    VisitPrice = price,
+                    DoctorName = selectedDoctorName
                 };
 
                 await _patientService.AddVisitForCheckInAsync(visit);
                 
-                // Add patient to daily queue
-                await _queueService.AddToQueueAsync(PendingCheckInPatient.PatientId, PendingCheckInPatient.Name);
+                // Add patient to daily queue with selected doctor
+                await _queueService.AddToQueueAsync(PendingCheckInPatient.PatientId, PendingCheckInPatient.Name, selectedDoctorName);
                 
-                StatusMessage = $"Checked in '{PendingCheckInPatient.Name}' and added to queue.";
+                StatusMessage = $"Checked in '{PendingCheckInPatient.Name}' and added to queue for {selectedDoctorName}.";
                 ShowCheckInModal = false;
                 PendingCheckInPatient = null;
 
@@ -737,6 +791,68 @@ namespace MedicalApp.ViewModels
             {
                 StatusMessage = $"Check-in error: {ex.Message}";
             }
+        }
+
+        [RelayCommand]
+        public void OpenDoctorsModal()
+        {
+            AdminPasswordAttempt = string.Empty;
+            DoctorValidationErrorMessage = string.Empty;
+            ShowAdminPasswordModal = true;
+        }
+
+        [RelayCommand]
+        public async Task ConfirmAdminPassword()
+        {
+            if (AdminPasswordAttempt == "YaserTheAdmin")
+            {
+                ShowAdminPasswordModal = false;
+                NewDoctorName = string.Empty;
+                NewDoctorSpecialty = string.Empty;
+                DoctorValidationErrorMessage = string.Empty;
+                ShowDoctorsModal = true;
+                await LoadDoctorsAsync();
+            }
+            else
+            {
+                DoctorValidationErrorMessage = "Incorrect Admin Password! | كلمة المرور غير صحيحة!";
+            }
+        }
+
+        [RelayCommand]
+        public async Task AddDoctor()
+        {
+            if (string.IsNullOrWhiteSpace(NewDoctorName))
+            {
+                DoctorValidationErrorMessage = "Doctor Name is required! | اسم الطبيب مطلوب!";
+                return;
+            }
+
+            try
+            {
+                var newDoc = new Doctor
+                {
+                    Name = NewDoctorName.Trim(),
+                    Specialty = string.IsNullOrWhiteSpace(NewDoctorSpecialty) ? "General Practice" : NewDoctorSpecialty.Trim()
+                };
+
+                await _patientService.AddDoctorAsync(newDoc);
+                NewDoctorName = string.Empty;
+                NewDoctorSpecialty = string.Empty;
+                DoctorValidationErrorMessage = "Doctor added successfully! | تم إضافة الطبيب بنجاح!";
+                await LoadDoctorsAsync();
+            }
+            catch (Exception ex)
+            {
+                DoctorValidationErrorMessage = $"Failed to add doctor: {ex.Message}";
+            }
+        }
+
+        [RelayCommand]
+        public void CloseDoctorsModal()
+        {
+            ShowDoctorsModal = false;
+            DoctorValidationErrorMessage = string.Empty;
         }
 
         [RelayCommand]

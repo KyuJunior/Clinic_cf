@@ -8,6 +8,7 @@ namespace MedicalApp.Models
         public int PatientId { get; set; }
         public string PatientName { get; set; } = string.Empty;
         public string Status { get; set; } = "Pending"; // Pending, InExam, InEcho, Completed
+        public string DoctorName { get; set; } = "Dr. Yaser";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Property

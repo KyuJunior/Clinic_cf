@@ -26,7 +26,7 @@ namespace MedicalApp.Services
                 .ToListAsync();
         }
 
-        public async Task AddToQueueAsync(int patientId, string patientName)
+        public async Task AddToQueueAsync(int patientId, string patientName, string doctorName = "Dr. Yaser")
         {
             using var context = await _contextFactory.CreateDbContextAsync();
             
@@ -36,6 +36,7 @@ namespace MedicalApp.Services
             if (existing != null)
             {
                 existing.Status = "Pending";
+                existing.DoctorName = doctorName;
                 context.QueueEntries.Update(existing);
             }
             else
@@ -44,7 +45,8 @@ namespace MedicalApp.Services
                 {
                     PatientId = patientId,
                     PatientName = patientName,
-                    Status = "Pending"
+                    Status = "Pending",
+                    DoctorName = doctorName
                 };
                 await context.QueueEntries.AddAsync(entry);
             }

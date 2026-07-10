@@ -27,6 +27,12 @@ namespace MedicalApp.ViewModels
 
         public bool IsDarkMode => _themeService.IsDarkMode;
 
+        [ObservableProperty]
+        private string _activeDoctorName = "Dr. Yaser";
+
+        [ObservableProperty]
+        private ObservableCollection<Doctor> _doctors = new();
+
         [RelayCommand]
         public void ToggleTheme()
         {
@@ -261,6 +267,9 @@ namespace MedicalApp.ViewModels
             _pollingTimer.Start();
             _ = PollQueueAsync();
 
+            // Load doctors
+            _ = LoadDoctorsAsync();
+
             LoadViewSettings();
         }
 
@@ -279,7 +288,7 @@ namespace MedicalApp.ViewModels
                 var completedTask = _queueService.GetCompletedCountTodayAsync();
                 await Task.WhenAll(activeTask, completedTask);
 
-                var active = activeTask.Result;
+                var active = activeTask.Result.Where(q => q.DoctorName == ActiveDoctorName).ToList();
                 ActiveQueue = new ObservableCollection<QueueEntry>(active);
                 WaitingPatients = new ObservableCollection<QueueEntry>(active.Where(q => q.Status == "Pending"));
                 NotFinishedPatients = new ObservableCollection<QueueEntry>(active.Where(q => q.Status == "InExam"));
@@ -288,6 +297,36 @@ namespace MedicalApp.ViewModels
             catch
             {
                 // Ignore background transient query errors
+            }
+        }
+
+        [RelayCommand]
+        public void SwitchActiveDoctor(string doctorName)
+        {
+            if (!string.IsNullOrWhiteSpace(doctorName))
+            {
+                ActiveDoctorName = doctorName;
+                _ = PollQueueAsync();
+            }
+        }
+
+        public async Task LoadDoctorsAsync()
+        {
+            try
+            {
+                var docList = await _patientService.GetAllDoctorsAsync();
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    Doctors.Clear();
+                    foreach (var doc in docList)
+                    {
+                        Doctors.Add(doc);
+                    }
+                });
+            }
+            catch
+            {
+                // Ignore transient db errors
             }
         }
 

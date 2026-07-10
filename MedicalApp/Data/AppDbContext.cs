@@ -13,6 +13,7 @@ namespace MedicalApp.Data
         public DbSet<Visit> Visits => Set<Visit>();
         public DbSet<QueueEntry> QueueEntries => Set<QueueEntry>();
         public DbSet<Drug> Drugs => Set<Drug>();
+        public DbSet<Doctor> Doctors => Set<Doctor>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

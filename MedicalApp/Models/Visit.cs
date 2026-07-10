@@ -36,6 +36,7 @@ namespace MedicalApp.Models
         // Billing properties
         public bool IsPaid { get; set; } = true;
         public decimal VisitPrice { get; set; } = 0;
+        public string DoctorName { get; set; } = "Dr. Yaser";
 
         // Navigation Property
         public Patient? Patient { get; set; }

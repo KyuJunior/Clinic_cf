@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:MedicalApp.Converters"
+             xmlns:views="clr-namespace:MedicalApp.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              d:DesignHeight="800" d:DesignWidth="1100"
@@ -13,6 +14,7 @@
              PreviewMouseLeftButtonUp="PatientList_PreviewMouseLeftButtonUp">
     
     <UserControl.Resources>
+        <views:BindingProxy x:Key="Proxy" Data="{Binding}"/>
         <converters:NullToBoolConverter x:Key="NullToBoolConverter"/>
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <converters:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
@@ -763,6 +765,20 @@
                                 </MenuItem.Icon>
                             </MenuItem>
                             <Separator/>
+                            <!-- Switch Doctor Submenu -->
+                            <MenuItem Header="Switch Doctor | تبديل الطبيب" ItemsSource="{Binding Doctors}">
+                                <MenuItem.ItemContainerStyle>
+                                    <Style TargetType="MenuItem">
+                                        <Setter Property="Header" Value="{Binding Name}"/>
+                                        <Setter Property="Command" Value="{Binding DataContext.SwitchActiveDoctorCommand, Source={StaticResource Proxy}}"/>
+                                        <Setter Property="CommandParameter" Value="{Binding Name}"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                                <MenuItem.Icon>
+                                    <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="14" VerticalAlignment="Center"/>
+                                </MenuItem.Icon>
+                            </MenuItem>
+                            <Separator/>
                             <!-- Exit App -->
                             <MenuItem Header="Exit Application | إغلاق البرنامج" Click="ExitApp_Click">
                                 <MenuItem.Icon>
@@ -778,7 +794,7 @@
                                 <ImageBrush ImageSource="pack://application:,,,/MedicalApp;component/dr_yaser_profile.png" Stretch="UniformToFill"/>
                             </Border.Background>
                         </Border>
-                        <TextBlock Text="Dr. Yaser" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding ActiveDoctorName}" FontSize="13" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" VerticalAlignment="Center"/>
                         <TextBlock Text="&#xE70D;" FontFamily="Segoe MDL2 Assets" FontSize="10" Foreground="{StaticResource SubtextColor}" VerticalAlignment="Center" Margin="6,2,0,0"/>
                     </StackPanel>
                 </Button>
@@ -799,7 +815,7 @@
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                            <TextBlock Text="Welcome back, Dr. Yaser." FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextColor}"/>
+                            <TextBlock Text="{Binding ActiveDoctorName, StringFormat='Welcome back, \{0\}.'}" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextColor}"/>
                             <TextBlock FontSize="13" Foreground="{StaticResource SubtextColor}" Margin="0,4,0,15">
                                 <Run Text="Here is your overview for "/><Run Text="{Binding CurrentDateString, Mode=OneWay}" FontWeight="SemiBold" Foreground="{StaticResource PrimaryColor}"/>
                             </TextBlock>
@@ -831,7 +847,7 @@
                             </Border.Background>
                         </Border>
                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="Dr. Yaser" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}"/>
+                            <TextBlock Text="{Binding ActiveDoctorName}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}"/>
                             <TextBlock Text="Lead Physician, Internist" FontSize="12" Foreground="{DynamicResource SubtextColor}" Margin="0,2,0,8"/>
                             <Border Background="{DynamicResource InfoBadgeBackground}" CornerRadius="4" Padding="6,2" HorizontalAlignment="Left">
                                 <TextBlock Text="On Duty" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource InfoBadgeText}"/>
