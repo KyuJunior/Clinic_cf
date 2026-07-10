@@ -7,6 +7,10 @@
              d:DesignHeight="600" d:DesignWidth="1000"
              Background="Transparent">
     
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </UserControl.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/> <!-- Welcome Header -->
@@ -88,6 +92,52 @@
                                FontSize="12" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
                     
                     <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Enter Doctor Room" Command="{Binding NavigateToExamCommand}" Height="40" HorizontalAlignment="Stretch"/>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <!-- Overlay Modal Dialog: Doctor Login/Selection -->
+        <Grid Grid.RowSpan="2" Background="#80000000" Visibility="{Binding ShowDoctorLoginModal, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.3" ShadowDepth="5"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Header -->
+                        <RowDefinition Height="*"/>    <!-- Fields -->
+                        <RowDefinition Height="Auto"/> <!-- Buttons -->
+                    </Grid.RowDefinitions>
+
+                    <!-- Header -->
+                    <TextBlock Grid.Row="0" Text="تسجيل دخول الطبيب (Doctor Room Entry)" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Right" Margin="0,0,0,20"/>
+
+                    <!-- Options/Fields -->
+                    <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                        <!-- Doctor Selection -->
+                        <TextBlock Text="اختر الطبيب المعالج (Select Doctor)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <ComboBox ItemsSource="{Binding Doctors}"
+                                  SelectedItem="{Binding SelectedDoctor, Mode=TwoWay}"
+                                  DisplayMemberPath="Name"
+                                  Height="36" Margin="0,0,0,15" FlowDirection="RightToLeft"/>
+
+                        <!-- Password input -->
+                        <TextBlock Text="كلمة المرور (Password)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding DoctorPasswordAttempt, UpdateSourceTrigger=PropertyChanged}" Tag="كلمة المرور" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                        
+                        <!-- Error Message -->
+                        <TextBlock Text="{Binding LoginErrorMessage}" Foreground="#EF4444" FontSize="11" TextAlignment="Right"/>
+                    </StackPanel>
+
+                    <!-- Action Buttons -->
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CloseDoctorLoginModalCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
+                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="دخول" Command="{Binding ConfirmDoctorLoginCommand}" Height="36" Margin="5,0,0,0"/>
+                    </Grid>
                 </Grid>
             </Border>
         </Grid>

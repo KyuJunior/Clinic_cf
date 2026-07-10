@@ -3497,5 +3497,42 @@
                 </Rectangle>
             </Border>
         </Canvas>
+
+        <!-- Overlay Modal Dialog: Switch Doctor Profile Verification -->
+        <Grid Background="#80000000" Visibility="{Binding ShowSwitchDoctorPasswordModal, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="380" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.3" ShadowDepth="5"/>
+                </Border.Effect>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/> <!-- Header -->
+                        <RowDefinition Height="*"/>    <!-- Input -->
+                        <RowDefinition Height="Auto"/> <!-- Buttons -->
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="التحقق من هوية الطبيب (Doctor Profile Switch)" FontSize="15" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Right" Margin="0,0,0,15"/>
+
+                    <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                        <!-- Target Doctor Info -->
+                        <TextBlock Text="اسم الطبيب" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <TextBlock Text="{Binding SelectedSwitchDoctor.Name}" FontSize="15" FontWeight="SemiBold" Foreground="{StaticResource TextColor}" HorizontalAlignment="Right" Margin="0,0,0,12"/>
+
+                        <TextBlock Text="أدخل رمز التحقق الخاص بك (Enter Password)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding SwitchDoctorPasswordAttempt, UpdateSourceTrigger=PropertyChanged}" Tag="رمز الطبيب" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                        <TextBlock Text="{Binding SwitchDoctorErrorMessage}" Foreground="#EF4444" FontSize="11" TextAlignment="Right"/>
+                    </StackPanel>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CancelSwitchDoctorPasswordCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
+                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تحقق" Command="{Binding ConfirmSwitchDoctorPasswordCommand}" Height="36" Margin="5,0,0,0"/>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Grid>
     </Grid>
 </UserControl>

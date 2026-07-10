@@ -348,6 +348,9 @@ namespace MedicalApp.ViewModels
         private string _newDoctorSpecialty = string.Empty;
 
         [ObservableProperty]
+        private string _newDoctorPassword = string.Empty;
+
+        [ObservableProperty]
         private string _doctorValidationErrorMessage = string.Empty;
 
         public PatientRegistrationViewModel(IPatientService patientService, ISharedStateService sharedStateService, IQueueService queueService, IVisitService visitService, IThemeService themeService)
@@ -809,6 +812,7 @@ namespace MedicalApp.ViewModels
                 ShowAdminPasswordModal = false;
                 NewDoctorName = string.Empty;
                 NewDoctorSpecialty = string.Empty;
+                NewDoctorPassword = string.Empty;
                 DoctorValidationErrorMessage = string.Empty;
                 ShowDoctorsModal = true;
                 await LoadDoctorsAsync();
@@ -827,18 +831,25 @@ namespace MedicalApp.ViewModels
                 DoctorValidationErrorMessage = "Doctor Name is required! | اسم الطبيب مطلوب!";
                 return;
             }
+            if (string.IsNullOrWhiteSpace(NewDoctorPassword))
+            {
+                DoctorValidationErrorMessage = "Doctor Password is required! | كلمة المرور مطلوبة!";
+                return;
+            }
 
             try
             {
                 var newDoc = new Doctor
                 {
                     Name = NewDoctorName.Trim(),
-                    Specialty = string.IsNullOrWhiteSpace(NewDoctorSpecialty) ? "General Practice" : NewDoctorSpecialty.Trim()
+                    Specialty = string.IsNullOrWhiteSpace(NewDoctorSpecialty) ? "General Practice" : NewDoctorSpecialty.Trim(),
+                    Password = NewDoctorPassword.Trim()
                 };
 
                 await _patientService.AddDoctorAsync(newDoc);
                 NewDoctorName = string.Empty;
                 NewDoctorSpecialty = string.Empty;
+                NewDoctorPassword = string.Empty;
                 DoctorValidationErrorMessage = "Doctor added successfully! | تم إضافة الطبيب بنجاح!";
                 await LoadDoctorsAsync();
             }

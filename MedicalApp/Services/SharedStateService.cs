@@ -7,6 +7,8 @@ namespace MedicalApp.Services
     {
         private Patient? _currentPatient;
 
+        public string? ActiveDoctorName { get; set; }
+
         public Patient? CurrentPatient
         {
             get => _currentPatient;

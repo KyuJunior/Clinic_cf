@@ -172,14 +172,20 @@ namespace MedicalApp
                     "CREATE TABLE dbo.Doctors (" +
                     "    DoctorId INT IDENTITY(1,1) PRIMARY KEY," +
                     "    Name NVARCHAR(200) NOT NULL UNIQUE," +
-                    "    Specialty NVARCHAR(200) NOT NULL DEFAULT ''" +
+                    "    Specialty NVARCHAR(200) NOT NULL DEFAULT ''," +
+                    "    Password NVARCHAR(200) NOT NULL DEFAULT 'YaserTheAdmin'" +
                     ")"
+                );
+
+                // Add Password column if missing in existing table
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Doctors', 'Password') IS NULL ALTER TABLE dbo.Doctors ADD Password NVARCHAR(200) NOT NULL DEFAULT 'YaserTheAdmin'"
                 );
 
                 // Seed default doctor if table empty
                 await dbContext.Database.ExecuteSqlRawAsync(
                     "IF NOT EXISTS (SELECT 1 FROM dbo.Doctors) " +
-                    "INSERT INTO dbo.Doctors (Name, Specialty) VALUES ('Dr. Yaser', 'Obstetrics & Gynecology')"
+                    "INSERT INTO dbo.Doctors (Name, Specialty, Password) VALUES ('Dr. Yaser', 'Obstetrics & Gynecology', 'YaserTheAdmin')"
                 );
 
                 // Add DoctorName column to QueueEntries and Visits if not exist

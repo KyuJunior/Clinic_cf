@@ -1268,6 +1268,9 @@
                         <TextBlock Text="الاختصاص" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                         <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding NewDoctorSpecialty, UpdateSourceTrigger=PropertyChanged}" Tag="مثال: طب عام" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
 
+                        <TextBlock Text="كلمة المرور (Password)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding NewDoctorPassword, UpdateSourceTrigger=PropertyChanged}" Tag="كلمة المرور للطبيب" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+
                         <Button Style="{StaticResource ModernButton}" Content="إضافة طبيب" Command="{Binding AddDoctorCommand}" Height="36" HorizontalAlignment="Right" Width="120" Margin="0,0,0,10"/>
                         
                         <TextBlock Text="{Binding DoctorValidationErrorMessage}" FontSize="11" Foreground="{StaticResource PrimaryColor}" TextAlignment="Right" Margin="0,0,0,10"/>

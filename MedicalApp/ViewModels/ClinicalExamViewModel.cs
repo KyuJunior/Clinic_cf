@@ -33,6 +33,18 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private ObservableCollection<Doctor> _doctors = new();
 
+        [ObservableProperty]
+        private bool _showSwitchDoctorPasswordModal = false;
+
+        [ObservableProperty]
+        private string _switchDoctorPasswordAttempt = string.Empty;
+
+        [ObservableProperty]
+        private Doctor? _selectedSwitchDoctor = null;
+
+        [ObservableProperty]
+        private string _switchDoctorErrorMessage = string.Empty;
+
         [RelayCommand]
         public void ToggleTheme()
         {
@@ -265,6 +277,11 @@ namespace MedicalApp.ViewModels
             _pollingTimer.Interval = TimeSpan.FromSeconds(2);
             _pollingTimer.Tick += OnPollingTimerTick;
             _pollingTimer.Start();
+            if (!string.IsNullOrWhiteSpace(_sharedStateService.ActiveDoctorName))
+            {
+                _activeDoctorName = _sharedStateService.ActiveDoctorName;
+            }
+
             _ = PollQueueAsync();
 
             // Load doctors
@@ -303,11 +320,49 @@ namespace MedicalApp.ViewModels
         [RelayCommand]
         public void SwitchActiveDoctor(string doctorName)
         {
-            if (!string.IsNullOrWhiteSpace(doctorName))
+            if (string.IsNullOrWhiteSpace(doctorName)) return;
+
+            // Find the doctor object
+            foreach (var doc in Doctors)
             {
-                ActiveDoctorName = doctorName;
+                if (doc.Name == doctorName)
+                {
+                    SelectedSwitchDoctor = doc;
+                    SwitchDoctorPasswordAttempt = string.Empty;
+                    SwitchDoctorErrorMessage = string.Empty;
+                    ShowSwitchDoctorPasswordModal = true;
+                    return;
+                }
+            }
+        }
+
+        [RelayCommand]
+        public void ConfirmSwitchDoctorPassword()
+        {
+            if (SelectedSwitchDoctor == null) return;
+
+            if (SelectedSwitchDoctor.Password == SwitchDoctorPasswordAttempt)
+            {
+                ActiveDoctorName = SelectedSwitchDoctor.Name;
+                _sharedStateService.ActiveDoctorName = SelectedSwitchDoctor.Name;
+                ShowSwitchDoctorPasswordModal = false;
+                SwitchDoctorPasswordAttempt = string.Empty;
+                SwitchDoctorErrorMessage = string.Empty;
                 _ = PollQueueAsync();
             }
+            else
+            {
+                SwitchDoctorErrorMessage = "Incorrect Password! | كلمة المرور غير صحيحة!";
+            }
+        }
+
+        [RelayCommand]
+        public void CancelSwitchDoctorPassword()
+        {
+            ShowSwitchDoctorPasswordModal = false;
+            SelectedSwitchDoctor = null;
+            SwitchDoctorPasswordAttempt = string.Empty;
+            SwitchDoctorErrorMessage = string.Empty;
         }
 
         public async Task LoadDoctorsAsync()
