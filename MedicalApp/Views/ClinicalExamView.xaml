@@ -3529,7 +3529,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CancelSwitchDoctorPasswordCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
-                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تحقق" Command="{Binding ConfirmSwitchDoctorPasswordCommand}" Height="36" Margin="5,0,0,0"/>
+                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تحقق" Command="{Binding ConfirmSwitchDoctorPasswordCommand}" IsDefault="True" Height="36" Margin="5,0,0,0"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -3563,7 +3563,7 @@
                             <StackPanel Grid.Column="0" Margin="0,0,12,0" FlowDirection="RightToLeft">
                                 <!-- Governorate -->
                                 <TextBlock Text="المحافظة" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                <ComboBox SelectedValuePath="Content" SelectedValue="{Binding NewPatientGovernorate}" Height="36" Margin="0,0,0,12">
+                                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Foreground="{DynamicResource TextColor}" SelectedValuePath="Content" SelectedValue="{Binding NewPatientGovernorate}" Height="36" Margin="0,0,0,12">
                                     <ComboBoxItem Content="بغداد"/>
                                     <ComboBoxItem Content="البصرة"/>
                                     <ComboBoxItem Content="نينوى"/>
@@ -3586,7 +3586,7 @@
 
                                 <!-- Gender -->
                                 <TextBlock Text="* الجنس" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                <ComboBox SelectedValuePath="Content" SelectedValue="{Binding NewPatientGender}" Height="36" Margin="0,0,0,12">
+                                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Foreground="{DynamicResource TextColor}" SelectedValuePath="Content" SelectedValue="{Binding NewPatientGender}" Height="36" Margin="0,0,0,12">
                                     <ComboBoxItem Content="ذكر"/>
                                     <ComboBoxItem Content="أنثى"/>
                                 </ComboBox>
@@ -3670,7 +3670,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CancelAddPatientCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="38" Margin="0,0,5,0"/>
-                            <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="حفظ وتأكيد الدخول" Command="{Binding SaveAddPatientCommand}" Height="38" Margin="5,0,0,0"/>
+                            <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="حفظ وتأكيد الدخول" Command="{Binding SaveAddPatientCommand}" IsDefault="True" Height="38" Margin="5,0,0,0"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

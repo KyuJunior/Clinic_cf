@@ -116,7 +116,9 @@
                     <StackPanel Grid.Row="1" Margin="0,0,0,20">
                         <!-- Doctor Selection -->
                         <TextBlock Text="اختر الطبيب المعالج (Select Doctor)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                        <ComboBox ItemsSource="{Binding Doctors}"
+                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  Foreground="{DynamicResource TextColor}"
+                                  ItemsSource="{Binding Doctors}"
                                   SelectedItem="{Binding SelectedDoctor, Mode=TwoWay}"
                                   DisplayMemberPath="Name"
                                   Height="36" Margin="0,0,0,15" FlowDirection="RightToLeft"/>
@@ -136,7 +138,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CloseDoctorLoginModalCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
-                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="دخول" Command="{Binding ConfirmDoctorLoginCommand}" Height="36" Margin="5,0,0,0"/>
+                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="دخول" Command="{Binding ConfirmDoctorLoginCommand}" IsDefault="True" Height="36" Margin="5,0,0,0"/>
                     </Grid>
                 </Grid>
             </Border>
