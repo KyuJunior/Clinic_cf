@@ -412,6 +412,18 @@
         </Setter>
     </Style>
 
+    <!-- Implicit style for ComboBox to support correct text colors in editable mode -->
+    <Style TargetType="ComboBox">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Style.Resources>
+            <Style TargetType="TextBox">
+                <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="CaretBrush" Value="{DynamicResource PrimaryColor}"/>
+            </Style>
+        </Style.Resources>
+    </Style>
+
     <!-- Implicit style for ComboBoxItem to ensure correct theme-aware colors in dropdowns -->
     <Style TargetType="ComboBoxItem">
         <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>

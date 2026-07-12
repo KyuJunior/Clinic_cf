@@ -1409,12 +1409,25 @@ namespace MedicalApp.ViewModels
 
             try
             {
-                var psi = new System.Diagnostics.ProcessStartInfo
+                string ext = Path.GetExtension(filePath).ToLower();
+                if (ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".gif" || ext == ".bmp")
                 {
-                    FileName = filePath,
-                    UseShellExecute = true
-                };
-                System.Diagnostics.Process.Start(psi);
+                    // Open in our custom fullscreen image preview window
+                    System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        var previewWin = new Views.ImagePreviewWindow(filePath);
+                        previewWin.ShowDialog();
+                    });
+                }
+                else
+                {
+                    var psi = new System.Diagnostics.ProcessStartInfo
+                    {
+                        FileName = filePath,
+                        UseShellExecute = true
+                    };
+                    System.Diagnostics.Process.Start(psi);
+                }
             }
             catch (Exception ex)
             {
