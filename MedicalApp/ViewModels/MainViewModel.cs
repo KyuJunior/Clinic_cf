@@ -87,9 +87,19 @@ namespace MedicalApp.ViewModels
                 oldExamVm.StopPolling();
             }
 
+            if (_lastView is HomeViewModel oldHomeVm)
+            {
+                oldHomeVm.StopPolling();
+            }
+
             if (value is ClinicalExamViewModel newExamVm)
             {
                 newExamVm.StartPolling();
+            }
+
+            if (value is HomeViewModel newHomeVm)
+            {
+                newHomeVm.StartPolling();
             }
 
             _lastView = value;

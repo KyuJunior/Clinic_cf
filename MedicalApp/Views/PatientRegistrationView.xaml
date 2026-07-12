@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:MedicalApp.Converters"
+             xmlns:helpers="clr-namespace:MedicalApp.Helpers"
              xmlns:views="clr-namespace:MedicalApp.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
@@ -13,6 +14,7 @@
     <UserControl.Resources>
         <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:ZeroToEmptyConverter x:Key="ZeroToEmptyConverter"/>
         <views:BindingProxy x:Key="Proxy" Data="{Binding}"/>
 
         <!-- Custom Green Toggle Switch Style matching mockup -->
@@ -55,7 +57,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- Column 0: Left Sidebar -->
-            <Border Grid.Column="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="0,0,1.5,0">
+            <Border Grid.Column="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,1.5,0">
                 <Grid Margin="10,15">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>    <!-- Waiting Visits -->
@@ -68,16 +70,16 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <StackPanel Grid.Row="0" Margin="0,0,0,10" HorizontalAlignment="Right">
-                            <TextBlock Text="الزيارات المنتظرة" FontSize="16" FontWeight="Bold" Foreground="{StaticResource TextColor}" TextAlignment="Right"/>
-                            <TextBlock Text="في الانتظار حالياً" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,2,0,0" TextAlignment="Right"/>
+                        <StackPanel Grid.Row="0" Margin="0,0,0,10" HorizontalAlignment="Left">
+                            <TextBlock Text="Waiting Queue" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}"/>
+                            <TextBlock Text="الزيارات المنتظرة" FontSize="10" Foreground="{DynamicResource SubtextColor}" Margin="0,2,0,0"/>
                         </StackPanel>
 
                         <!-- Waitlist Queue List -->
                         <ListBox Grid.Row="1" ItemsSource="{Binding WaitingVisits}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,6" Background="{DynamicResource CardBackgroundColor}">
+                                    <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="10,8" Margin="0,0,0,6" Background="{DynamicResource CardBackgroundColor}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto"/> <!-- Time -->
@@ -86,16 +88,16 @@
                                             </Grid.ColumnDefinitions>
 
                                             <!-- Time -->
-                                            <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat=\{0:hh:mm tt\}}" FontSize="10" Foreground="#0284C7" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat=\{0:hh:mm tt\}}" FontSize="9.5" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryColor}" VerticalAlignment="Center"/>
 
-                                            <!-- Name in Green and Doctor Name -->
-                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="6,0">
-                                                <TextBlock Text="{Binding PatientName}" FontSize="12" FontWeight="SemiBold" Foreground="#10B981" TextWrapping="Wrap" TextAlignment="Right"/>
-                                                <TextBlock Text="{Binding DoctorName, StringFormat='مع: \{0\}'}" FontSize="9.5" Foreground="{DynamicResource SubtextColor}" TextAlignment="Right" Margin="0,2,0,0"/>
+                                            <!-- Name and Doctor Name -->
+                                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                                                <TextBlock Text="{Binding PatientName}" FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}" TextWrapping="Wrap" TextAlignment="Left"/>
+                                                <TextBlock Text="{Binding DoctorName, StringFormat='with {0}'}" FontSize="10" Foreground="{DynamicResource SubtextColor}" TextAlignment="Left" Margin="0,2,0,0"/>
                                             </StackPanel>
 
                                             <!-- Status Icon -->
-                                            <TextBlock Grid.Column="2" Text="&#xE814;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#10B981" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="2" Text="&#xE814;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -110,16 +112,16 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="0" Margin="0,0,0,10" HorizontalAlignment="Right">
-                                <TextBlock Text="الزيارات غير المنتهية" FontSize="16" FontWeight="Bold" Foreground="{StaticResource TextColor}" TextAlignment="Right"/>
-                                <TextBlock Text="دخلوا عند الطبيب" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,2,0,0" TextAlignment="Right"/>
+                            <StackPanel Grid.Row="0" Margin="0,0,0,10" HorizontalAlignment="Left">
+                                <TextBlock Text="Active Consultations" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}"/>
+                                <TextBlock Text="الزيارات غير المنتهية" FontSize="10" Foreground="{DynamicResource SubtextColor}" Margin="0,2,0,0"/>
                             </StackPanel>
 
                             <!-- Incomplete Queue List -->
                             <ListBox Grid.Row="1" ItemsSource="{Binding IncompleteVisits}" BorderThickness="0" Background="Transparent" HorizontalContentAlignment="Stretch">
                                 <ListBox.ItemTemplate>
                                     <DataTemplate>
-                                        <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,6" Background="{DynamicResource CardBackgroundColor}">
+                                        <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="10,8" Margin="0,0,0,6" Background="{DynamicResource CardBackgroundColor}">
                                             <Grid>
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="Auto"/> <!-- Time -->
@@ -128,16 +130,16 @@
                                                 </Grid.ColumnDefinitions>
 
                                                 <!-- Time -->
-                                                <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat=\{0:hh:mm tt\}}" FontSize="10" Foreground="#0284C7" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="0" Text="{Binding CreatedAt, StringFormat=\{0:hh:mm tt\}}" FontSize="9.5" FontWeight="SemiBold" Foreground="{DynamicResource SecondaryColor}" VerticalAlignment="Center"/>
 
-                                                <!-- Name in Orange/Blue and Doctor Name -->
-                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="6,0">
-                                                    <TextBlock Text="{Binding PatientName}" FontSize="12" FontWeight="SemiBold" Foreground="#F59E0B" TextWrapping="Wrap" TextAlignment="Right"/>
-                                                    <TextBlock Text="{Binding DoctorName, StringFormat='عند: \{0\}'}" FontSize="9.5" Foreground="{DynamicResource SubtextColor}" TextAlignment="Right" Margin="0,2,0,0"/>
+                                                <!-- Name and Doctor Name -->
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="10,0">
+                                                    <TextBlock Text="{Binding PatientName}" FontSize="12.5" FontWeight="SemiBold" Foreground="{DynamicResource AccentColor}" TextWrapping="Wrap" TextAlignment="Left"/>
+                                                    <TextBlock Text="{Binding DoctorName, StringFormat='in session with {0}'}" FontSize="10" Foreground="{DynamicResource SubtextColor}" TextAlignment="Left" Margin="0,2,0,0"/>
                                                 </StackPanel>
 
                                                 <!-- Status Icon (In Session) -->
-                                                <TextBlock Grid.Column="2" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#F59E0B" VerticalAlignment="Center"/>
+                                                <TextBlock Grid.Column="2" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center"/>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
@@ -156,7 +158,7 @@
                     <RowDefinition Height="Auto"/> <!-- Bottom bar row -->
                 </Grid.RowDefinitions>
 
-                <!-- Row 0: Statistics blue cards -->
+                <!-- Row 0: Statistics premium gradient cards -->
                 <Grid Grid.Row="0" Margin="0,0,0,20">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -166,38 +168,78 @@
                     </Grid.ColumnDefinitions>
 
                     <!-- Card 0: Waiting Patients -->
-                    <Border Grid.Column="3" Background="#1E88E5" CornerRadius="6" Padding="15" Margin="8,0,0,0">
+                    <Border Grid.Column="3" CornerRadius="10" Padding="15" Margin="8,0,0,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#0284C7" Offset="0"/> <!-- Sky 700 -->
+                                <GradientStop Color="#38BDF8" Offset="1"/> <!-- Sky 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.1" BlurRadius="15" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
                         <StackPanel>
-                            <TextBlock Text="المرضى المنتظرون" FontSize="14" FontWeight="Bold" Foreground="White" TextAlignment="Right"/>
-                            <TextBlock Text="{Binding WaitingPatientsCount}" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,10,0,10" TextAlignment="Right"/>
-                            <TextBlock Text="تم التحديث الآن" FontSize="11" Foreground="#BBDEFB" TextAlignment="Right"/>
+                            <TextBlock Text="Waiting Patients" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="المرضى المنتظرون" FontSize="9.5" Foreground="#E0F2FE" Margin="0,1,0,0"/>
+                            <TextBlock Text="{Binding WaitingPatientsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,5"/>
+                            <TextBlock Text="Updated just now | تم التحديث الآن" FontSize="9.5" Foreground="#BAE6FD"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Card 1: Attending Patients -->
-                    <Border Grid.Column="2" Background="#1E88E5" CornerRadius="6" Padding="15" Margin="8,0,8,0">
+                    <Border Grid.Column="2" CornerRadius="10" Padding="15" Margin="8,0,8,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#059669" Offset="0"/> <!-- Emerald 600 -->
+                                <GradientStop Color="#34D399" Offset="1"/> <!-- Emerald 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.1" BlurRadius="15" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
                         <StackPanel>
-                            <TextBlock Text="المرضى الحاضرون" FontSize="14" FontWeight="Bold" Foreground="White" TextAlignment="Right"/>
-                            <TextBlock Text="{Binding AttendingPatientsCount}" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,10,0,10" TextAlignment="Right"/>
-                            <TextBlock Text="تم التحديث الآن" FontSize="11" Foreground="#BBDEFB" TextAlignment="Right"/>
+                            <TextBlock Text="Attending Patients" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="المرضى الحاضرون" FontSize="9.5" Foreground="#D1FAE5" Margin="0,1,0,0"/>
+                            <TextBlock Text="{Binding AttendingPatientsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,5"/>
+                            <TextBlock Text="Updated just now | تم التحديث الآن" FontSize="9.5" Foreground="#A7F3D0"/>
                         </StackPanel>
                     </Border>
 
                     <!-- Card 2: New Patients -->
-                    <Border Grid.Column="1" Background="#1E88E5" CornerRadius="6" Padding="15" Margin="8,0,8,0">
+                    <Border Grid.Column="1" CornerRadius="10" Padding="15" Margin="8,0,8,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#4F46E5" Offset="0"/> <!-- Indigo 600 -->
+                                <GradientStop Color="#818CF8" Offset="1"/> <!-- Indigo 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.1" BlurRadius="15" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
                         <StackPanel>
-                            <TextBlock Text="المرضى الجدد" FontSize="14" FontWeight="Bold" Foreground="White" TextAlignment="Right"/>
-                            <TextBlock Text="{Binding NewPatientsTodayCount}" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,10,0,10" TextAlignment="Right"/>
-                            <TextBlock Text="تم التحديث الآن" FontSize="11" Foreground="#BBDEFB" TextAlignment="Right"/>
+                            <TextBlock Text="New Patients Today" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="المرضى الجدد اليوم" FontSize="9.5" Foreground="#E0E7FF" Margin="0,1,0,0"/>
+                            <TextBlock Text="{Binding NewPatientsTodayCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,5"/>
+                            <TextBlock Text="Updated just now | تم التحديث الآن" FontSize="9.5" Foreground="#C7D2FE"/>
                         </StackPanel>
                     </Border>
 
-                    <!-- Card 3: All Patients -->
-                    <Border Grid.Column="0" Background="#1E88E5" CornerRadius="6" Padding="15" Margin="0,0,8,0">
+                    <!-- Card 3: Total Patients -->
+                    <Border Grid.Column="0" CornerRadius="10" Padding="15" Margin="0,0,8,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#0D9488" Offset="0"/> <!-- Teal 600 -->
+                                <GradientStop Color="#2DD4BF" Offset="1"/> <!-- Teal 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.1" BlurRadius="15" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
                         <StackPanel>
-                            <TextBlock Text="جميع المرضى" FontSize="14" FontWeight="Bold" Foreground="White" TextAlignment="Right"/>
-                            <TextBlock Text="{Binding TotalPatientsCount}" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,10,0,10" TextAlignment="Right"/>
-                            <TextBlock Text="تم التحديث الآن" FontSize="11" Foreground="#BBDEFB" TextAlignment="Right"/>
+                            <TextBlock Text="Total Registered" FontSize="13" FontWeight="Bold" Foreground="White"/>
+                            <TextBlock Text="جميع المرضى المسجلين" FontSize="9.5" Foreground="#CCFBF1" Margin="0,1,0,0"/>
+                            <TextBlock Text="{Binding TotalPatientsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,5"/>
+                            <TextBlock Text="Updated just now | تم التحديث الآن" FontSize="9.5" Foreground="#99F6E4"/>
                         </StackPanel>
                     </Border>
                 </Grid>
@@ -755,8 +797,39 @@
                     </Grid>
                 </Border>
 
-                <!-- Row 2: Bottom Floating Blue Bar -->
-                <Border Grid.Row="2" Background="#1E88E5" CornerRadius="20" Height="48" Margin="0,15,0,5" Width="400" HorizontalAlignment="Center" Padding="15,0">
+                <!-- Row 2: Bottom Floating Responsive Bar -->
+                <Border Grid.Row="2" CornerRadius="24" Height="50" Margin="0,15,0,5" MaxWidth="520" HorizontalAlignment="Center" Padding="20,0" BorderThickness="1.5">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                            <GradientStop Color="{DynamicResource SecondaryColorVal}" Offset="0"/>
+                            <GradientStop Color="{DynamicResource PrimaryColorVal}" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Border.BorderBrush>
+                        <SolidColorBrush Color="White" Opacity="0.15"/>
+                    </Border.BorderBrush>
+                    <Border.Effect>
+                        <DropShadowEffect Color="#0F172A" Opacity="0.15" BlurRadius="25" ShadowDepth="4" Direction="270"/>
+                    </Border.Effect>
+                    <Border.Resources>
+                        <!-- Special implicit style for buttons inside this toolbar -->
+                        <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Background" Value="Transparent"/>
+                            <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Opacity" Value="0.85"/>
+                                    <Setter Property="RenderTransform">
+                                        <Setter.Value>
+                                            <ScaleTransform ScaleX="1.15" ScaleY="1.15"/>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Resources>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -767,19 +840,19 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Content="&#xE8A5;" FontFamily="Segoe MDL2 Assets" ToolTip="الرئيسية" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                        <Button Grid.Column="0" Tag="&#xE8A5;" ToolTip="Home | الرئيسية" FontSize="18"
                                 Command="{Binding DataContext.NavigateToHomeCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                        <Button Grid.Column="1" Content="&#xE77B;" FontFamily="Segoe MDL2 Assets" ToolTip="المرضى" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                        <Button Grid.Column="1" Tag="&#xE77B;" ToolTip="Patients | المرضى" FontSize="18"
                                 Command="{Binding ShowAllPatientsViewCommand}"/>
-                        <Button Grid.Column="2" Content="&#xE81C;" FontFamily="Segoe MDL2 Assets" ToolTip="السجل" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                        <Button Grid.Column="2" Tag="&#xE81C;" ToolTip="Visits History | السجل اليومي" FontSize="18"
                                 Command="{Binding ShowTodayVisitsViewCommand}"/>
-                        <Button Grid.Column="3" Content="&#xE710;" FontFamily="Segoe MDL2 Assets" ToolTip="اضافة مريض" Style="{StaticResource NavButton}" Foreground="White" FontSize="20" FontWeight="Bold" Padding="0"
+                        <Button Grid.Column="3" Tag="&#xE710;" ToolTip="Add Patient | إضافة مريض" FontSize="22" FontWeight="Bold"
                                 Command="{Binding OpenRegistrationModalCommand}"/>
-                        <Button Grid.Column="4" Content="&#xE787;" FontFamily="Segoe MDL2 Assets" ToolTip="التقويم" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                        <Button Grid.Column="4" Tag="&#xE787;" ToolTip="Calendar | التقويم" FontSize="18"
                                 Command="{Binding ShowAppointmentsCalendarViewCommand}"/>
-                        <Button Grid.Column="5" Content="&#xE8C7;" FontFamily="Segoe MDL2 Assets" ToolTip="الحسابات" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                        <Button Grid.Column="5" Tag="&#xE8C7;" ToolTip="Finance | الحسابات" FontSize="18"
                                 Command="{Binding ShowFinanceViewCommand}"/>
-                        <Button Grid.Column="6" Content="&#xE713;" FontFamily="Segoe MDL2 Assets" ToolTip="الاعدادات" Style="{StaticResource NavButton}" Foreground="White" FontSize="18" Padding="0"
+                        <Button Grid.Column="6" Tag="&#xE713;" ToolTip="Settings | الإعدادات" FontSize="18"
                                 Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </Grid>
                 </Border>
@@ -788,11 +861,11 @@
 
         <!-- Overlay Modal Dialog: Register / Edit Patient -->
         <Grid Background="#80000000" Visibility="{Binding ShowRegistrationModal, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="720" MaxHeight="620" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="720" MaxHeight="620" Margin="0,30" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25" FlowDirection="RightToLeft">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.3" ShadowDepth="5"/>
                 </Border.Effect>
-<Grid>
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/> <!-- Header with gear -->
                         <RowDefinition Height="*"/>    <!-- Scrollable 2 Column form fields -->
@@ -802,14 +875,14 @@
                     <!-- Modal Header -->
                     <Grid Grid.Row="0" Margin="0,0,0,15">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/> <!-- Settings Gear -->
                             <ColumnDefinition Width="*"/>    <!-- Title -->
+                            <ColumnDefinition Width="Auto"/> <!-- Settings Gear -->
                         </Grid.ColumnDefinitions>
                         
-                        <TextBlock Grid.Column="1" Text="اضافة المريض" FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="0" Text="اضافة المريض" FontSize="20" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" VerticalAlignment="Center"/>
                         
                         <!-- Settings Gear on the Left -->
-                        <Grid Grid.Column="0">
+                        <Grid Grid.Column="1">
                             <Button Style="{StaticResource NavButton}" Content="&#xE713;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{StaticResource SubtextColor}" Command="{Binding ToggleGearMenuCommand}"/>
                             
                             <!-- 2-Column Popup switches list matching mockup -->
@@ -879,8 +952,8 @@
                                 <ColumnDefinition Width="*"/> <!-- Right Column -->
                             </Grid.ColumnDefinitions>
 
-                            <!-- Right Column (Column 1) - RTL aligned -->
-                            <StackPanel Grid.Column="1" Margin="10,0,0,0">
+                            <!-- Primary Column (Column 0 - Right side in RTL) -->
+                            <StackPanel Grid.Column="0" Margin="10,0,0,0">
                                 <!-- Sequence -->
                                 <TextBlock Text="تسلسل" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                                 <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ActiveEditingPatient.PatientId, TargetNullValue='جديد'}" IsReadOnly="True" Background="#F1F5F9" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
@@ -921,12 +994,12 @@
                                 </Grid>
 
                                 <!-- Age in Years -->
-                                <TextBlock Text="العمر (سنوات) *" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Age, UpdateSourceTrigger=PropertyChanged}" Tag="0" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                <TextBlock Text="العمر (سنوات) *" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Age, Converter={StaticResource ZeroToEmptyConverter}, UpdateSourceTrigger=PropertyChanged}" Tag="سنوات" Margin="0,0,0,10"/>
 
                                 <!-- Age in Months -->
-                                <TextBlock Text="العمر (أشهر)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding AgeMonths, UpdateSourceTrigger=PropertyChanged}" Tag="0" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                <TextBlock Text="العمر (أشهر)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding AgeMonths, Converter={StaticResource ZeroToEmptyConverter}, UpdateSourceTrigger=PropertyChanged}" Tag="أشهر" Margin="0,0,0,10"/>
 
                                 <!-- Birth Date -->
                                 <TextBlock Text="تاريخ الولادة" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
@@ -1028,8 +1101,8 @@
                                 </StackPanel>
                             </StackPanel>
 
-                            <!-- Left Column (Column 0) - RTL aligned -->
-                            <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                            <!-- Secondary Column (Column 1 - Left side in RTL) -->
+                            <StackPanel Grid.Column="1" Margin="0,0,10,0">
                                 <!-- Governorate -->
                                 <StackPanel Visibility="{Binding ShowGovernorate, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="المحافظة" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
@@ -1146,7 +1219,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CancelEditCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0" Click="CancelButton_Click"/>
+                        <Button Grid.Column="0" Style="{StaticResource SecondaryButton}" Content="إلغاء" Command="{Binding CancelEditCommand}" Height="36" Margin="0,0,5,0" Click="CancelButton_Click"/>
                         <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="حفظ" Command="{Binding RegisterCommand}" Height="36" Margin="5,0,0,0"/>
                     </Grid>
                 </Grid>
@@ -1208,7 +1281,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CancelCheckInCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
+                        <Button Grid.Column="0" Style="{StaticResource SecondaryButton}" Content="إلغاء" Command="{Binding CancelCheckInCommand}" Height="36" Margin="0,0,5,0"/>
                         <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تأكيد وتسجيل الدخول" Command="{Binding ConfirmCheckInCommand}" Height="36" Margin="5,0,0,0"/>
                     </Grid>
                 </Grid>
@@ -1233,7 +1306,7 @@
                     <StackPanel Grid.Row="1" Margin="0,0,0,20">
                         <TextBlock Text="أدخل رمز التحقق للمشرف" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                         <!-- Password Box attempt -->
-                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding AdminPasswordAttempt, UpdateSourceTrigger=PropertyChanged}" Tag="رمز المشرف" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                        <PasswordBox Style="{StaticResource ModernPasswordBox}" helpers:PasswordHelper.Attach="True" helpers:PasswordHelper.Password="{Binding AdminPasswordAttempt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" FlowDirection="RightToLeft"/>
                         <TextBlock Text="{Binding DoctorValidationErrorMessage}" Foreground="#EF4444" FontSize="11" TextAlignment="Right"/>
                     </StackPanel>
 
@@ -1242,7 +1315,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CloseDoctorsModalCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
+                        <Button Grid.Column="0" Style="{StaticResource SecondaryButton}" Content="إلغاء" Command="{Binding CloseDoctorsModalCommand}" Height="36" Margin="0,0,5,0"/>
                         <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تحقق" Command="{Binding ConfirmAdminPasswordCommand}" Height="36" Margin="5,0,0,0"/>
                     </Grid>
                 </Grid>
@@ -1275,7 +1348,7 @@
                         <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding NewDoctorSpecialty, UpdateSourceTrigger=PropertyChanged}" Tag="مثال: طب عام" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
 
                         <TextBlock Text="كلمة المرور (Password)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding NewDoctorPassword, UpdateSourceTrigger=PropertyChanged}" Tag="كلمة المرور للطبيب" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                        <PasswordBox Style="{StaticResource ModernPasswordBox}" helpers:PasswordHelper.Attach="True" helpers:PasswordHelper.Password="{Binding NewDoctorPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" FlowDirection="RightToLeft"/>
 
                         <Button Style="{StaticResource ModernButton}" Content="إضافة طبيب" Command="{Binding AddDoctorCommand}" Height="36" HorizontalAlignment="Right" Width="120" Margin="0,0,0,10"/>
                         

@@ -3,12 +3,77 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:converters="clr-namespace:MedicalApp.Converters"
+             xmlns:helpers="clr-namespace:MedicalApp.Helpers"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000"
              Background="Transparent">
     
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
+        
+        <!-- Custom card style with hover effects and glassmorphic gradient look -->
+        <Style x:Key="LauncherCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+            <Setter Property="BorderThickness" Value="1.5"/>
+            <Setter Property="CornerRadius" Value="16"/>
+            <Setter Property="Padding" Value="24"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#0F172A" Opacity="0.08" BlurRadius="25" ShadowDepth="2" Direction="270"/>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource PrimaryColor}"/>
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="{DynamicResource CardBackgroundColorVal}" Offset="0"/>
+                                <GradientStop Color="{DynamicResource SelectedTabBrushVal}" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Effect">
+                        <Setter.Value>
+                            <DropShadowEffect Color="{DynamicResource PrimaryColorVal}" Opacity="0.12" BlurRadius="30" ShadowDepth="4" Direction="270"/>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Gradient Accent Button -->
+        <Style x:Key="GradientModernButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="{DynamicResource SecondaryColorVal}" Offset="0"/>
+                        <GradientStop Color="{DynamicResource PrimaryColorVal}" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="8" 
+                                Background="{TemplateBinding Background}" 
+                                Padding="{TemplateBinding Padding}"
+                                SnapsToDevicePixels="True">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="0.9"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid>
@@ -50,55 +115,215 @@
             </StackPanel>
         </Grid>
 
-        <!-- Selection Cards Grid -->
-        <Grid Grid.Row="1" MaxWidth="760" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,0,40">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" MinWidth="300" MaxWidth="360"/>
-                <ColumnDefinition Width="*" MinWidth="300" MaxWidth="360"/>
-            </Grid.ColumnDefinitions>
+        <!-- Main Panel Content -->
+        <Grid Grid.Row="1" Margin="20,0,20,40">
+            <!-- 1. Selection Launcher Cards (Visible when Doctor Dashboard is NOT active) -->
+            <Grid MaxWidth="760" HorizontalAlignment="Center" VerticalAlignment="Center"
+                  Visibility="{Binding IsDoctorDashboardVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" MinWidth="300" MaxWidth="360"/>
+                    <ColumnDefinition Width="*" MinWidth="300" MaxWidth="360"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- Card 1: Patient Registry -->
-            <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="15">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Icon -->
-                        <RowDefinition Height="Auto"/> <!-- Title -->
-                        <RowDefinition Height="*"/>    <!-- Description -->
-                        <RowDefinition Height="Auto"/> <!-- Enter Button -->
-                    </Grid.RowDefinitions>
-                    
-                    <TextBlock Grid.Row="0" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,20,0,25"/>
-                    <TextBlock Grid.Row="1" Text="Secretary" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,12"/>
-                    <TextBlock Grid.Row="2" Text="Enroll new patients, look up existing patient files with autocomplete search-as-you-type, and send patients to today's active waitlist queue." 
-                               FontSize="12" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
-                    
-                    <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Enter Secretary Room" Command="{Binding NavigateToRegistryCommand}" Height="40" HorizontalAlignment="Stretch"/>
-                </Grid>
-            </Border>
+                <!-- Secretary Card -->
+                <Border Grid.Column="0" Style="{StaticResource LauncherCardStyle}" Margin="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,25"/>
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,12">
+                            <TextBlock Text="Secretary Room" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="غرفة السكرتارية" FontSize="12" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="2" Text="Enroll new patients, look up existing patient files, and manage today's waitlist." FontSize="12.5" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
+                        <Button Grid.Row="3" Style="{StaticResource GradientModernButton}" Content="Enter Secretary Room" Command="{Binding NavigateToRegistryCommand}" Height="40" HorizontalAlignment="Stretch"/>
+                    </Grid>
+                </Border>
 
-            <!-- Card 2: Doctor -->
-            <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="15">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/> <!-- Icon -->
-                        <RowDefinition Height="Auto"/> <!-- Title -->
-                        <RowDefinition Height="*"/>    <!-- Description -->
-                        <RowDefinition Height="Auto"/> <!-- Enter Button -->
-                    </Grid.RowDefinitions>
-                    
-                    <TextBlock Grid.Row="0" Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,20,0,25"/>
-                    <TextBlock Grid.Row="1" Text="Doctor" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center" Margin="0,0,0,12"/>
-                    <TextBlock Grid.Row="2" Text="Manage queued patients in real-time, view full clinical exam timeline logs, write notes, and direct patients to completion." 
-                               FontSize="12" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
-                    
-                    <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="Enter Doctor Room" Command="{Binding NavigateToExamCommand}" Height="40" HorizontalAlignment="Stretch"/>
+                <!-- Doctor Card -->
+                <Border Grid.Column="1" Style="{StaticResource LauncherCardStyle}" Margin="15">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,25"/>
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,12">
+                            <TextBlock Text="Doctor Room" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center"/>
+                            <TextBlock Text="عيادة الطبيب" FontSize="12" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Center" Margin="0,2,0,0"/>
+                        </StackPanel>
+                        <TextBlock Grid.Row="2" Text="Manage queued patients, write note drafts, perform examinations, and prescribe medications." FontSize="12.5" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
+                        <Button Grid.Row="3" Style="{StaticResource GradientModernButton}" Content="Enter Doctor Room" Command="{Binding NavigateToExamCommand}" Height="40" HorizontalAlignment="Stretch"/>
+                    </Grid>
+                </Border>
+            </Grid>
+
+            <!-- 2. Doctor Dashboard Portal (Visible when Doctor logs in) -->
+            <Grid Visibility="{Binding IsDoctorDashboardVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Width="1100" HorizontalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/> <!-- Title & Exit button -->
+                    <RowDefinition Height="Auto"/> <!-- Stats row -->
+                    <RowDefinition Height="*"/>    <!-- Queue lists -->
+                </Grid.RowDefinitions>
+
+                <!-- Dashboard Header -->
+                <Grid Grid.Row="0" Margin="0,0,0,20">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock Text="Doctor Command Center | " FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextColor}"/>
+                        <TextBlock Text="{Binding ActiveDoctorName, StringFormat='Dr. {0}'}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}"/>
+                    </StackPanel>
+                    <Button Style="{StaticResource SecondaryButton}" Content="Exit Doctor Mode | تسجيل الخروج" HorizontalAlignment="Right" VerticalAlignment="Center" Command="{Binding ExitDoctorModeCommand}"/>
                 </Grid>
-            </Border>
+
+                <!-- Stats Summary Row -->
+                <UniformGrid Grid.Row="1" Columns="3" Margin="0,0,0,20">
+                    <!-- Stat 1: Waiting -->
+                    <Border Style="{StaticResource CardBorder}" Margin="0,0,10,0" Padding="15">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="Waiting Patients" FontSize="12" Foreground="{DynamicResource SubtextColor}"/>
+                                <TextBlock Text="{Binding WaitingCount}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            <TextBlock Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{DynamicResource BorderColor}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Stat 2: Active / In Exam -->
+                    <Border Style="{StaticResource CardBorder}" Margin="10,0,10,0" Padding="15">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="Visits In Progress" FontSize="12" Foreground="{DynamicResource SubtextColor}"/>
+                                <TextBlock Text="{Binding InExamCount}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource AccentColor}" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            <TextBlock Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{DynamicResource BorderColor}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Stat 3: Completed Today -->
+                    <Border Style="{StaticResource CardBorder}" Margin="10,0,0,0" Padding="15">
+                        <Grid>
+                            <StackPanel>
+                                <TextBlock Text="Completed Today" FontSize="12" Foreground="{DynamicResource SubtextColor}"/>
+                                <TextBlock Text="{Binding CompletedCountToday}" FontSize="28" FontWeight="Bold" Foreground="{DynamicResource SuccessBadgeText}" Margin="0,5,0,0"/>
+                            </StackPanel>
+                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="28" Foreground="{DynamicResource BorderColor}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                </UniformGrid>
+
+                <!-- Queues Columns -->
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/> <!-- Waiting Column -->
+                        <ColumnDefinition Width="*"/> <!-- In progress Column -->
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Waiting Column -->
+                    <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,10,0" Padding="20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="Waiting Queue (Live)" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,15"/>
+
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                <Grid>
+                                    <ItemsControl ItemsSource="{Binding WaitingPatients}" Visibility="{Binding HasWaitingPatients, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8" Background="{DynamicResource BackgroundColor}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding PatientName}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextColor}"/>
+                                                            <TextBlock Text="{Binding CreatedAt, StringFormat='Checked in at: {0:HH:mm}'}" FontSize="10" Foreground="{DynamicResource SubtextColor}" Margin="0,2,0,0"/>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Start Exam" 
+                                                                Command="{Binding DataContext.StartSessionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                CommandParameter="{Binding}" Padding="15,5" Height="30" FontSize="12"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- Empty State -->
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,40,0,0"
+                                                Visibility="{Binding HasNoWaitingPatients, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Border Width="40" Height="40" CornerRadius="20" Background="{DynamicResource InfoBadgeBackground}" HorizontalAlignment="Center" Margin="0,0,0,10">
+                                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{DynamicResource InfoBadgeText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="Waiting queue is empty." FontSize="13" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+
+                    <!-- In-Progress (Pending) Column -->
+                    <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="10,0,0,0" Padding="20">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="Visits In Progress / On Hold" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,15"/>
+
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                <Grid>
+                                    <ItemsControl ItemsSource="{Binding NotFinishedPatients}" Visibility="{Binding HasHoldPatients, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border BorderBrush="{DynamicResource HighlightCardBorder}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,0,8" Background="{DynamicResource HighlightCardBackground}">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding PatientName}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource HighlightCardText}"/>
+                                                            <TextBlock Text="Examination in progress" FontSize="10" Foreground="{DynamicResource HighlightCardSubtext}" Margin="0,2,0,0"/>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="1" Style="{StaticResource WarningButton}" Content="Resume" 
+                                                                Command="{Binding DataContext.StartSessionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                                CommandParameter="{Binding}" Padding="15,5" Height="30" FontSize="12"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+
+                                    <!-- Empty State -->
+                                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,40,0,0"
+                                                Visibility="{Binding HasNoHoldPatients, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <Border Width="40" Height="40" CornerRadius="20" Background="{DynamicResource SuccessBadgeBackground}" HorizontalAlignment="Center" Margin="0,0,0,10">
+                                            <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="{DynamicResource SuccessBadgeText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                        <TextBlock Text="No patient exams currently on hold." FontSize="13" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Grid>
         </Grid>
 
         <!-- Overlay Modal Dialog: Doctor Login/Selection -->
         <Grid Grid.RowSpan="2" Background="#80000000" Visibility="{Binding ShowDoctorLoginModal, Converter={StaticResource BooleanToVisibilityConverter}}">
-            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1.5" CornerRadius="12" Width="400" VerticalAlignment="Center" HorizontalAlignment="Center" Padding="25">
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="20" Color="Black" Opacity="0.3" ShadowDepth="5"/>
                 </Border.Effect>
@@ -110,12 +335,12 @@
                     </Grid.RowDefinitions>
 
                     <!-- Header -->
-                    <TextBlock Grid.Row="0" Text="تسجيل دخول الطبيب (Doctor Room Entry)" FontSize="18" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" HorizontalAlignment="Right" Margin="0,0,0,20"/>
+                    <TextBlock Grid.Row="0" Text="تسجيل دخول الطبيب (Doctor Room Entry)" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Right" Margin="0,0,0,20"/>
 
                     <!-- Options/Fields -->
                     <StackPanel Grid.Row="1" Margin="0,0,0,20">
                         <!-- Doctor Selection -->
-                        <TextBlock Text="اختر الطبيب المعالج (Select Doctor)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <TextBlock Text="اختر الطبيب المعالج (Select Doctor)" FontSize="11" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                         <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
                                   Foreground="{DynamicResource TextColor}"
                                   ItemsSource="{Binding Doctors}"
@@ -124,8 +349,8 @@
                                   Height="36" Margin="0,0,0,15" FlowDirection="RightToLeft"/>
 
                         <!-- Password input -->
-                        <TextBlock Text="كلمة المرور (Password)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding DoctorPasswordAttempt, UpdateSourceTrigger=PropertyChanged}" Tag="كلمة المرور" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                        <TextBlock Text="كلمة المرور (Password)" FontSize="11" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
+                        <PasswordBox Style="{StaticResource ModernPasswordBox}" helpers:PasswordHelper.Attach="True" helpers:PasswordHelper.Password="{Binding DoctorPasswordAttempt, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" FlowDirection="RightToLeft"/>
                         
                         <!-- Error Message -->
                         <TextBlock Text="{Binding LoginErrorMessage}" Foreground="#EF4444" FontSize="11" TextAlignment="Right"/>
@@ -137,7 +362,7 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Style="{StaticResource ModernButton}" Content="إلغاء" Command="{Binding CloseDoctorLoginModalCommand}" Background="#EF4444" BorderBrush="#EF4444" Height="36" Margin="0,0,5,0"/>
+                        <Button Grid.Column="0" Style="{StaticResource SecondaryButton}" Content="إلغاء" Command="{Binding CloseDoctorLoginModalCommand}" Height="36" Margin="0,0,5,0"/>
                         <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="دخول" Command="{Binding ConfirmDoctorLoginCommand}" IsDefault="True" Height="36" Margin="5,0,0,0"/>
                     </Grid>
                 </Grid>

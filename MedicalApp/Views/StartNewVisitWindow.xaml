@@ -66,7 +66,7 @@
                           SelectionMode="Single"
                           RowHeaderWidth="0">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="الاسم | Name" Binding="{Binding Name}" Width="230" IsReadOnly="True">
+                        <DataGridTextColumn Header="الاسم | Name" Binding="{Binding Name}" Width="*" IsReadOnly="True">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="TextBlock">
                                     <Setter Property="FontWeight" Value="SemiBold"/>
@@ -75,10 +75,10 @@
                                 </Style>
                             </DataGridTextColumn.ElementStyle>
                         </DataGridTextColumn>
-                        <DataGridTextColumn Header="العمر | Age" Binding="{Binding Age}" Width="70" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="الجنس | Gender" Binding="{Binding Gender}" Width="90" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="العمر | Age" Binding="{Binding Age}" Width="90" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="الجنس | Gender" Binding="{Binding Gender}" Width="110" IsReadOnly="True"/>
                         <DataGridTextColumn Header="رقم الهاتف | Phone" Binding="{Binding Phone}" Width="140" IsReadOnly="True"/>
-                        <DataGridTextColumn Header="المحافظة | Governorate" Binding="{Binding Governorate}" Width="120" IsReadOnly="True"/>
+                        <DataGridTextColumn Header="المحافظة | Governorate" Binding="{Binding Governorate}" Width="150" IsReadOnly="True"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Border>
@@ -94,7 +94,7 @@
                     <!-- Left: Selected Patient Info -->
                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
                         <TextBlock Text="Selected Patient | المريض المحدد:" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
-                        <ContentControl Content="{Binding SelectedPatient}">
+                        <ContentControl Content="{Binding SelectedPatient}" Visibility="{Binding SelectedPatient, Converter={StaticResource NullToVisibilityConverter}}">
                             <ContentControl.ContentTemplate>
                                 <DataTemplate>
                                     <TextBlock Margin="0,5,0,0" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}">
@@ -114,8 +114,8 @@
                     </StackPanel>
 
                     <!-- Right: Visit Type / Pricing -->
-                    <StackPanel Grid.Column="1" FlowDirection="RightToLeft" VerticalAlignment="Center">
-                        <TextBlock Text="نوع الزيارة | Visit Type" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,6" HorizontalAlignment="Right"/>
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="20,0,0,0">
+                        <TextBlock Text="نوع الزيارة | Visit Type" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,6"/>
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
                             <RadioButton Content="مدفوعة | Paid" IsChecked="{Binding IsPaidVisit}" Margin="0,0,20,0" FontWeight="SemiBold"/>
                             <RadioButton Content="مجانية | Free" IsChecked="{Binding IsFreeVisit}" FontWeight="SemiBold"/>
@@ -128,7 +128,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="السعر | Price: " VerticalAlignment="Center" Margin="0,0,10,0" FontSize="12" Foreground="{DynamicResource SubtextColor}"/>
-                            <TextBox Grid.Column="1" Style="{StaticResource ModernTextBox}" Text="{Binding VisitPrice, UpdateSourceTrigger=PropertyChanged}" Height="32" VerticalContentAlignment="Center" Width="120" HorizontalAlignment="Right"/>
+                            <TextBox Grid.Column="1" Style="{StaticResource ModernTextBox}" Text="{Binding VisitPrice, UpdateSourceTrigger=PropertyChanged}" Height="32" VerticalContentAlignment="Center" Width="120" HorizontalAlignment="Left"/>
                         </Grid>
                     </StackPanel>
                 </Grid>

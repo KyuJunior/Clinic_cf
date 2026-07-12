@@ -2,18 +2,36 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
-    <!-- Light Theme Color Palette -->
-    <SolidColorBrush x:Key="PrimaryColor" Color="#0D9488"/> <!-- Teal 600 -->
+    <!-- Light Theme Color Palette Colors -->
+    <Color x:Key="PrimaryColorVal">#0D9488</Color>
+    <Color x:Key="SecondaryColorVal">#0EA5E9</Color>
+    <Color x:Key="CardBackgroundColorVal">#FFFFFF</Color>
+    <Color x:Key="SelectedTabBrushVal">#F0FDFA</Color>
+    <Color x:Key="AccentColorVal">#F43F5E</Color>
+    <Color x:Key="BorderColorVal">#E2E8F0</Color>
+    <Color x:Key="ClinicalAccentColorVal">#0D9488</Color> <!-- Teal -->
+    <Color x:Key="VitalsAccentColorVal">#0EA5E9</Color>   <!-- Blue -->
+    <Color x:Key="RxAccentColorVal">#D97706</Color>       <!-- Amber -->
+    <Color x:Key="DiagnosisAccentColorVal">#F43F5E</Color>  <!-- Rose -->
+
+    <!-- Light Theme Color Palette Brushes -->
+    <SolidColorBrush x:Key="PrimaryColor" Color="{DynamicResource PrimaryColorVal}"/> <!-- Teal 600 -->
     <SolidColorBrush x:Key="PrimaryHoverColor" Color="#0F766E"/> <!-- Teal 700 -->
-    <SolidColorBrush x:Key="SecondaryColor" Color="#0EA5E9"/> <!-- Sky 500 -->
+    <SolidColorBrush x:Key="SecondaryColor" Color="{DynamicResource SecondaryColorVal}"/> <!-- Sky 500 -->
     <SolidColorBrush x:Key="BackgroundColor" Color="#F1F5F9"/> <!-- Slate 100 -->
-    <SolidColorBrush x:Key="CardBackgroundColor" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="CardBackgroundColor" Color="{DynamicResource CardBackgroundColorVal}"/>
     <SolidColorBrush x:Key="TextColor" Color="#1E293B"/> <!-- Slate 800 -->
     <SolidColorBrush x:Key="SubtextColor" Color="#475569"/> <!-- Slate 600 -->
-    <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/> <!-- Slate 200 -->
-    <SolidColorBrush x:Key="AccentColor" Color="#F43F5E"/> <!-- Rose 500 -->
-    <SolidColorBrush x:Key="SelectedTabBrush" Color="#F0FDFA"/> <!-- Soft teal selection background -->
+    <SolidColorBrush x:Key="BorderColor" Color="{DynamicResource BorderColorVal}"/> <!-- Slate 200 -->
+    <SolidColorBrush x:Key="AccentColor" Color="{DynamicResource AccentColorVal}"/> <!-- Rose 500 -->
+    <SolidColorBrush x:Key="SelectedTabBrush" Color="{DynamicResource SelectedTabBrushVal}"/> <!-- Soft teal selection background -->
     <SolidColorBrush x:Key="SelectedTabTextBrush" Color="#0D9488"/> <!-- Teal 600 selection text -->
+    <SolidColorBrush x:Key="ClinicalAccentColor" Color="{DynamicResource ClinicalAccentColorVal}"/>
+    <SolidColorBrush x:Key="VitalsAccentColor" Color="{DynamicResource VitalsAccentColorVal}"/>
+    <SolidColorBrush x:Key="RxAccentColor" Color="{DynamicResource RxAccentColorVal}"/>
+    <SolidColorBrush x:Key="DiagnosisAccentColor" Color="{DynamicResource DiagnosisAccentColorVal}"/>
+    <SolidColorBrush x:Key="SplitterColor" Color="#CBD5E1"/>
+    <SolidColorBrush x:Key="BottomBarBackground" Color="#0F172A"/>
  
     <!-- Material Design Theme Compatibility Brushes (Legacy and Modern) -->
     <SolidColorBrush x:Key="MaterialDesignPaper" Color="#FFFFFF"/>
@@ -69,8 +87,9 @@
     <SolidColorBrush x:Key="InfoAlertIcon" Color="#1D4ED8"/> <!-- Blue 700 -->
 
     <!-- Status Badges -->
+    <Color x:Key="SuccessBadgeTextVal">#065F46</Color>
     <SolidColorBrush x:Key="SuccessBadgeBackground" Color="#D1FAE5"/> <!-- Green 100 -->
-    <SolidColorBrush x:Key="SuccessBadgeText" Color="#065F46"/> <!-- Green 800 -->
+    <SolidColorBrush x:Key="SuccessBadgeText" Color="{DynamicResource SuccessBadgeTextVal}"/> <!-- Green 800 -->
     <SolidColorBrush x:Key="InfoBadgeBackground" Color="#E0F2FE"/> <!-- Blue 100 -->
     <SolidColorBrush x:Key="InfoBadgeText" Color="#0369A1"/> <!-- Blue 700 -->
     <SolidColorBrush x:Key="WarningBadgeBackground" Color="#FEE2E2"/> <!-- Red 100 -->

@@ -31,6 +31,13 @@ namespace MedicalApp.Models
         // Return Date
         public DateTime? ReturnDate { get; set; }
 
+        // Patient-level fields for auto-save draft
+        public string PatientNotes { get; set; } = string.Empty;
+        public string PatientAllergy { get; set; } = string.Empty;
+        public string PatientSmoking { get; set; } = string.Empty;
+        public string PatientAlcohol { get; set; } = string.Empty;
+        public string PatientBloodGroup { get; set; } = string.Empty;
+
         // Attachments
         public string InvestigationAttachmentPath { get; set; } = string.Empty;
         public string ImagingAttachmentPath { get; set; } = string.Empty;

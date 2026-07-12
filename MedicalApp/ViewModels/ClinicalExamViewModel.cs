@@ -189,6 +189,28 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private string _statusMessage = string.Empty;
 
+        // Sidebar State
+        [ObservableProperty]
+        private bool _isSidebarCollapsed = false;
+
+        // Auto-save indicator
+        [ObservableProperty]
+        private bool _showSavedBadge = false;
+
+        // Patient panel computed helpers
+        public string PatientInitials => CurrentPatient != null
+            ? string.Join("", CurrentPatient.Name?.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Take(2).Select(w => w[0].ToString().ToUpper()) ?? Array.Empty<string>())
+            : "?";
+
+        public string PatientVisitDate => DateTime.Now.ToString("MMMM dd, yyyy");
+
+        [RelayCommand]
+        private void ToggleSidebar()
+        {
+            IsSidebarCollapsed = !IsSidebarCollapsed;
+        }
+
         // View Toggling Settings (Show/Hide sections)
         [ObservableProperty]
         private bool _showComplaint = true;
@@ -380,7 +402,7 @@ namespace MedicalApp.ViewModels
             {
                 if (doc.Name == doctorName)
                 {
-                    if (_sharedStateService.AuthenticatedDoctors.Contains(doc.Name))
+                    if (_sharedStateService.IsDoctorAuthenticated(doc.Name))
                     {
                         ExitToDashboard();
                         ActiveDoctorName = doc.Name;
@@ -405,7 +427,7 @@ namespace MedicalApp.ViewModels
 
             if (SelectedSwitchDoctor.Password == SwitchDoctorPasswordAttempt)
             {
-                _sharedStateService.AuthenticatedDoctors.Add(SelectedSwitchDoctor.Name);
+                _sharedStateService.AuthenticateDoctor(SelectedSwitchDoctor.Name);
 
                 ExitToDashboard();
                 ActiveDoctorName = SelectedSwitchDoctor.Name;
@@ -548,6 +570,18 @@ namespace MedicalApp.ViewModels
 
                 using (var db = await _dbContextFactory.CreateDbContextAsync())
                 {
+                    // Update patient demographics/history in DB
+                    var patientInDb = await db.Patients.FirstOrDefaultAsync(p => p.PatientId == CurrentPatient.PatientId);
+                    if (patientInDb != null)
+                    {
+                        patientInDb.Notes = CurrentPatient.Notes ?? string.Empty;
+                        patientInDb.Allergy = CurrentPatient.Allergy ?? string.Empty;
+                        patientInDb.Smoking = CurrentPatient.Smoking ?? string.Empty;
+                        patientInDb.Alcohol = CurrentPatient.Alcohol ?? string.Empty;
+                        patientInDb.BloodGroup = CurrentPatient.BloodGroup ?? string.Empty;
+                        db.Patients.Update(patientInDb);
+                    }
+
                     var today = DateTime.UtcNow.Date;
                     var existingVisit = await db.Visits
                         .FirstOrDefaultAsync(v => v.PatientId == CurrentPatient.PatientId && v.VisitDate >= today);
@@ -634,9 +668,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public async Task StartSessionAsync(QueueEntry entry)
+        public async Task StartSessionAsync(object? parameter)
         {
-            if (entry == null) return;
+            if (parameter is not QueueEntry entry) return;
             try
             {
                 // Update queue status to InExam
@@ -711,8 +745,13 @@ namespace MedicalApp.ViewModels
         {
             SelectedPatientLookup = null;
             CurrentPatient = null;
+            _sharedStateService.CurrentPatient = null; // Clear shared state
             VisitHistory.Clear();
             ClearFormFieldsWithoutAutoSave();
+
+            // Navigate back to Home view
+            var mainVm = Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<MainViewModel>(App.ServiceProvider);
+            mainVm.NavigateToHome();
         }
 
         [RelayCommand]
@@ -821,9 +860,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void RemoveDrug(PrescribedMedication drug)
+        public void RemoveDrug(object? parameter)
         {
-            if (drug != null && PrescribedDrugs.Contains(drug))
+            if (parameter is PrescribedMedication drug && PrescribedDrugs.Contains(drug))
             {
                 PrescribedDrugs.Remove(drug);
             }
@@ -853,9 +892,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void PrintVisitRx(Visit visit)
+        public void PrintVisitRx(object? parameter)
         {
-            if (CurrentPatient == null || visit == null) return;
+            if (CurrentPatient == null || parameter is not Visit visit) return;
             if (string.IsNullOrWhiteSpace(visit.Prescription))
             {
                 MessageBox.Show("No prescription was recorded for this visit.", "No Prescription", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -865,9 +904,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void PrintVisitReport(Visit visit)
+        public void PrintVisitReport(object? parameter)
         {
-            if (CurrentPatient == null || visit == null) return;
+            if (CurrentPatient == null || parameter is not Visit visit) return;
             _printService.PrintReport(CurrentPatient, visit);
         }
 
@@ -903,6 +942,7 @@ namespace MedicalApp.ViewModels
         private void TriggerAutoSave()
         {
             if (_isSavingOrLoadingDraft || CurrentPatient == null) return;
+            ShowSavedBadge = false;
             _ = AutoSaveDraftAsync();
         }
 
@@ -952,11 +992,17 @@ namespace MedicalApp.ViewModels
                     Imagings = new List<ClinicalAttachment>(AddedImagings),
                     ReturnDate = ReturnDate,
                     InvestigationAttachmentPath = InvestigationAttachmentPath ?? string.Empty,
-                    ImagingAttachmentPath = ImagingAttachmentPath ?? string.Empty
+                    ImagingAttachmentPath = ImagingAttachmentPath ?? string.Empty,
+                    PatientNotes = CurrentPatient.Notes ?? string.Empty,
+                    PatientAllergy = CurrentPatient.Allergy ?? string.Empty,
+                    PatientSmoking = CurrentPatient.Smoking ?? string.Empty,
+                    PatientAlcohol = CurrentPatient.Alcohol ?? string.Empty,
+                    PatientBloodGroup = CurrentPatient.BloodGroup ?? string.Empty
                 };
 
                 string outputJson = JsonSerializer.Serialize(drafts, new JsonSerializerOptions { WriteIndented = true });
                 await File.WriteAllTextAsync(DraftsFile, outputJson);
+                ShowSavedBadge = true;
             }
             catch
             {
@@ -1041,12 +1087,24 @@ namespace MedicalApp.ViewModels
                         var newCollection = new ObservableCollection<PrescribedMedication>(draft.PrescribedDrugs);
                         newCollection.CollectionChanged += (s, e) => TriggerAutoSave();
                         PrescribedDrugs = newCollection;
+
+                        if (CurrentPatient != null)
+                        {
+                            CurrentPatient.Notes = draft.PatientNotes ?? string.Empty;
+                            CurrentPatient.Allergy = draft.PatientAllergy ?? string.Empty;
+                            CurrentPatient.Smoking = draft.PatientSmoking ?? string.Empty;
+                            CurrentPatient.Alcohol = draft.PatientAlcohol ?? string.Empty;
+                            CurrentPatient.BloodGroup = draft.PatientBloodGroup ?? string.Empty;
+                        }
+
+                        ShowSavedBadge = true;
                         return;
                     }
                 }
                 
                 // Clear fields if no draft exists
                 ClearFormFieldsWithoutAutoSave();
+                ShowSavedBadge = true; // Clean form starts as "saved" (no unsaved changes)
             }
             catch
             {
@@ -1393,9 +1451,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void RemoveInvestigation(ClinicalAttachment item)
+        public void RemoveInvestigation(object? parameter)
         {
-            if (item != null && AddedInvestigations.Contains(item))
+            if (parameter is ClinicalAttachment item && AddedInvestigations.Contains(item))
             {
                 if (!string.IsNullOrEmpty(item.AttachmentPath) && File.Exists(item.AttachmentPath))
                 {
@@ -1406,9 +1464,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void RemoveImaging(ClinicalAttachment item)
+        public void RemoveImaging(object? parameter)
         {
-            if (item != null && AddedImagings.Contains(item))
+            if (parameter is ClinicalAttachment item && AddedImagings.Contains(item))
             {
                 if (!string.IsNullOrEmpty(item.AttachmentPath) && File.Exists(item.AttachmentPath))
                 {
@@ -1419,9 +1477,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void UploadInvestigationFile(ClinicalAttachment item)
+        public void UploadInvestigationFile(object? parameter)
         {
-            if (item == null) return;
+            if (parameter is not ClinicalAttachment item) return;
 
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
@@ -1476,9 +1534,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void UploadImagingFile(ClinicalAttachment item)
+        public void UploadImagingFile(object? parameter)
         {
-            if (item == null) return;
+            if (parameter is not ClinicalAttachment item) return;
 
             var openFileDialog = new Microsoft.Win32.OpenFileDialog
             {
@@ -1678,7 +1736,8 @@ namespace MedicalApp.ViewModels
 
         public void StartPolling()
         {
-            _pollingTimer?.Start();
+            // Background waitlist polling disabled in ClinicalExamViewModel
+            // The waitlist queue is now polled in HomeViewModel instead.
         }
 
         public void StopPolling()

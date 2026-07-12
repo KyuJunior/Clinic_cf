@@ -17,7 +17,7 @@
         <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,15,0" VerticalAlignment="Stretch">
             <StackPanel Margin="5">
                 <TextBlock Text="Print Options" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
-                <TextBlock Text="Configure printer properties and preferences." Style="{StaticResource Subheading}" Margin="0,0,0,20"/>
+                <TextBlock Text="Configure printer properties and preferences." Style="{StaticResource Subheading}" Margin="0,0,0,20" TextWrapping="Wrap"/>
 
                 <!-- Printer Selection -->
                 <TextBlock Text="Printer" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,5"/>
@@ -49,7 +49,7 @@
 
                 <!-- Action Buttons -->
                 <Button Style="{StaticResource ModernButton}" Content="Print" Click="Print_Click" Height="40" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
-                <Button Style="{StaticResource ModernButton}" Content="Cancel" Click="Cancel_Click" Background="#EF4444" BorderBrush="#EF4444" Height="38" HorizontalAlignment="Stretch"/>
+                <Button Style="{StaticResource SecondaryButton}" Content="Cancel" Click="Cancel_Click" Height="38" HorizontalAlignment="Stretch"/>
             </StackPanel>
         </Border>
 

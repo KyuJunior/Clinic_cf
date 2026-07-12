@@ -77,7 +77,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Style="{DynamicResource ModernButton}" Content="إلغاء (Exit)" Click="CancelButton_Click" Background="#EF4444" BorderBrush="#EF4444" Height="36"/>
+                <Button Grid.Column="0" Style="{DynamicResource SecondaryButton}" Content="إلغاء (Exit)" Click="CancelButton_Click" Height="36"/>
                 <Button Grid.Column="1" Style="{DynamicResource SecondaryButton}" Content="فحص الاتصال" Click="TestButton_Click" Width="100" Margin="10,0" Height="36" Foreground="#38BDF8" BorderBrush="#38BDF8"/>
                 <Button Grid.Column="2" Style="{DynamicResource ModernButton}" Content="حفظ (Save)" Click="SaveButton_Click" IsDefault="True" Background="#10B981" BorderBrush="#10B981" Height="36"/>
             </Grid>

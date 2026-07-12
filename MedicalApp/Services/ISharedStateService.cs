@@ -9,5 +9,7 @@ namespace MedicalApp.Services
         string? ActiveDoctorName { get; set; }
         System.Collections.Generic.HashSet<string> AuthenticatedDoctors { get; }
         event Action<Patient?>? CurrentPatientChanged;
+        bool IsDoctorAuthenticated(string doctorName);
+        void AuthenticateDoctor(string doctorName);
     }
 }

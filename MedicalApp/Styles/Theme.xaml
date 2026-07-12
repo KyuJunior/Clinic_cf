@@ -156,6 +156,46 @@
         </Setter>
     </Style>
 
+    <!-- Rounded PasswordBox Style -->
+    <Style x:Key="ModernPasswordBox" TargetType="PasswordBox">
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderColor}"/>
+        <Setter Property="BorderThickness" Value="1.5"/>
+        <Setter Property="Padding" Value="10,8"/>
+        <Setter Property="FontSize" Value="13"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="CaretBrush" Value="{DynamicResource PrimaryColor}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="PasswordBox">
+                    <Border Name="Border" 
+                            CornerRadius="6" 
+                            BorderBrush="{TemplateBinding BorderBrush}" 
+                            BorderThickness="{TemplateBinding BorderThickness}" 
+                            Background="{TemplateBinding Background}">
+                        <Grid Margin="2">
+                            <ScrollViewer x:Name="PART_ContentHost" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter TargetName="Border" Property="BorderBrush" Value="{DynamicResource PrimaryColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Compact Vital Input Style -->
+    <Style x:Key="CompactVitalInput" TargetType="TextBox" BasedOn="{StaticResource ModernTextBox}">
+        <Setter Property="Height" Value="32"/>
+        <Setter Property="Padding" Value="6,4"/>
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    </Style>
+
     <!-- Card/Container border -->
     <Style x:Key="CardBorder" TargetType="Border">
         <Setter Property="Background" Value="{DynamicResource CardBackgroundColor}"/>
@@ -168,6 +208,11 @@
                 <DropShadowEffect Color="#0F172A" Opacity="0.07" BlurRadius="22" ShadowDepth="1.5" Direction="270"/>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- Accent Card Border Style (Inherits from CardBorder) -->
+    <Style x:Key="AccentCardBorder" TargetType="Border" BasedOn="{StaticResource CardBorder}">
+        <Setter Property="Margin" Value="0,0,0,16"/>
     </Style>
 
     <!-- DataGrid Custom Styling -->
@@ -299,6 +344,39 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter Property="Background" Value="#E2E8F0"/> <!-- Slate 200 -->
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Link Button Style -->
+    <!-- Plain Icon ToggleButton Style -->
+    <Style x:Key="IconToggleButton" TargetType="ToggleButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="4"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border Name="Border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" CornerRadius="4">
+                        <TextBlock Text="{TemplateBinding Tag}" 
+                                   FontFamily="Segoe MDL2 Assets" 
+                                   FontSize="{TemplateBinding FontSize}" 
+                                   HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center"
+                                   Foreground="{TemplateBinding Foreground}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#1A1E28"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#0E3A40"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryColor}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -449,6 +527,106 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Border" Property="Background" Value="#0369A1"/> <!-- Sky 700 -->
                         </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Danger Button (Red - End/Complete) -->
+    <Style x:Key="DangerButton" TargetType="Button" BasedOn="{StaticResource ModernButton}">
+        <Setter Property="Background" Value="#EF4444"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border CornerRadius="8" 
+                            Background="{TemplateBinding Background}" 
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="True">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#DC2626"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" Value="{DynamicResource BorderColor}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Sidebar Navigation Button -->
+    <Style x:Key="SidebarNavButton" TargetType="Button">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Height" Value="42"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="14,0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border Name="Border" CornerRadius="8" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" Margin="6,2">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="{TemplateBinding Tag}" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <ContentPresenter VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#1A1E28"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Sidebar Active Navigation Button -->
+    <Style x:Key="SidebarNavButtonActive" TargetType="Button" BasedOn="{StaticResource SidebarNavButton}">
+        <Setter Property="Background" Value="#0E3A40"/>
+        <Setter Property="Foreground" Value="{DynamicResource PrimaryColor}"/>
+    </Style>
+
+    <!-- Sidebar Navigation RadioButton Style -->
+    <Style x:Key="SidebarNavRadioButton" TargetType="RadioButton">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="{DynamicResource SubtextColor}"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Height" Value="42"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Padding" Value="14,0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="RadioButton">
+                    <Border Name="Border" CornerRadius="8" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" Margin="6,2">
+                        <StackPanel Name="Panel" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Name="Icon" Text="{TemplateBinding Tag}" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                            <ContentPresenter Name="Content" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Border" Property="Background" Value="#1A1E28"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Background" Value="#0E3A40"/>
+                            <Setter Property="Foreground" Value="{DynamicResource PrimaryColor}"/>
+                        </Trigger>
+                        <DataTrigger Binding="{Binding DataContext.IsSidebarCollapsed, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
+                            <Setter TargetName="Content" Property="Visibility" Value="Collapsed"/>
+                            <Setter TargetName="Icon" Property="Margin" Value="0"/>
+                            <Setter TargetName="Panel" Property="HorizontalAlignment" Value="Center"/>
+                        </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>

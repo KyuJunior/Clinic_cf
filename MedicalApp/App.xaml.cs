@@ -22,6 +22,33 @@ namespace MedicalApp
         {
             base.OnStartup(e);
 
+            // Global exception handler — writes crash details to crash_log.txt
+            DispatcherUnhandledException += (s, args) =>
+            {
+                var logPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "crash_log.txt");
+                var message = $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] UNHANDLED EXCEPTION\n" +
+                              $"Message: {args.Exception.Message}\n" +
+                              $"Type: {args.Exception.GetType().FullName}\n" +
+                              $"Source: {args.Exception.Source}\n" +
+                              $"StackTrace:\n{args.Exception.StackTrace}\n";
+                if (args.Exception.InnerException != null)
+                {
+                    message += $"\n--- Inner Exception ---\n" +
+                               $"Message: {args.Exception.InnerException.Message}\n" +
+                               $"Type: {args.Exception.InnerException.GetType().FullName}\n" +
+                               $"StackTrace:\n{args.Exception.InnerException.StackTrace}\n";
+                }
+                message += "\n========================================\n\n";
+                File.AppendAllText(logPath, message);
+
+                MessageBox.Show(
+                    $"An error occurred:\n\n{args.Exception.Message}\n\nDetails saved to crash_log.txt",
+                    "Application Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error);
+                args.Handled = true;
+            };
+
             // Set up Configuration builder to read appsettings.json and optional db_config.json
             var builder = new ConfigurationBuilder()
                 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
