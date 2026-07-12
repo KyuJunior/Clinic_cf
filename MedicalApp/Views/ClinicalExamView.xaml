@@ -424,22 +424,78 @@
                                             <ItemsControl ItemsSource="{Binding PrescribedDrugs}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="0,6" Margin="0,0,0,4">
+                                                        <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1.5" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
                                                             <Grid>
-                                                                <Grid.ColumnDefinitions>
-                                                                    <ColumnDefinition Width="*"/>
-                                                                    <ColumnDefinition Width="Auto"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <StackPanel Grid.Column="0">
-                                                                    <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
-                                                                    <WrapPanel Margin="0,4,0,0">
-                                                                        <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding Dosage}" Tag="Dose" Width="80" Margin="0,0,6,0"/>
-                                                                        <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding Type}" Tag="Form" Width="70" Margin="0,0,6,0"/>
-                                                                        <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding Timing}" Tag="Frequency" Width="90" Margin="0,0,6,0"/>
-                                                                        <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding Notes}" Tag="Note" Width="100"/>
-                                                                    </WrapPanel>
-                                                                </StackPanel>
-                                                <Button Grid.Column="1" Style="{StaticResource IconButton}" Tag="&#xE74D;" Foreground="{DynamicResource AccentColor}" Command="{Binding DataContext.RemoveDrugCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" VerticalAlignment="Top" Margin="6,0,0,0"/>
+                                                                <Grid.RowDefinitions>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                    <RowDefinition Height="Auto"/>
+                                                                </Grid.RowDefinitions>
+                                                                
+                                                                <!-- Row 1: Drug Name and Actions -->
+                                                                <Grid Grid.Row="0">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="Auto"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                        <TextBlock Text="&#xE966;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource PrimaryColor}" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13.5" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+                                                                    </StackPanel>
+                                                                    
+                                                                    <Button Grid.Column="1" Style="{StaticResource IconButton}" Tag="&#xE711;" ToolTip="Remove | حذف" Command="{Binding DataContext.RemoveDrugCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource AccentColor}" FontSize="15" VerticalAlignment="Center"/>
+                                                                </Grid>
+                                                                
+                                                                <!-- Row 2: Structured & Labeled Inputs -->
+                                                                <Grid Grid.Row="1" Margin="0,8,0,0">
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                        <ColumnDefinition Width="*"/>
+                                                                    </Grid.ColumnDefinitions>
+                                                                    <Grid.RowDefinitions>
+                                                                        <RowDefinition Height="Auto"/>
+                                                                        <RowDefinition Height="Auto"/>
+                                                                    </Grid.RowDefinitions>
+                                                                    
+                                                                    <!-- Dose -->
+                                                                    <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,6,8">
+                                                                        <TextBlock Text="Dose | الجرعة" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
+                                                                        <TextBox Style="{StaticResource ModernTextBox}" Height="34" Text="{Binding Dose, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. 1 tab / 5ml"/>
+                                                                    </StackPanel>
+                                                                    
+                                                                    <!-- Form -->
+                                                                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="6,0,0,8">
+                                                                        <TextBlock Text="Form | الشكل" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
+                                                                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="34" IsEditable="True" Text="{Binding Type, UpdateSourceTrigger=PropertyChanged}">
+                                                                            <ComboBoxItem Content="Tablet | حبوب"/>
+                                                                            <ComboBoxItem Content="Capsule | كبسولة"/>
+                                                                            <ComboBoxItem Content="Syrup | شراب"/>
+                                                                            <ComboBoxItem Content="Injection | حقنة"/>
+                                                                            <ComboBoxItem Content="Drops | قطرات"/>
+                                                                            <ComboBoxItem Content="Ointment | مرهم"/>
+                                                                            <ComboBoxItem Content="Inhaler | بخاخ"/>
+                                                                        </ComboBox>
+                                                                    </StackPanel>
+                                                                    
+                                                                    <!-- Frequency -->
+                                                                    <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,6,0">
+                                                                        <TextBlock Text="Frequency | التكرار" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
+                                                                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="34" IsEditable="True" Text="{Binding Time, UpdateSourceTrigger=PropertyChanged}">
+                                                                            <ComboBoxItem Content="1x Daily | مرة يومياً"/>
+                                                                            <ComboBoxItem Content="2x Daily (12h) | مرتين يومياً"/>
+                                                                            <ComboBoxItem Content="3x Daily (8h) | 3 مرات يومياً"/>
+                                                                            <ComboBoxItem Content="4x Daily (6h) | 4 مرات يومياً"/>
+                                                                            <ComboBoxItem Content="Every 4 hours | كل 4 ساعات"/>
+                                                                            <ComboBoxItem Content="As needed (PRN) | عند الحاجة"/>
+                                                                            <ComboBoxItem Content="Before bed | قبل النوم"/>
+                                                                        </ComboBox>
+                                                                    </StackPanel>
+                                                                    
+                                                                    <!-- Note -->
+                                                                    <StackPanel Grid.Column="1" Grid.Row="1" Margin="6,0,0,0">
+                                                                        <TextBlock Text="Note | ملاحظة" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
+                                                                        <TextBox Style="{StaticResource ModernTextBox}" Height="34" Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. After meals"/>
+                                                                    </StackPanel>
+                                                                </Grid>
                                                             </Grid>
                                                         </Border>
                                                     </DataTemplate>
@@ -502,9 +558,9 @@
                                                                     
                                                                     <!-- Case B: Attached Image (Show Thumbnail with Hover View Button) -->
                                                                     <StackPanel Orientation="Vertical" Visibility="{Binding IsImage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                                        <Grid Width="100" Height="70" HorizontalAlignment="Left" Margin="0,4,0,4">
+                                                                        <Grid Width="200" Height="130" HorizontalAlignment="Left" Margin="0,4,0,4">
                                                                             <Border CornerRadius="6" ClipToBounds="True" Background="#0F172A" BorderBrush="#334155" BorderThickness="1.5">
-                                                                                <Image Source="{Binding AttachmentPath}" Stretch="UniformToFill"/>
+                                                                                <Image Source="{Binding AttachmentPath}" Stretch="Uniform"/>
                                                                             </Border>
                                                                             <!-- View Icon overlay button (Click to view fullscreen) -->
                                                                             <Button Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
@@ -513,12 +569,12 @@
                                                                                     Tag="&#xE7B3;" 
                                                                                     ToolTip="View Fullscreen | عرض ملء الشاشة" 
                                                                                     Foreground="White" 
-                                                                                    Background="#B3000000"
+                                                                                    Background="#80000000"
                                                                                     HorizontalAlignment="Stretch"
                                                                                     VerticalAlignment="Stretch">
                                                                                 <Button.Resources>
                                                                                     <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
-                                                                                        <Setter Property="Opacity" Value="0.1"/>
+                                                                                        <Setter Property="Opacity" Value="0"/>
                                                                                         <Style.Triggers>
                                                                                             <Trigger Property="IsMouseOver" Value="True">
                                                                                                 <Setter Property="Opacity" Value="1"/>
@@ -607,9 +663,9 @@
                                                                      
                                                                      <!-- Case B: Attached Image (Show Thumbnail with Hover View Button) -->
                                                                      <StackPanel Orientation="Vertical" Visibility="{Binding IsImage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                                         <Grid Width="100" Height="70" HorizontalAlignment="Left" Margin="0,4,0,4">
+                                                                         <Grid Width="200" Height="130" HorizontalAlignment="Left" Margin="0,4,0,4">
                                                                              <Border CornerRadius="6" ClipToBounds="True" Background="#0F172A" BorderBrush="#334155" BorderThickness="1.5">
-                                                                                 <Image Source="{Binding AttachmentPath}" Stretch="UniformToFill"/>
+                                                                                 <Image Source="{Binding AttachmentPath}" Stretch="Uniform"/>
                                                                              </Border>
                                                                              <!-- View Icon overlay button (Click to view fullscreen) -->
                                                                              <Button Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
@@ -618,12 +674,12 @@
                                                                                      Tag="&#xE7B3;" 
                                                                                      ToolTip="View Fullscreen | عرض ملء الشاشة" 
                                                                                      Foreground="White" 
-                                                                                     Background="#B3000000"
+                                                                                     Background="#80000000"
                                                                                      HorizontalAlignment="Stretch"
                                                                                      VerticalAlignment="Stretch">
                                                                                  <Button.Resources>
                                                                                      <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
-                                                                                         <Setter Property="Opacity" Value="0.1"/>
+                                                                                         <Setter Property="Opacity" Value="0"/>
                                                                                          <Style.Triggers>
                                                                                              <Trigger Property="IsMouseOver" Value="True">
                                                                                                  <Setter Property="Opacity" Value="1"/>
