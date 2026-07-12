@@ -635,9 +635,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void LoadExistingPatient(Patient patient)
+        public void LoadExistingPatient(object? parameter)
         {
-            if (patient == null) return;
+            if (parameter is not Patient patient) return;
 
             _isAutofilling = true;
             try
@@ -745,9 +745,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void SelectNameSuggestion(Patient patient)
+        public void SelectNameSuggestion(object? parameter)
         {
-            if (patient == null) return;
+            if (parameter is not Patient patient) return;
             IsSuggestionsOpen = false;
             NameSuggestions.Clear();
             ShowRegistrationModal = false;
@@ -1002,9 +1002,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void SendToQueue(Patient? patient)
+        public void SendToQueue(object? parameter)
         {
-            var target = patient ?? SelectedPatient;
+            var target = (parameter as Patient) ?? SelectedPatient;
             if (target == null)
             {
                 StatusMessage = "Please select a patient to check-in.";
@@ -1014,9 +1014,9 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public async Task DeletePatientAsync(Patient? patient)
+        public async Task DeletePatientAsync(object? parameter)
         {
-            var target = patient ?? SelectedPatient;
+            var target = (parameter as Patient) ?? SelectedPatient;
             if (target == null)
             {
                 StatusMessage = "الرجاء تحديد المريض المراد حذفه.";
