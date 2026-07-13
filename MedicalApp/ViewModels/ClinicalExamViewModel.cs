@@ -249,6 +249,8 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private string _vitalTemp = string.Empty;
 
+
+
         [ObservableProperty]
         private bool _isVitallyStable;
 
@@ -776,6 +778,136 @@ namespace MedicalApp.ViewModels
             }
         }
 
+        [RelayCommand]
+        public void AppendText(string targetAndValue)
+        {
+            if (string.IsNullOrEmpty(targetAndValue)) return;
+            var parts = targetAndValue.Split(':');
+            if (parts.Length < 2) return;
+            
+            var target = parts[0];
+            var val = parts[1];
+            
+            if (target == "Complaint")
+            {
+                ChiefComplaint = string.IsNullOrWhiteSpace(ChiefComplaint) ? val : ChiefComplaint + ", " + val;
+            }
+            else if (target == "HPI")
+            {
+                HistoryOfPresentIllness = string.IsNullOrWhiteSpace(HistoryOfPresentIllness) ? val : HistoryOfPresentIllness + ", " + val;
+            }
+            else if (target == "Exam")
+            {
+                PhysicalExamination = string.IsNullOrWhiteSpace(PhysicalExamination) ? val : PhysicalExamination + ", " + val;
+            }
+            else if (target == "Plan")
+            {
+                TreatmentPlan = string.IsNullOrWhiteSpace(TreatmentPlan) ? val : TreatmentPlan + ", " + val;
+            }
+            else if (target == "Dx")
+            {
+                Diagnosis = string.IsNullOrWhiteSpace(Diagnosis) ? val : Diagnosis + ", " + val;
+            }
+        }
+
+        // SPO2 Alert
+        public string SPO2AlertText
+        {
+            get
+            {
+                if (double.TryParse(VitalSPO2, out double val))
+                {
+                    if (val < 95) return "Low / منخفض";
+                }
+                return string.Empty;
+            }
+        }
+        public string SPO2AlertBackground => "#EF4444"; // Red
+        public bool IsSPO2AlertVisible => !string.IsNullOrWhiteSpace(VitalSPO2) && double.TryParse(VitalSPO2, out double val) && val < 95;
+
+        // Temp Alert
+        public string TempAlertText
+        {
+            get
+            {
+                if (double.TryParse(VitalTemp, out double val))
+                {
+                    if (val > 37.5) return "Fever / حرارة";
+                    if (val < 35.0) return "Low / منخفض";
+                }
+                return string.Empty;
+            }
+        }
+        public string TempAlertBackground => (TempAlertText ?? "").StartsWith("Fever") ? "#EF4444" : "#F59E0B";
+        public bool IsTempAlertVisible => !string.IsNullOrWhiteSpace(VitalTemp) && double.TryParse(VitalTemp, out double val) && (val > 37.5 || val < 35.0);
+
+        // HR Alert
+        public string HRAlertText
+        {
+            get
+            {
+                if (double.TryParse(VitalHR, out double val))
+                {
+                    if (val > 100) return "High / مرتفع";
+                    if (val < 60) return "Low / منخفض";
+                }
+                return string.Empty;
+            }
+        }
+        public string HRAlertBackground => "#EF4444";
+        public bool IsHRAlertVisible => !string.IsNullOrWhiteSpace(VitalHR) && double.TryParse(VitalHR, out double val) && (val > 100 || val < 60);
+
+        // RR Alert
+        public string RRAlertText
+        {
+            get
+            {
+                if (double.TryParse(VitalRR, out double val))
+                {
+                    if (val > 20) return "High / مرتفع";
+                    if (val < 12) return "Low / منخفض";
+                }
+                return string.Empty;
+            }
+        }
+        public string RRAlertBackground => "#EF4444";
+        public bool IsRRAlertVisible => !string.IsNullOrWhiteSpace(VitalRR) && double.TryParse(VitalRR, out double val) && (val > 20 || val < 12);
+
+        // BP Alert (SBP/DBP combined status)
+        public string BPAlertText
+        {
+            get
+            {
+                double sbp = 0, dbp = 0;
+                bool hasSbp = double.TryParse(VitalSBP, out sbp);
+                bool hasDbp = double.TryParse(VitalDBP, out dbp);
+                if (hasSbp || hasDbp)
+                {
+                    if (sbp > 130 || dbp > 80) return "High BP / مرتفع";
+                    if (sbp < 90 || dbp < 60) return "Low BP / منخفض";
+                }
+                return string.Empty;
+            }
+        }
+        public string BPAlertBackground => "#EF4444";
+        public bool IsBPAlertVisible => !string.IsNullOrWhiteSpace(BPAlertText);
+
+        // Blood Sugar Alert
+        public string BSAlertText
+        {
+            get
+            {
+                if (double.TryParse(VitalBS, out double val))
+                {
+                    if (val > 140) return "High / مرتفع";
+                    if (val < 70) return "Low / منخفض";
+                }
+                return string.Empty;
+            }
+        }
+        public string BSAlertBackground => "#EF4444";
+        public bool IsBSAlertVisible => !string.IsNullOrWhiteSpace(VitalBS) && double.TryParse(VitalBS, out double val) && (val > 140 || val < 70);
+
         async partial void OnDrugSearchTextChanged(string value)
         {
             if (string.IsNullOrWhiteSpace(value) || value.Length < 2)
@@ -1125,6 +1257,7 @@ namespace MedicalApp.ViewModels
             VitalRR = string.Empty;
             VitalSPO2 = string.Empty;
             VitalTemp = string.Empty;
+            VitalBS = string.Empty;
             IsVitallyStable = false;
             SelectedInvestigation = string.Empty;
             SelectedImaging = string.Empty;
@@ -1241,12 +1374,61 @@ namespace MedicalApp.ViewModels
         partial void OnShowDiagnosisChanged(bool value) => SaveViewSettings();
         partial void OnShowDrugsChanged(bool value) => SaveViewSettings();
 
-        partial void OnVitalHRChanged(string value) => TriggerAutoSave();
-        partial void OnVitalSBPChanged(string value) => TriggerAutoSave();
-        partial void OnVitalDBPChanged(string value) => TriggerAutoSave();
-        partial void OnVitalRRChanged(string value) => TriggerAutoSave();
-        partial void OnVitalSPO2Changed(string value) => TriggerAutoSave();
-        partial void OnVitalTempChanged(string value) => TriggerAutoSave();
+        partial void OnVitalHRChanged(string value)
+        {
+            OnPropertyChanged(nameof(HRAlertText));
+            OnPropertyChanged(nameof(HRAlertBackground));
+            OnPropertyChanged(nameof(IsHRAlertVisible));
+            TriggerAutoSave();
+        }
+
+        partial void OnVitalSBPChanged(string value)
+        {
+            OnPropertyChanged(nameof(BPAlertText));
+            OnPropertyChanged(nameof(BPAlertBackground));
+            OnPropertyChanged(nameof(IsBPAlertVisible));
+            TriggerAutoSave();
+        }
+
+        partial void OnVitalDBPChanged(string value)
+        {
+            OnPropertyChanged(nameof(BPAlertText));
+            OnPropertyChanged(nameof(BPAlertBackground));
+            OnPropertyChanged(nameof(IsBPAlertVisible));
+            TriggerAutoSave();
+        }
+
+        partial void OnVitalRRChanged(string value)
+        {
+            OnPropertyChanged(nameof(RRAlertText));
+            OnPropertyChanged(nameof(RRAlertBackground));
+            OnPropertyChanged(nameof(IsRRAlertVisible));
+            TriggerAutoSave();
+        }
+
+        partial void OnVitalSPO2Changed(string value)
+        {
+            OnPropertyChanged(nameof(SPO2AlertText));
+            OnPropertyChanged(nameof(SPO2AlertBackground));
+            OnPropertyChanged(nameof(IsSPO2AlertVisible));
+            TriggerAutoSave();
+        }
+
+        partial void OnVitalTempChanged(string value)
+        {
+            OnPropertyChanged(nameof(TempAlertText));
+            OnPropertyChanged(nameof(TempAlertBackground));
+            OnPropertyChanged(nameof(IsTempAlertVisible));
+            TriggerAutoSave();
+        }
+
+        partial void OnVitalBSChanged(string value)
+        {
+            OnPropertyChanged(nameof(BSAlertText));
+            OnPropertyChanged(nameof(BSAlertBackground));
+            OnPropertyChanged(nameof(IsBSAlertVisible));
+            TriggerAutoSave();
+        }
         partial void OnSelectedInvestigationChanged(string value) => TriggerAutoSave();
         partial void OnSelectedImagingChanged(string value) => TriggerAutoSave();
         partial void OnReturnDateChanged(DateTime? value) => TriggerAutoSave();

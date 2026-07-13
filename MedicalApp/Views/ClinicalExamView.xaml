@@ -332,7 +332,15 @@
                                                 </Grid.ColumnDefinitions>
                                                 <StackPanel Grid.Column="0" Margin="0,0,15,0">
                                                     <TextBlock Text="Diagnosis Description (Dx)" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Tag="Enter Diagnosis..."/>
+                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. Flu, Tonsillitis | اكتب التشخيص الطبي هنا..."/>
+                                                    
+                                                    <!-- Quick Narrative Chips -->
+                                                    <WrapPanel Margin="0,6,0,0">
+                                                        <Button Style="{StaticResource ChipButton}" Content="Flu | إنفلونزا" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Common Flu / إنفلونزا ونزلة برد"/>
+                                                        <Button Style="{StaticResource ChipButton}" Content="Gastroenteritis | نزلة معوية" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Acute Gastroenteritis / التهاب المعدة والأمعاء الحاد"/>
+                                                        <Button Style="{StaticResource ChipButton}" Content="Hypertension | ضغط مرتفع" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Hypertension / ارتفاع ضغط الدم الشرياني"/>
+                                                        <Button Style="{StaticResource ChipButton}" Content="Tonsillitis | التهاب اللوزتين" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Acute Tonsillitis / التهاب اللوزتين الحاد"/>
+                                                    </WrapPanel>
                                                 </StackPanel>
                                                 <StackPanel Grid.Column="1">
                                                     <TextBlock Text="Return Visit Date" Style="{StaticResource Subheading}"/>
@@ -348,46 +356,99 @@
                                     <!-- Vital Signs -->
                                     <Border x:Name="CardVitals" Style="{StaticResource AccentCardBorder}" Visibility="{Binding ShowVitals, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <StackPanel>
-                                            <Grid Margin="0,0,0,8">
+                                            <Grid Margin="0,0,0,12">
                                                 <StackPanel Orientation="Horizontal">
                                                     <TextBlock Text="&#xE95E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                    <TextBlock Text="Vital Signs | الحيوية" Style="{StaticResource Header2}" Margin="0"/>
+                                                    <TextBlock Text="Vital Signs | العلامات الحيوية" Style="{StaticResource Header2}" Margin="0"/>
                                                 </StackPanel>
                                                 <CheckBox Content="Stable" IsChecked="{Binding IsVitallyStable}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                                             </Grid>
                                             <UniformGrid Columns="2">
-                                                <StackPanel Margin="0,0,8,0">
-                                                    <TextBlock Text="SPO2 (%)" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalSPO2}"/>
+                                                <!-- SPO2 -->
+                                                <StackPanel Margin="0,0,8,10">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                        <TextBlock Text="&#xE95A;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#3B82F6" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                        <TextBlock Text="SPO2" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                        <TextBlock Text=" (%)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        <Border CornerRadius="8" Background="{Binding SPO2AlertBackground}" Visibility="{Binding IsSPO2AlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding SPO2AlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalSPO2, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
-                                                <StackPanel Margin="8,0,0,0">
-                                                    <TextBlock Text="Temp (°C)" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalTemp}"/>
+
+                                                <!-- Temp -->
+                                                <StackPanel Margin="8,0,0,10">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                        <TextBlock Text="&#xE9CA;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#EF4444" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                        <TextBlock Text="Temp" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                        <TextBlock Text=" (°C)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        <Border CornerRadius="8" Background="{Binding TempAlertBackground}" Visibility="{Binding IsTempAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding TempAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalTemp, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
-                                                <StackPanel Margin="0,0,8,0">
-                                                    <TextBlock Text="SBP / DBP (mmHg)" Style="{StaticResource Subheading}"/>
+
+                                                <!-- BP -->
+                                                <StackPanel Margin="0,0,8,10">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                        <TextBlock Text="&#xEC05;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#8B5CF6" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                        <TextBlock Text="Blood Pressure" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                        <TextBlock Text=" (mmHg)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        <Border CornerRadius="8" Background="{Binding BPAlertBackground}" Visibility="{Binding IsBPAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding BPAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
+                                                        </Border>
+                                                    </StackPanel>
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <TextBox Grid.Column="0" Style="{StaticResource CompactVitalInput}" Text="{Binding VitalSBP}"/>
-                                                        <TextBlock Grid.Column="1" Text="/" Margin="4,0,4,8" VerticalAlignment="Center" Foreground="{DynamicResource SubtextColor}"/>
-                                                        <TextBox Grid.Column="2" Style="{StaticResource CompactVitalInput}" Text="{Binding VitalDBP}"/>
+                                                        <TextBox Grid.Column="0" Style="{StaticResource CompactVitalInput}" Text="{Binding VitalSBP, UpdateSourceTrigger=PropertyChanged}" Tag="Systolic"/>
+                                                        <TextBlock Grid.Column="1" Text="/" Margin="4,0,4,8" VerticalAlignment="Center" Foreground="{DynamicResource SubtextColor}" FontWeight="Bold"/>
+                                                        <TextBox Grid.Column="2" Style="{StaticResource CompactVitalInput}" Text="{Binding VitalDBP, UpdateSourceTrigger=PropertyChanged}" Tag="Diastolic"/>
                                                     </Grid>
                                                 </StackPanel>
-                                                <StackPanel Margin="8,0,0,0">
-                                                    <TextBlock Text="Heart Rate (bpm)" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalHR}"/>
+
+                                                <!-- HR -->
+                                                <StackPanel Margin="8,0,0,10">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                        <TextBlock Text="&#xE95E;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#EC4899" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                        <TextBlock Text="Heart Rate" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                        <TextBlock Text=" (bpm)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        <Border CornerRadius="8" Background="{Binding HRAlertBackground}" Visibility="{Binding IsHRAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding HRAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalHR, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
-                                                <StackPanel Margin="0,0,8,0">
-                                                    <TextBlock Text="Blood Sugar (mg/dL)" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalBS}"/>
+
+                                                <!-- BS -->
+                                                <StackPanel Margin="0,0,8,10">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                        <TextBlock Text="&#xEA6C;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#10B981" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                        <TextBlock Text="Blood Sugar" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                        <TextBlock Text=" (mg/dL)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        <Border CornerRadius="8" Background="{Binding BSAlertBackground}" Visibility="{Binding IsBSAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding BSAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalBS, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
-                                                <StackPanel Margin="8,0,0,0">
-                                                    <TextBlock Text="Resp. Rate (bpm)" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalRR}"/>
+
+                                                <!-- RR -->
+                                                <StackPanel Margin="8,0,0,10">
+                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                        <TextBlock Text="&#xEC02;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#F59E0B" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                        <TextBlock Text="Resp. Rate" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                        <TextBlock Text=" (bpm)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        <Border CornerRadius="8" Background="{Binding RRAlertBackground}" Visibility="{Binding IsRRAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding RRAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
+                                                        </Border>
+                                                    </StackPanel>
+                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalRR, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
                                             </UniformGrid>
                                         </StackPanel>
@@ -770,8 +831,14 @@
                                 <StackPanel>
                                     <!-- Patient Avatar + Name -->
                                     <StackPanel HorizontalAlignment="Center" Margin="0,8,0,16">
-                                        <Border Width="52" Height="52" CornerRadius="26" Background="{DynamicResource SelectedTabBrush}" HorizontalAlignment="Center" Margin="0,0,0,10">
-                                            <TextBlock Text="{Binding PatientInitials}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <Border Width="52" Height="52" CornerRadius="26" HorizontalAlignment="Center" Margin="0,0,0,10">
+                                            <Border.Background>
+                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                    <GradientStop Color="#8B5CF6" Offset="0"/> <!-- Purple -->
+                                                    <GradientStop Color="#EC4899" Offset="1"/> <!-- Pink -->
+                                                </LinearGradientBrush>
+                                            </Border.Background>
+                                            <TextBlock Text="{Binding PatientInitials}" FontSize="18" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                         </Border>
                                         <TextBlock Text="{Binding CurrentPatient.Name}" FontSize="16" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,0,0,2"/>
                                     </StackPanel>
@@ -801,10 +868,12 @@
                                             </Grid>
                                             <Grid>
                                                 <TextBlock Text="Blood Group" FontSize="12" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
-                                                <TextBox Style="{StaticResource ModernTextBox}" BorderThickness="0" Padding="0" Background="Transparent"
-                                                         Text="{Binding CurrentPatient.BloodGroup, UpdateSourceTrigger=PropertyChanged}" 
-                                                         FontSize="12" FontWeight="SemiBold" Foreground="White" HorizontalAlignment="Right" Width="60" TextAlignment="Right"
-                                                         Tag="O+"/>
+                                                <Border CornerRadius="12" Background="#EF4444" Padding="8,4" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                                    <TextBox Style="{StaticResource ModernTextBox}" BorderThickness="0" Padding="0" Background="Transparent"
+                                                             Text="{Binding CurrentPatient.BloodGroup, UpdateSourceTrigger=PropertyChanged}" 
+                                                             FontSize="11" FontWeight="Bold" Foreground="White" Width="30" TextAlignment="Center"
+                                                             Tag="O+"/>
+                                                </Border>
                                             </Grid>
                                         </StackPanel>
                                     </Border>
@@ -824,10 +893,30 @@
                                     <Border Background="{DynamicResource CardBackgroundColor}" CornerRadius="8" Padding="14" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1">
                                         <StackPanel>
                                             <TextBlock Text="Quick Actions" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryColor}" Margin="0,0,0,10"/>
-                                            <Button Style="{StaticResource SecondaryButton}" Foreground="White" BorderBrush="{DynamicResource BorderColor}" Content="Print Rx (A5)" Command="{Binding PrintActiveRxCommand}" Height="34" Margin="0,0,0,6" HorizontalAlignment="Stretch"/>
-                                            <Button Style="{StaticResource SecondaryButton}" Foreground="White" BorderBrush="{DynamicResource BorderColor}" Content="Print Summary (A4)" Command="{Binding PrintActiveVisitReportCommand}" Height="34" Margin="0,0,0,6" HorizontalAlignment="Stretch"/>
-                                            <Button Style="{StaticResource SecondaryButton}" Foreground="White" BorderBrush="{DynamicResource BorderColor}" Content="Add Note" Command="{Binding OpenAddPatientModalCommand}" Height="34" Margin="0,0,0,6" HorizontalAlignment="Stretch"/>
-                                            <Button Style="{StaticResource ModernButton}" Content="Schedule Visit" Command="{Binding OpenStartNewVisitWindowCommand}" Height="34" HorizontalAlignment="Stretch"/>
+                                            <Button Style="{StaticResource SecondaryButton}" Foreground="White" BorderBrush="{DynamicResource BorderColor}" Command="{Binding PrintActiveRxCommand}" Height="34" Margin="0,0,0,6" HorizontalAlignment="Stretch">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE749;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Print Rx (A5)" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource SecondaryButton}" Foreground="White" BorderBrush="{DynamicResource BorderColor}" Command="{Binding PrintActiveVisitReportCommand}" Height="34" Margin="0,0,0,6" HorizontalAlignment="Stretch">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE246;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Print Summary (A4)" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource SecondaryButton}" Foreground="White" BorderBrush="{DynamicResource BorderColor}" Command="{Binding OpenAddPatientModalCommand}" Height="34" Margin="0,0,0,6" HorizontalAlignment="Stretch">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE109;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Add Note" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource ModernButton}" Command="{Binding OpenStartNewVisitWindowCommand}" Height="34" HorizontalAlignment="Stretch">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="&#xE787;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                                    <TextBlock Text="Schedule Visit" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
                                         </StackPanel>
                                     </Border>
                                 </StackPanel>
