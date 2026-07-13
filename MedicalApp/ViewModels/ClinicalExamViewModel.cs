@@ -723,16 +723,8 @@ namespace MedicalApp.ViewModels
                 await _queueService.CompleteQueueEntryAsync(CurrentPatient.PatientId);
                 StatusMessage = $"Exam session for '{CurrentPatient.Name}' completed and removed from queue.";
 
-                // Clear current session
-                SelectedPatientLookup = null;
-                CurrentPatient = null;
-                VisitHistory.Clear();
-
-                ChiefComplaint = string.Empty;
-                HistoryOfPresentIllness = string.Empty;
-                PhysicalExamination = string.Empty;
-                Diagnosis = string.Empty;
-                TreatmentPlan = string.Empty;
+                // Exit to dashboard (clears state and navigates home)
+                ExitToDashboard();
             }
             catch (Exception ex)
             {
@@ -775,26 +767,8 @@ namespace MedicalApp.ViewModels
                 await _queueService.UpdateQueueStatusAsync(CurrentPatient.PatientId, "InExam");
                 StatusMessage = $"Exam session for '{CurrentPatient.Name}' put on hold (Not Finished).";
 
-                // Clear current session
-                SelectedPatientLookup = null;
-                CurrentPatient = null;
-                VisitHistory.Clear();
-
-                ChiefComplaint = string.Empty;
-                HistoryOfPresentIllness = string.Empty;
-                PhysicalExamination = string.Empty;
-                Diagnosis = string.Empty;
-                TreatmentPlan = string.Empty;
-                VitalHR = string.Empty;
-                VitalSBP = string.Empty;
-                VitalDBP = string.Empty;
-                VitalRR = string.Empty;
-                VitalSPO2 = string.Empty;
-                VitalTemp = string.Empty;
-                SelectedInvestigation = string.Empty;
-                SelectedImaging = string.Empty;
-                ReturnDate = null;
-                PrescribedDrugs.Clear();
+                // Exit to dashboard (clears state and navigates home)
+                ExitToDashboard();
             }
             catch (Exception ex)
             {
