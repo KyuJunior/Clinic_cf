@@ -199,7 +199,7 @@
                         </Border>
 
                         <!-- COL 1: CENTER CLINICAL WORKSPACE -->
-                        <ScrollViewer x:Name="CenterScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="15,0">
+                        <ScrollViewer x:Name="CenterScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="15,0">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1.4*"/> <!-- Left: Text Notes -->
