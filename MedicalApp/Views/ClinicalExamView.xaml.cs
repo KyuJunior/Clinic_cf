@@ -25,6 +25,69 @@ namespace MedicalApp.Views
             System.Windows.Application.Current.Shutdown();
         }
 
+
+
+        private void HighlightElement(FrameworkElement element)
+        {
+            System.Windows.Media.Brush? originalBrush = null;
+            Thickness originalThickness = new Thickness(0);
+            Action<System.Windows.Media.Brush?>? setBrush = null;
+            Action<Thickness>? setThickness = null;
+
+            if (element is Control control)
+            {
+                originalBrush = control.BorderBrush;
+                originalThickness = control.BorderThickness;
+                setBrush = b => control.BorderBrush = b;
+                setThickness = t => control.BorderThickness = t;
+            }
+            else if (element is Border border)
+            {
+                originalBrush = border.BorderBrush;
+                originalThickness = border.BorderThickness;
+                setBrush = b => border.BorderBrush = b;
+                setThickness = t => border.BorderThickness = t;
+            }
+
+            if (setBrush != null && setThickness != null)
+            {
+                // Fluent cyan/teal theme highlight color
+                var highlightColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#06B6D4");
+                var animBrush = new System.Windows.Media.SolidColorBrush(highlightColor);
+
+                // Set visible border highlight thickness (slightly thicker for prominence)
+                setThickness(new Thickness(2));
+                setBrush(animBrush);
+
+                System.Windows.Media.Color targetColor;
+                if (originalBrush is System.Windows.Media.SolidColorBrush scb)
+                {
+                    targetColor = scb.Color;
+                }
+                else
+                {
+                    // Fallback to dark theme card border color if original is not solid
+                    targetColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D2D30");
+                }
+
+                var animation = new System.Windows.Media.Animation.ColorAnimation
+                {
+                    From = highlightColor,
+                    To = targetColor,
+                    Duration = new Duration(TimeSpan.FromSeconds(1.2)),
+                    EasingFunction = new System.Windows.Media.Animation.CubicEase { EasingMode = System.Windows.Media.Animation.EasingMode.EaseOut }
+                };
+
+                animation.Completed += (s, args) =>
+                {
+                    setBrush(originalBrush);
+                    setThickness(originalThickness);
+                };
+
+                animBrush.BeginAnimation(System.Windows.Media.SolidColorBrush.ColorProperty, animation);
+            }
+        }
+
         private void SidebarNav_Click(object sender, RoutedEventArgs e)
         {
             if (sender is System.Windows.Controls.Primitives.ButtonBase button && button.CommandParameter is string targetName)
@@ -33,6 +96,7 @@ namespace MedicalApp.Views
                 if (targetElement != null)
                 {
                     targetElement.BringIntoView();
+                    HighlightElement(targetElement);
                 }
             }
         }
