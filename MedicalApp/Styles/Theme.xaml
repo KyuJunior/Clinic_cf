@@ -8,6 +8,12 @@
         <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
     </Style>
 
+    <!-- Global CheckBox Style to guarantee readable text in dark/light themes -->
+    <Style TargetType="CheckBox" BasedOn="{StaticResource {x:Type CheckBox}}">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
     <!-- Fonts -->
     <FontFamily x:Key="MainFont">Segoe UI Semibold, Segoe UI, Arial</FontFamily>
 
