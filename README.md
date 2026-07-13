@@ -1,4 +1,4 @@
-# My-Clinic
+# Clinic CF
 
 A comprehensive, production-grade **Local Client-Server Medical Desktop Application** built using **C# .NET 8 WPF**, **Entity Framework Core (Code-First)**, and the **CommunityToolkit.Mvvm** framework.
 
@@ -78,8 +78,8 @@ Ensure you have the **.NET 8 SDK** installed. Run the following commands in your
 
 ```powershell
 # Clone the repository
-git clone https://github.com/KyuJunior/My-Clinic.git
-cd My-Clinic
+git clone https://github.com/KyuJunior/Clinic_cf.git
+cd Clinic_cf
 
 # Build and run the WPF application
 cd MedicalApp
