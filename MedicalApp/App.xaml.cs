@@ -126,6 +126,24 @@ namespace MedicalApp
                     ")"
                 );
 
+                // Create Investigations table if it doesn't exist
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF OBJECT_ID('dbo.Investigations', 'U') IS NULL " +
+                    "CREATE TABLE dbo.Investigations (" +
+                    "    InvestigationId INT IDENTITY(1,1) PRIMARY KEY," +
+                    "    Name NVARCHAR(200) NOT NULL UNIQUE" +
+                    ")"
+                );
+
+                // Create Imagings table if it doesn't exist
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF OBJECT_ID('dbo.Imagings', 'U') IS NULL " +
+                    "CREATE TABLE dbo.Imagings (" +
+                    "    ImagingId INT IDENTITY(1,1) PRIMARY KEY," +
+                    "    Name NVARCHAR(200) NOT NULL UNIQUE" +
+                    ")"
+                );
+
                 // Create DoctorSettings table if it doesn't exist
                 await dbContext.Database.ExecuteSqlRawAsync(
                     "IF OBJECT_ID('dbo.DoctorSettings', 'U') IS NULL " +
@@ -134,6 +152,36 @@ namespace MedicalApp
                     "    DoctorName NVARCHAR(200) NOT NULL UNIQUE," +
                     "    SettingsJson NVARCHAR(MAX) NOT NULL" +
                     ")"
+                );
+
+                // Seed default investigations if table empty
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF NOT EXISTS (SELECT 1 FROM dbo.Investigations) " +
+                    "BEGIN " +
+                    "  INSERT INTO dbo.Investigations (Name) VALUES " +
+                    "  ('CBC (Complete Blood Count)'), " +
+                    "  ('HbA1c (Glycated Hemoglobin)'), " +
+                    "  ('Lipid Profile (Cholesterol)'), " +
+                    "  ('Kidney Function Test (KFT)'), " +
+                    "  ('Liver Function Test (LFT)'), " +
+                    "  ('Thyroid Profile (TSH)'), " +
+                    "  ('Urine Analysis') " +
+                    "END"
+                );
+
+                // Seed default imagings if table empty
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF NOT EXISTS (SELECT 1 FROM dbo.Imagings) " +
+                    "BEGIN " +
+                    "  INSERT INTO dbo.Imagings (Name) VALUES " +
+                    "  ('Echocardiography'), " +
+                    "  ('Chest X-Ray'), " +
+                    "  ('Electrocardiogram (ECG)'), " +
+                    "  ('Ultrasound (US)'), " +
+                    "  ('CT Scan'), " +
+                    "  ('MRI'), " +
+                    "  ('Mammogram') " +
+                    "END"
                 );
 
                 // Add columns to Visits if they don't exist

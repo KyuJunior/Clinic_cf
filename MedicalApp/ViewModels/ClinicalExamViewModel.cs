@@ -285,7 +285,7 @@ namespace MedicalApp.ViewModels
         private ObservableCollection<ClinicalAttachment> _addedImagings = new();
 
         [ObservableProperty]
-        private ObservableCollection<string> _investigationsList = new()
+        private ObservableCollection<string> _investigationList = new()
         {
             "CBC (Complete Blood Count)",
             "HbA1c (Glycated Hemoglobin)",
@@ -365,6 +365,7 @@ namespace MedicalApp.ViewModels
             _ = LoadDoctorsAsync();
 
             LoadViewSettings();
+            _ = LoadDatabaseSuggestionsAsync();
         }
 
         private async void OnPollingTimerTick(object? sender, EventArgs e)
@@ -962,6 +963,92 @@ namespace MedicalApp.ViewModels
             {
                 DrugSearchText = drugName;
                 AddDrug();
+            }
+        }
+
+        [ObservableProperty]
+        private string? _selectedSuggestedDrug;
+
+        partial void OnSelectedSuggestedDrugChanged(string? value)
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                SelectSuggestedDrug(value);
+                SelectedSuggestedDrug = null;
+            }
+        }
+
+        [RelayCommand]
+        public async Task HandleDrugSearchEnterAsync()
+        {
+            if (string.IsNullOrWhiteSpace(DrugSearchText))
+                return;
+
+            string drugName = DrugSearchText.Trim();
+
+            // Add to active session Rx if not already there
+            if (!PrescribedDrugs.Any(d => d.Name.Equals(drugName, StringComparison.OrdinalIgnoreCase)))
+            {
+                PrescribedDrugs.Add(new PrescribedMedication { Name = drugName });
+            }
+
+            // Save to database if it doesn't exist
+            try
+            {
+                using var db = await _dbContextFactory.CreateDbContextAsync();
+                var exists = await db.Drugs.AnyAsync(d => d.Name.ToLower() == drugName.ToLower());
+                if (!exists)
+                {
+                    db.Drugs.Add(new Drug { Name = drugName });
+                    await db.SaveChangesAsync();
+                }
+            }
+            catch
+            {
+                // Silent catch
+            }
+
+            DrugSearchText = string.Empty;
+            IsDrugSuggestionsOpen = false;
+        }
+
+        private async Task LoadDatabaseSuggestionsAsync()
+        {
+            try
+            {
+                using var db = await _dbContextFactory.CreateDbContextAsync();
+                
+                var dbInvestigations = await db.Investigations.Select(i => i.Name).ToListAsync();
+                if (dbInvestigations.Count > 0)
+                {
+                    InvestigationList.Clear();
+                    foreach (var inv in dbInvestigations)
+                    {
+                        InvestigationList.Add(inv);
+                    }
+                    if (!InvestigationList.Contains("None"))
+                    {
+                        InvestigationList.Add("None");
+                    }
+                }
+
+                var dbImagings = await db.Imagings.Select(i => i.Name).ToListAsync();
+                if (dbImagings.Count > 0)
+                {
+                    ImagingList.Clear();
+                    foreach (var img in dbImagings)
+                    {
+                        ImagingList.Add(img);
+                    }
+                    if (!ImagingList.Contains("None"))
+                    {
+                        ImagingList.Add("None");
+                    }
+                }
+            }
+            catch
+            {
+                // Fallback silently (defaults already set in property initializers)
             }
         }
 
@@ -1592,29 +1679,71 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void AddInvestigation()
+        public async Task AddInvestigationAsync()
         {
             if (!string.IsNullOrWhiteSpace(SelectedInvestigation) && SelectedInvestigation != "None")
             {
                 string name = SelectedInvestigation.Trim();
+
                 if (!AddedInvestigations.Any(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
                 {
                     AddedInvestigations.Add(new ClinicalAttachment { Name = name });
                 }
+
+                if (!InvestigationList.Any(i => i.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    try
+                    {
+                        using var db = await _dbContextFactory.CreateDbContextAsync();
+                        var exists = await db.Investigations.AnyAsync(i => i.Name.ToLower() == name.ToLower());
+                        if (!exists)
+                        {
+                            db.Investigations.Add(new Investigation { Name = name });
+                            await db.SaveChangesAsync();
+                        }
+                    }
+                    catch
+                    {
+                        // Silent catch
+                    }
+                    InvestigationList.Add(name);
+                }
+
                 SelectedInvestigation = string.Empty;
             }
         }
 
         [RelayCommand]
-        public void AddImaging()
+        public async Task AddImagingAsync()
         {
             if (!string.IsNullOrWhiteSpace(SelectedImaging) && SelectedImaging != "None")
             {
                 string name = SelectedImaging.Trim();
+
                 if (!AddedImagings.Any(i => i.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
                 {
                     AddedImagings.Add(new ClinicalAttachment { Name = name });
                 }
+
+                if (!ImagingList.Any(i => i.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    try
+                    {
+                        using var db = await _dbContextFactory.CreateDbContextAsync();
+                        var exists = await db.Imagings.AnyAsync(i => i.Name.ToLower() == name.ToLower());
+                        if (!exists)
+                        {
+                            db.Imagings.Add(new Imaging { Name = name });
+                            await db.SaveChangesAsync();
+                        }
+                    }
+                    catch
+                    {
+                        // Silent catch
+                    }
+                    ImagingList.Add(name);
+                }
+
                 SelectedImaging = string.Empty;
             }
         }

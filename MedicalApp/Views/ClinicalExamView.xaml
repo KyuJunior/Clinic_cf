@@ -463,11 +463,15 @@
                                             </StackPanel>
                                             <!-- Drug Search -->
                                             <Grid Margin="0,0,0,8">
-                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding DrugSearchText, UpdateSourceTrigger=PropertyChanged}" Tag="Search medication name..."/>
-                                                <Popup IsOpen="{Binding IsDrugSuggestionsOpen}" Placement="Bottom" StaysOpen="False" Width="260">
+                                                <TextBox x:Name="DrugSearchTextBox" Style="{StaticResource ModernTextBox}" Text="{Binding DrugSearchText, UpdateSourceTrigger=PropertyChanged}" Tag="Search medication name..." PreviewKeyDown="DrugSearchTextBox_PreviewKeyDown">
+                                                    <TextBox.InputBindings>
+                                                        <KeyBinding Key="Enter" Command="{Binding HandleDrugSearchEnterCommand}"/>
+                                                    </TextBox.InputBindings>
+                                                </TextBox>
+                                                <Popup x:Name="DrugSuggestionsPopup" IsOpen="{Binding IsDrugSuggestionsOpen}" Placement="Bottom" StaysOpen="False" Width="260">
                                                     <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="6" MaxHeight="180">
                                                         <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                                            <ListBox ItemsSource="{Binding DrugSuggestions}" SelectedItem="{Binding SelectedSuggestedDrug}">
+                                                            <ListBox x:Name="DrugSuggestionsListBox" ItemsSource="{Binding DrugSuggestions}" SelectedItem="{Binding SelectedSuggestedDrug}" PreviewKeyDown="DrugSuggestionsListBox_PreviewKeyDown">
                                                                 <ListBox.ItemTemplate>
                                                                     <DataTemplate>
                                                                         <TextBlock Text="{Binding}" Foreground="{DynamicResource TextColor}" Padding="5"/>
@@ -577,7 +581,7 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <ComboBox Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding InvestigationList}" Text="{Binding SelectedInvestigation, UpdateSourceTrigger=PropertyChanged}" Height="34"/>
+                                                <ComboBox x:Name="LabsComboBox" Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding InvestigationList}" Text="{Binding SelectedInvestigation, UpdateSourceTrigger=PropertyChanged}" Height="34" PreviewKeyDown="ComboBox_PreviewKeyDown"/>
                                                 <Button Grid.Column="1" Content="Add" Style="{StaticResource ModernButton}" Command="{Binding AddInvestigationCommand}" Padding="15,0" Margin="8,0,0,0" Height="34"/>
                                             </Grid>
                                             <ItemsControl ItemsSource="{Binding AddedInvestigations}">
@@ -682,7 +686,7 @@
                                                      <ColumnDefinition Width="*"/>
                                                      <ColumnDefinition Width="Auto"/>
                                                  </Grid.ColumnDefinitions>
-                                                 <ComboBox Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding ImagingList}" Text="{Binding SelectedImaging, UpdateSourceTrigger=PropertyChanged}" Height="34"/>
+                                                 <ComboBox x:Name="ImagingComboBox" Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding ImagingList}" Text="{Binding SelectedImaging, UpdateSourceTrigger=PropertyChanged}" Height="34" PreviewKeyDown="ComboBox_PreviewKeyDown"/>
                                                  <Button Grid.Column="1" Content="Add" Style="{StaticResource ModernButton}" Command="{Binding AddImagingCommand}" Padding="15,0" Margin="8,0,0,0" Height="34"/>
                                              </Grid>
                                              <ItemsControl ItemsSource="{Binding AddedImagings}">
