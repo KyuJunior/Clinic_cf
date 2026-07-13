@@ -863,6 +863,7 @@ namespace MedicalApp.ViewModels
         public void CloseDoctorsModal()
         {
             ShowDoctorsModal = false;
+            ShowAdminPasswordModal = false;
             DoctorValidationErrorMessage = string.Empty;
         }
 
