@@ -7,6 +7,7 @@
              xmlns:helpers="clr-namespace:MedicalApp.Helpers"
              xmlns:views="clr-namespace:MedicalApp.Views"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="1100"
              Background="Transparent">
@@ -339,13 +340,13 @@
                                             </Grid>
 
                                             <!-- Save Button -->
-                                            <Button Grid.Row="2" Style="{StaticResource ModernButton}" Content="حفظ كافتراضي" Command="{Binding SavePreferencesCommand}" HorizontalAlignment="Center" Margin="0,15,0,0" Padding="30,6" Height="32" FontSize="12"/>
+                                            <ui:Button Grid.Row="2" Appearance="Primary" Content="حفظ كافتراضي" Command="{Binding SavePreferencesCommand}" HorizontalAlignment="Center" Margin="0,15,0,0" Padding="30,6" Height="32" FontSize="12"/>
                                         </Grid>
                                     </Border>
                                 </Popup>
                             </Grid>
 
-                            <TextBox Grid.Column="1" Style="{StaticResource ModernTextBox}" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" Tag="بحث باسم المريض أو رقم الهاتف..." Margin="0,0,10,0" VerticalContentAlignment="Center"/>
+                            <ui:TextBox Grid.Column="1" Text="{Binding SearchTerm, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="بحث باسم المريض أو رقم الهاتف..." Margin="0,0,10,0" VerticalContentAlignment="Center"/>
                             <Button Grid.Column="2" Command="{Binding ToggleFiltersSidebarCommand}" Width="36" Height="36" Margin="0,0,10,0" ToolTip="تصفية متقدمة">
                                 <Button.Style>
                                     <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
@@ -359,8 +360,8 @@
                                     </Style>
                                 </Button.Style>
                             </Button>
-                            <Button Grid.Column="3" Style="{StaticResource ModernButton}" Content="بحث" Command="{Binding SearchCommand}" Padding="20,8"/>
-                            <Button Grid.Column="4" Style="{StaticResource SecondaryButton}" BorderBrush="{StaticResource PrimaryColor}" Foreground="{StaticResource PrimaryColor}" Content="إدارة الأطباء | Manage Doctors" Height="36" Margin="10,0,0,0" Command="{Binding OpenDoctorsModalCommand}"/>
+                            <ui:Button Grid.Column="3" Appearance="Primary" Content="بحث" Command="{Binding SearchCommand}" Padding="20,8"/>
+                            <ui:Button Grid.Column="4" Appearance="Secondary" Content="إدارة الأطباء | Manage Doctors" Height="36" Margin="10,0,0,0" Command="{Binding OpenDoctorsModalCommand}"/>
                         </Grid>
 
                         <!-- DataGrid Table with Collapsible Sidebar -->
@@ -393,9 +394,9 @@
                                                 <ColumnDefinition Width="10"/>
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBox Grid.Column="0" Style="{StaticResource ModernTextBox}" Text="{Binding SearchMinAge}" Tag="الأدنى" HorizontalContentAlignment="Center"/>
+                                            <ui:TextBox Grid.Column="0" Text="{Binding SearchMinAge}" PlaceholderText="الأدنى" HorizontalContentAlignment="Center"/>
                                             <TextBlock Grid.Column="1" Text="-" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="{DynamicResource SubtextColor}"/>
-                                            <TextBox Grid.Column="2" Style="{StaticResource ModernTextBox}" Text="{Binding SearchMaxAge}" Tag="الأقصى" HorizontalContentAlignment="Center"/>
+                                            <ui:TextBox Grid.Column="2" Text="{Binding SearchMaxAge}" PlaceholderText="الأقصى" HorizontalContentAlignment="Center"/>
                                         </Grid>
 
                                         <!-- Governorate Filter -->
@@ -956,12 +957,12 @@
                             <StackPanel Grid.Column="0" Margin="10,0,0,0">
                                 <!-- Sequence -->
                                 <TextBlock Text="تسلسل" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ActiveEditingPatient.PatientId, TargetNullValue='جديد'}" IsReadOnly="True" Background="{DynamicResource BackgroundColor}" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                <ui:TextBox Text="{Binding ActiveEditingPatient.PatientId, TargetNullValue='جديد'}" IsReadOnly="True" Background="{DynamicResource BackgroundColor}" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
 
                                 <!-- Name -->
                                 <TextBlock Text="الاسم *" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                                 <Grid Margin="0,0,0,10">
-                                    <TextBox x:Name="RegNameTextBox" Style="{StaticResource ModernTextBox}" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" Tag="الاسم" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox x:Name="RegNameTextBox" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="الاسم" HorizontalContentAlignment="Right"/>
                                     
                                     <!-- Suggestions Popup -->
                                     <Popup IsOpen="{Binding IsSuggestionsOpen, Mode=TwoWay}" StaysOpen="False" PlacementTarget="{Binding ElementName=RegNameTextBox}" Placement="Bottom" Width="{Binding ElementName=RegNameTextBox, Path=ActualWidth}">
@@ -995,11 +996,11 @@
 
                                 <!-- Age in Years -->
                                 <TextBlock Text="العمر (سنوات) *" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Age, Converter={StaticResource ZeroToEmptyConverter}, UpdateSourceTrigger=PropertyChanged}" Tag="سنوات" Margin="0,0,0,10"/>
+                                <ui:TextBox Text="{Binding Age, Converter={StaticResource ZeroToEmptyConverter}, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="سنوات" Margin="0,0,0,10"/>
 
                                 <!-- Age in Months -->
                                 <TextBlock Text="العمر (أشهر)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
-                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding AgeMonths, Converter={StaticResource ZeroToEmptyConverter}, UpdateSourceTrigger=PropertyChanged}" Tag="أشهر" Margin="0,0,0,10"/>
+                                <ui:TextBox Text="{Binding AgeMonths, Converter={StaticResource ZeroToEmptyConverter}, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="أشهر" Margin="0,0,0,10"/>
 
                                 <!-- Birth Date -->
                                 <TextBlock Text="تاريخ الولادة" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
@@ -1008,19 +1009,19 @@
                                 <!-- Phone Number -->
                                 <StackPanel Visibility="{Binding ShowPhone, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="رقم الهاتف" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" Tag="07XX-XXXXXXX" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding Phone, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="07XX-XXXXXXX" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
 
                                 <!-- Job -->
                                 <StackPanel Visibility="{Binding ShowJob, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="العمل" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Job, UpdateSourceTrigger=PropertyChanged}" Tag="العمل" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding Job, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="العمل" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
 
                                 <!-- Weight -->
                                 <StackPanel Visibility="{Binding ShowWeight, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="الوزن" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" Tag="الوزن" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding Weight, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="الوزن" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
 
                                 <!-- Marital Status -->
@@ -1037,7 +1038,7 @@
                                 <!-- Spouse Name -->
                                 <StackPanel Visibility="{Binding ShowSpouseName, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="اسم الزوج/ة" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding SpouseName, UpdateSourceTrigger=PropertyChanged}" Tag="اسم الزوج/ة" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding SpouseName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="اسم الزوج/ة" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
 
                                 <!-- Blood Group -->
@@ -1079,8 +1080,8 @@
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="رفع ملف" Command="{Binding UploadPatientFileCommand}" Background="#0EA5E9" BorderBrush="#0EA5E9" Padding="12,5" FontSize="11" Margin="5,0,0,0"/>
-                                        <TextBox Grid.Column="0" Style="{StaticResource ModernTextBox}" Text="{Binding PatientFileName, Mode=OneWay}" IsReadOnly="True" Background="{DynamicResource BackgroundColor}" HorizontalContentAlignment="Right"/>
+                                        <ui:Button Grid.Column="1" Appearance="Secondary" Content="رفع ملف" Command="{Binding UploadPatientFileCommand}" Padding="12,5" FontSize="11" Margin="5,0,0,0"/>
+                                        <ui:TextBox Grid.Column="0" Text="{Binding PatientFileName, Mode=OneWay}" IsReadOnly="True" Background="{DynamicResource BackgroundColor}" HorizontalContentAlignment="Right"/>
                                     </Grid>
                                     <!-- File link & Remove -->
                                     <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,0,0,10"
@@ -1131,7 +1132,7 @@
                                 <!-- Address -->
                                 <StackPanel Visibility="{Binding ShowAddress, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="العنوان" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" Tag="العنوان بالتفصيل" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="العنوان بالتفصيل" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
 
                                 <!-- Gender -->
@@ -1144,13 +1145,13 @@
                                 <!-- Referred By -->
                                 <StackPanel Visibility="{Binding ShowReferredBy, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="من طرف" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ReferredBy, UpdateSourceTrigger=PropertyChanged}" Tag="من طرف" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding ReferredBy, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="من طرف" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
 
                                 <!-- Height -->
                                 <StackPanel Visibility="{Binding ShowHeight, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="الطول" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}" Tag="الطول" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding Height, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="الطول" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
 
                                 <!-- Alcohol -->
@@ -1201,13 +1202,13 @@
                                 <!-- Notes -->
                                 <StackPanel Visibility="{Binding ShowNotes, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="ملاحظات" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" Tag="ملاحظات..." Height="60" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="ملاحظات..." Height="60" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
 
                                 <!-- Allergy -->
                                 <StackPanel Visibility="{Binding ShowAllergy, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="الحساسية" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Allergy, UpdateSourceTrigger=PropertyChanged}" Tag="حساسية المريض من الأدوية أو الأطعمة..." Height="60" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                    <ui:TextBox Text="{Binding Allergy, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="حساسية المريض من الأدوية أو الأطعمة..." Height="60" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                                 </StackPanel>
                             </StackPanel>
                         </Grid>
@@ -1219,8 +1220,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Style="{StaticResource SecondaryButton}" Content="إلغاء" Command="{Binding CancelEditCommand}" Height="36" Margin="0,0,5,0" Click="CancelButton_Click"/>
-                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="حفظ" Command="{Binding RegisterCommand}" Height="36" Margin="5,0,0,0"/>
+                        <ui:Button Grid.Column="0" Appearance="Secondary" Content="إلغاء" Command="{Binding CancelEditCommand}" Height="36" Margin="0,0,5,0" Click="CancelButton_Click" HorizontalAlignment="Stretch"/>
+                        <ui:Button Grid.Column="1" Appearance="Primary" Content="حفظ" Command="{Binding RegisterCommand}" Height="36" Margin="5,0,0,0" HorizontalAlignment="Stretch"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -1264,7 +1265,7 @@
                         <!-- Price input (only enabled/visible if paid) -->
                         <StackPanel Visibility="{Binding IsPaidVisit, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <TextBlock Text="سعر الزيارة" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                            <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding VisitPrice, UpdateSourceTrigger=PropertyChanged}" Tag="25000" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                            <ui:TextBox Text="{Binding VisitPrice, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="25000" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
                         </StackPanel>
 
                         <!-- Doctor Selector -->
@@ -1282,8 +1283,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Style="{StaticResource SecondaryButton}" Content="إلغاء" Command="{Binding CancelCheckInCommand}" Height="36" Margin="0,0,5,0"/>
-                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تأكيد وتسجيل الدخول" Command="{Binding ConfirmCheckInCommand}" Height="36" Margin="5,0,0,0"/>
+                        <ui:Button Grid.Column="0" Appearance="Secondary" Content="إلغاء" Command="{Binding CancelCheckInCommand}" Height="36" Margin="0,0,5,0" HorizontalAlignment="Stretch"/>
+                        <ui:Button Grid.Column="1" Appearance="Primary" Content="تأكيد وتسجيل الدخول" Command="{Binding ConfirmCheckInCommand}" Height="36" Margin="5,0,0,0" HorizontalAlignment="Stretch"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -1316,8 +1317,8 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Style="{StaticResource SecondaryButton}" Content="إلغاء" Command="{Binding CloseDoctorsModalCommand}" Height="36" Margin="0,0,5,0"/>
-                        <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="تحقق" Command="{Binding ConfirmAdminPasswordCommand}" Height="36" Margin="5,0,0,0"/>
+                        <ui:Button Grid.Column="0" Appearance="Secondary" Content="إلغاء" Command="{Binding CloseDoctorsModalCommand}" Height="36" Margin="0,0,5,0" HorizontalAlignment="Stretch"/>
+                        <ui:Button Grid.Column="1" Appearance="Primary" Content="تحقق" Command="{Binding ConfirmAdminPasswordCommand}" Height="36" Margin="5,0,0,0" HorizontalAlignment="Stretch"/>
                     </Grid>
                 </Grid>
             </Border>
@@ -1343,15 +1344,15 @@
                     <!-- Form -->
                     <StackPanel Grid.Row="1" Margin="0,0,0,15">
                         <TextBlock Text="اسم الطبيب الجديد" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding NewDoctorName, UpdateSourceTrigger=PropertyChanged}" Tag="مثال: د. يوسف" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                        <ui:TextBox Text="{Binding NewDoctorName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="مثال: د. يوسف" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
 
                         <TextBlock Text="الاختصاص" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                        <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding NewDoctorSpecialty, UpdateSourceTrigger=PropertyChanged}" Tag="مثال: طب عام" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                        <ui:TextBox Text="{Binding NewDoctorSpecialty, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="مثال: طب عام" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
 
                         <TextBlock Text="كلمة المرور (Password)" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
                         <PasswordBox Style="{StaticResource ModernPasswordBox}" helpers:PasswordHelper.Attach="True" helpers:PasswordHelper.Password="{Binding NewDoctorPassword, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,10" FlowDirection="RightToLeft"/>
 
-                        <Button Style="{StaticResource ModernButton}" Content="إضافة طبيب" Command="{Binding AddDoctorCommand}" Height="36" HorizontalAlignment="Right" Width="120" Margin="0,0,0,10"/>
+                        <ui:Button Appearance="Primary" Content="إضافة طبيب" Command="{Binding AddDoctorCommand}" Height="36" HorizontalAlignment="Right" Width="120" Margin="0,0,0,10"/>
                         
                         <TextBlock Text="{Binding DoctorValidationErrorMessage}" FontSize="11" Foreground="{StaticResource PrimaryColor}" TextAlignment="Right" Margin="0,0,0,10"/>
                         <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="0.5" Height="1" Margin="0,5,0,15"/>
@@ -1385,7 +1386,7 @@
                     </Grid>
 
                     <!-- Close Button -->
-                    <Button Grid.Row="3" Style="{StaticResource ModernButton}" Content="إغلاق" Command="{Binding CloseDoctorsModalCommand}" Height="36" HorizontalAlignment="Stretch"/>
+                    <ui:Button Grid.Row="3" Appearance="Secondary" Content="إغلاق" Command="{Binding CloseDoctorsModalCommand}" Height="36" HorizontalAlignment="Stretch"/>
                 </Grid>
             </Border>
         </Grid>

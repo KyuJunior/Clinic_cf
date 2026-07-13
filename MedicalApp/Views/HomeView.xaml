@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:converters="clr-namespace:MedicalApp.Converters"
              xmlns:helpers="clr-namespace:MedicalApp.Helpers"
+             xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
              mc:Ignorable="d" 
              d:DesignHeight="600" d:DesignWidth="1000"
              Background="Transparent">
@@ -126,7 +127,7 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Secretary Card -->
-                <Border Grid.Column="0" Style="{StaticResource LauncherCardStyle}" Margin="15">
+                <ui:Card Grid.Column="0" Margin="15" Padding="24">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -134,18 +135,18 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,25"/>
+                        <ui:FontIcon Grid.Row="0" Glyph="&#xE716;" FontSize="48" Margin="0,15,0,25" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center"/>
                         <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,12">
                             <TextBlock Text="Secretary Room" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center"/>
                             <TextBlock Text="غرفة السكرتارية" FontSize="12" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                         </StackPanel>
                         <TextBlock Grid.Row="2" Text="Enroll new patients, look up existing patient files, and manage today's waitlist." FontSize="12.5" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
-                        <Button Grid.Row="3" Style="{StaticResource GradientModernButton}" Content="Enter Secretary Room" Command="{Binding NavigateToRegistryCommand}" Height="40" HorizontalAlignment="Stretch"/>
+                        <ui:Button Grid.Row="3" Appearance="Primary" Content="Enter Secretary Room" Command="{Binding NavigateToRegistryCommand}" Height="40" HorizontalAlignment="Stretch"/>
                     </Grid>
-                </Border>
+                </ui:Card>
 
                 <!-- Doctor Card -->
-                <Border Grid.Column="1" Style="{StaticResource LauncherCardStyle}" Margin="15">
+                <ui:Card Grid.Column="1" Margin="15" Padding="24">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -153,15 +154,15 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Grid.Row="0" Text="&#xE1E2;" FontFamily="Segoe MDL2 Assets" FontSize="48" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" Margin="0,15,0,25"/>
+                        <ui:FontIcon Grid.Row="0" Glyph="&#xE1E2;" FontSize="48" Margin="0,15,0,25" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Center"/>
                         <StackPanel Grid.Row="1" HorizontalAlignment="Center" Margin="0,0,0,12">
                             <TextBlock Text="Doctor Room" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextColor}" HorizontalAlignment="Center"/>
                             <TextBlock Text="عيادة الطبيب" FontSize="12" Foreground="{DynamicResource SubtextColor}" HorizontalAlignment="Center" Margin="0,2,0,0"/>
                         </StackPanel>
                         <TextBlock Grid.Row="2" Text="Manage queued patients, write note drafts, perform examinations, and prescribe medications." FontSize="12.5" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap" TextAlignment="Center" LineHeight="18" Margin="0,0,0,25"/>
-                        <Button Grid.Row="3" Style="{StaticResource GradientModernButton}" Content="Enter Doctor Room" Command="{Binding NavigateToExamCommand}" Height="40" HorizontalAlignment="Stretch"/>
+                        <ui:Button Grid.Row="3" Appearance="Primary" Content="Enter Doctor Room" Command="{Binding NavigateToExamCommand}" Height="40" HorizontalAlignment="Stretch"/>
                     </Grid>
-                </Border>
+                </ui:Card>
             </Grid>
 
             <!-- 2. Doctor Dashboard Portal (Visible when Doctor logs in) -->

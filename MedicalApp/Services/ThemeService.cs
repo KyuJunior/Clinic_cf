@@ -78,6 +78,15 @@ namespace MedicalApp.Services
             {
                 mergedDicts.Add(newTheme);
             }
+
+            // Sync wpf-ui theme
+            try
+            {
+                Wpf.Ui.Appearance.ApplicationThemeManager.Apply(
+                    isDark ? Wpf.Ui.Appearance.ApplicationTheme.Dark : Wpf.Ui.Appearance.ApplicationTheme.Light
+                );
+            }
+            catch { }
         }
 
         private bool LoadThemePreference()

@@ -1,12 +1,15 @@
-<Window x:Class="MedicalApp.Views.MainWindow"
+<ui:FluentWindow x:Class="MedicalApp.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:converters="clr-namespace:MedicalApp.Converters"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         mc:Ignorable="d"
         Title="LAN Medical Client-Server Portal" Height="780" Width="1240"
         WindowStartupLocation="CenterScreen"
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="Mica"
         Background="{DynamicResource BackgroundColor}">
     
     <Window.Resources>
@@ -18,12 +21,16 @@
         <!-- Main Workspace -->
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>  <!-- TitleBar -->
                 <RowDefinition Height="Auto"/>  <!-- Header Banner -->
-                <RowDefinition Height="*"/>   <!-- Active View Content -->
+                <RowDefinition Height="*"/>     <!-- Active View Content -->
             </Grid.RowDefinitions>
 
+            <!-- Custom Fluent TitleBar -->
+            <ui:TitleBar Grid.Row="0" Title="LAN Medical Client-Server Portal" Margin="0" Height="32"/>
+
             <!-- Global Patient Header Banner -->
-            <Border Grid.Row="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1">
+            <Border Grid.Row="1" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1">
                 <Border.Style>
                     <Style TargetType="Border">
                         <Style.Triggers>
@@ -84,7 +91,7 @@
             </Border>
 
             <!-- Routed view content -->
-            <ContentControl Grid.Row="1" Content="{Binding CurrentView}" Margin="12"/>
+            <ContentControl Grid.Row="2" Content="{Binding CurrentView}" Margin="12"/>
         </Grid>
     </Grid>
-</Window>
+</ui:FluentWindow>
