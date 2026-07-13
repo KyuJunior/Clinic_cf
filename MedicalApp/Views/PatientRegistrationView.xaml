@@ -956,7 +956,7 @@
                             <StackPanel Grid.Column="0" Margin="10,0,0,0">
                                 <!-- Sequence -->
                                 <TextBlock Text="تسلسل" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ActiveEditingPatient.PatientId, TargetNullValue='جديد'}" IsReadOnly="True" Background="#F1F5F9" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
+                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding ActiveEditingPatient.PatientId, TargetNullValue='جديد'}" IsReadOnly="True" Background="{DynamicResource BackgroundColor}" Margin="0,0,0,10" HorizontalContentAlignment="Right"/>
 
                                 <!-- Name -->
                                 <TextBlock Text="الاسم *" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
@@ -1026,7 +1026,7 @@
                                 <!-- Marital Status -->
                                 <StackPanel Visibility="{Binding ShowMaritalStatus, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="الحالة الزوجية" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <ComboBox SelectedValuePath="Content" SelectedValue="{Binding MaritalStatus, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Content" SelectedValue="{Binding MaritalStatus, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
                                         <ComboBoxItem Content="أعزب"/>
                                         <ComboBoxItem Content="متزوج"/>
                                         <ComboBoxItem Content="مطلق"/>
@@ -1043,7 +1043,7 @@
                                 <!-- Blood Group -->
                                 <StackPanel Visibility="{Binding ShowBloodGroup, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="فصيلة الدم" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <ComboBox SelectedValuePath="Content" SelectedValue="{Binding BloodGroup, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Content" SelectedValue="{Binding BloodGroup, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
                                         <ComboBoxItem Content="A+"/>
                                         <ComboBoxItem Content="A-"/>
                                         <ComboBoxItem Content="B+"/>
@@ -1058,7 +1058,7 @@
                                 <!-- Smoking -->
                                 <StackPanel Visibility="{Binding ShowSmoking, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="التدخين" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Smoking, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Content" SelectedValue="{Binding Smoking, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
                                         <ComboBoxItem Content="مدخن"/>
                                         <ComboBoxItem Content="غير مدخن"/>
                                         <ComboBoxItem Content="مدخن سابق"/>
@@ -1080,10 +1080,10 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="رفع ملف" Command="{Binding UploadPatientFileCommand}" Background="#0EA5E9" BorderBrush="#0EA5E9" Padding="12,5" FontSize="11" Margin="5,0,0,0"/>
-                                        <TextBox Grid.Column="0" Style="{StaticResource ModernTextBox}" Text="{Binding PatientFileName, Mode=OneWay}" IsReadOnly="True" Background="#F1F5F9" HorizontalContentAlignment="Right"/>
+                                        <TextBox Grid.Column="0" Style="{StaticResource ModernTextBox}" Text="{Binding PatientFileName, Mode=OneWay}" IsReadOnly="True" Background="{DynamicResource BackgroundColor}" HorizontalContentAlignment="Right"/>
                                     </Grid>
                                     <!-- File link & Remove -->
-                                    <Border Background="#F0F9FF" BorderBrush="#BAE6FD" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,0,0,10"
+                                    <Border Background="{DynamicResource BackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="4" Padding="8,4" Margin="0,0,0,10"
                                             Visibility="{Binding PatientFiles, Converter={StaticResource NullToVisibilityConverter}}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
@@ -1091,8 +1091,8 @@
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="#0284C7" Margin="0,0,6,0"/>
-                                            <Button Grid.Column="1" Content="{Binding PatientFileName}" Style="{StaticResource NavButton}" Padding="0" HorizontalContentAlignment="Left" Foreground="#0284C7" FontSize="11" FontWeight="SemiBold"
+                                            <TextBlock Grid.Column="0" Text="&#xE71B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Foreground="{DynamicResource PrimaryColor}" Margin="0,0,6,0"/>
+                                            <Button Grid.Column="1" Content="{Binding PatientFileName}" Style="{StaticResource NavButton}" Padding="0" HorizontalContentAlignment="Left" Foreground="{DynamicResource PrimaryColor}" FontSize="11" FontWeight="SemiBold"
                                                     Command="{Binding OpenPatientFileCommand}" CommandParameter="{Binding PatientFiles}"/>
                                             <Button Grid.Column="2" Style="{StaticResource NavButton}" Width="16" Height="16" Tag="&#xE711;" ToolTip="حذف الملف" Padding="0" Foreground="#EF4444" FontSize="8"
                                                     Command="{Binding RemovePatientFileCommand}"/>
@@ -1106,7 +1106,7 @@
                                 <!-- Governorate -->
                                 <StackPanel Visibility="{Binding ShowGovernorate, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <TextBlock Text="المحافظة" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                    <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Governorate, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
+                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Content" SelectedValue="{Binding Governorate, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
                                         <ComboBoxItem Content="بغداد"/>
                                         <ComboBoxItem Content="البصرة"/>
                                         <ComboBoxItem Content="نينوى"/>
@@ -1136,7 +1136,7 @@
 
                                 <!-- Gender -->
                                 <TextBlock Text="الجنس *" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                                <ComboBox SelectedValuePath="Content" SelectedValue="{Binding Gender, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
+                                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" SelectedValuePath="Content" SelectedValue="{Binding Gender, UpdateSourceTrigger=PropertyChanged}" Height="36" Margin="0,0,0,10" FlowDirection="RightToLeft">
                                     <ComboBoxItem Content="ذكر"/>
                                     <ComboBoxItem Content="أنثى"/>
                                 </ComboBox>
@@ -1269,7 +1269,8 @@
 
                         <!-- Doctor Selector -->
                         <TextBlock Text="الطبيب المعالج (Select Doctor) *" FontSize="11" Foreground="{StaticResource SubtextColor}" HorizontalAlignment="Right" Margin="0,0,0,4"/>
-                        <ComboBox ItemsSource="{Binding Doctors}"
+                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}"
+                                  ItemsSource="{Binding Doctors}"
                                   SelectedItem="{Binding SelectedDoctor, Mode=TwoWay}"
                                   DisplayMemberPath="Name"
                                   Height="36" Margin="0,0,0,15" FlowDirection="RightToLeft"/>

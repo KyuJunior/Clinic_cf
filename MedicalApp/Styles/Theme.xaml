@@ -14,6 +14,12 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
 
+    <!-- Global RadioButton Style to guarantee readable text in dark/light themes -->
+    <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type RadioButton}}">
+        <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+
     <!-- Fonts -->
     <FontFamily x:Key="MainFont">Segoe UI Semibold, Segoe UI, Arial</FontFamily>
 
