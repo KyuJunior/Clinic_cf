@@ -199,7 +199,7 @@
                         </Border>
 
                         <!-- COL 1: CENTER CLINICAL WORKSPACE -->
-                        <ScrollViewer x:Name="CenterScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto" Padding="15,0">
+                        <ScrollViewer x:Name="CenterScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Padding="15,0">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="1.4*"/> <!-- Left: Text Notes -->
@@ -577,7 +577,7 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
-                                                <ComboBox Grid.Column="0" IsEditable="True" ItemsSource="{Binding InvestigationList}" Text="{Binding SelectedInvestigation, UpdateSourceTrigger=PropertyChanged}" Height="34"/>
+                                                <ComboBox Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding InvestigationList}" Text="{Binding SelectedInvestigation, UpdateSourceTrigger=PropertyChanged}" Height="34"/>
                                                 <Button Grid.Column="1" Content="Add" Style="{StaticResource ModernButton}" Command="{Binding AddInvestigationCommand}" Padding="15,0" Margin="8,0,0,0" Height="34"/>
                                             </Grid>
                                             <ItemsControl ItemsSource="{Binding AddedInvestigations}">
@@ -682,7 +682,7 @@
                                                      <ColumnDefinition Width="*"/>
                                                      <ColumnDefinition Width="Auto"/>
                                                  </Grid.ColumnDefinitions>
-                                                 <ComboBox Grid.Column="0" IsEditable="True" ItemsSource="{Binding ImagingList}" Text="{Binding SelectedImaging, UpdateSourceTrigger=PropertyChanged}" Height="34"/>
+                                                 <ComboBox Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding ImagingList}" Text="{Binding SelectedImaging, UpdateSourceTrigger=PropertyChanged}" Height="34"/>
                                                  <Button Grid.Column="1" Content="Add" Style="{StaticResource ModernButton}" Command="{Binding AddImagingCommand}" Padding="15,0" Margin="8,0,0,0" Height="34"/>
                                              </Grid>
                                              <ItemsControl ItemsSource="{Binding AddedImagings}">
