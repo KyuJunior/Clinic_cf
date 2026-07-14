@@ -26,7 +26,7 @@ namespace MedicalApp.ViewModels
         }
 
         [ObservableProperty]
-        private string _activeSubView = "AllPatients"; // "AllPatients", "TodayVisits", "AppointmentsCalendar", "Finance"
+        private string _activeSubView = "Dashboard"; // "Dashboard", "AllPatients", "TodayVisits", "AppointmentsCalendar", "Finance"
 
         [ObservableProperty]
         private ObservableCollection<Visit> _todayVisitsList = new();
@@ -1189,6 +1189,12 @@ namespace MedicalApp.ViewModels
             {
                 StatusMessage = $"خطأ أثناء حفظ الإعدادات: {ex.Message}";
             }
+        }
+
+        [RelayCommand]
+        public void ShowDashboardView()
+        {
+            ActiveSubView = "Dashboard";
         }
 
         [RelayCommand]
