@@ -2088,6 +2088,28 @@ namespace MedicalApp.ViewModels
             _pollingTimer?.Stop();
         }
 
+        [RelayCommand]
+        public void PrintClinicalAttachment(object? parameter)
+        {
+            if (parameter is not ClinicalAttachment item) return;
+
+            if (CurrentPatient == null)
+            {
+                StatusMessage = "No patient selected.";
+                return;
+            }
+
+            try
+            {
+                _printService.PrintClinicalAttachment(CurrentPatient, item);
+                StatusMessage = "Clinical document print preview opened.";
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Print failed: {ex.Message}";
+            }
+        }
+
         public void Dispose()
         {
             StopPolling();

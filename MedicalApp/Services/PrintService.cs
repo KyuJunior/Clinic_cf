@@ -17,6 +17,7 @@ namespace MedicalApp.Services
     {
         void PrintReport(Patient patient, Visit visit);
         void PrintPrescription(Patient patient, string prescriptionText);
+        void PrintClinicalAttachment(Patient patient, ClinicalAttachment attachment);
     }
 
     public class PrintService : IPrintService
@@ -293,6 +294,116 @@ namespace MedicalApp.Services
 
             // Open Print Preview Window (pass printBackground flag and img reference)
             var preview = new Views.PrintPreviewWindow(doc, $"CardioCenter Rx - {patient.Name}", settings.PrintBackground, img)
+            {
+                Owner = Application.Current.MainWindow
+            };
+            preview.ShowDialog();
+        }
+
+        public void PrintClinicalAttachment(Patient patient, ClinicalAttachment attachment)
+        {
+            var settings = LoadSettings();
+            var doc = new FlowDocument
+            {
+                PageWidth = 560,  // A5 width at 96 DPI
+                PageHeight = 794, // A5 height at 96 DPI
+                PagePadding = new Thickness(0),
+                Background = Brushes.White,
+                FontFamily = new FontFamily("Segoe UI")
+            };
+
+            var canvas = new Canvas
+            {
+                Width = 560,
+                Height = 794
+            };
+
+            Image? img = null;
+            // 1. Draw background template image (always draw for preview if file exists)
+            if (File.Exists(settings.RxBackgroundPath))
+            {
+                var bitmap = LoadBitmapImage(settings.RxBackgroundPath);
+                if (bitmap != null)
+                {
+                    img = new Image
+                    {
+                        Source = bitmap,
+                        Width = 560,
+                        Height = 794,
+                        Stretch = Stretch.Fill
+                    };
+                    canvas.Children.Add(img);
+                    Canvas.SetLeft(img, 0);
+                    Canvas.SetTop(img, 0);
+                }
+            }
+
+            // 2. Draw Patient Name
+            var nameBlock = new TextBlock
+            {
+                Text = $"Patient Name: {patient.Name}",
+                FontSize = 13,
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59))
+            };
+            canvas.Children.Add(nameBlock);
+            Canvas.SetLeft(nameBlock, settings.PatientNameX * (560.0 / 350.0));
+            Canvas.SetTop(nameBlock, settings.PatientNameY * (794.0 / 495.0));
+
+            // 3. Draw Age & Gender
+            var ageGenderBlock = new TextBlock
+            {
+                Text = $"Age: {patient.Age} yrs   |   Gender: {patient.Gender}",
+                FontSize = 10,
+                Foreground = Brushes.SlateGray
+            };
+            canvas.Children.Add(ageGenderBlock);
+            Canvas.SetLeft(ageGenderBlock, settings.PatientAgeGenderX * (560.0 / 350.0));
+            Canvas.SetTop(ageGenderBlock, settings.PatientAgeGenderY * (794.0 / 495.0));
+
+            // 4. Draw Date
+            var dateBlock = new TextBlock
+            {
+                Text = $"Date: {DateTime.Now:dd/MM/yyyy}",
+                FontSize = 10,
+                Foreground = Brushes.SlateGray
+            };
+            canvas.Children.Add(dateBlock);
+            Canvas.SetLeft(dateBlock, settings.PatientDateX * (560.0 / 350.0));
+            Canvas.SetTop(dateBlock, settings.PatientDateY * (794.0 / 495.0));
+
+            // 5. Draw Content Block (scaled)
+            var contentPanel = new StackPanel();
+            
+            // Add a title line for the attachment
+            contentPanel.Children.Add(new TextBlock 
+            { 
+                Text = "Clinical Request / Report:", 
+                FontSize = settings.FontSize + 2, 
+                FontWeight = FontWeights.Bold,
+                Foreground = new SolidColorBrush(Color.FromRgb(13, 148, 136)),
+                Margin = new Thickness(0, 0, 0, 10)
+            });
+
+            contentPanel.Children.Add(new TextBlock 
+            { 
+                Text = attachment.Name, 
+                FontSize = settings.FontSize, 
+                FontWeight = FontWeights.SemiBold,
+                Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59)),
+                Margin = new Thickness(0, 5, 0, 0), 
+                TextWrapping = TextWrapping.Wrap,
+                Width = 450
+            });
+
+            canvas.Children.Add(contentPanel);
+            Canvas.SetLeft(contentPanel, settings.DrugsX * (560.0 / 350.0));
+            Canvas.SetTop(contentPanel, settings.DrugsY * (794.0 / 495.0));
+
+            doc.Blocks.Add(new BlockUIContainer(canvas));
+
+            // Open Print Preview Window
+            var preview = new Views.PrintPreviewWindow(doc, $"CardioCenter Clinical Doc - {patient.Name}", settings.PrintBackground, img)
             {
                 Owner = Application.Current.MainWindow
             };
