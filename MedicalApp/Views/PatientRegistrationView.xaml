@@ -159,74 +159,20 @@
                     <RowDefinition Height="Auto"/> <!-- Bottom bar row -->
                 </Grid.RowDefinitions>
 
-                <!-- Row 0: Statistics premium gradient cards -->
+                <!-- Row 0: Statistics premium gradient cards (2x3 Grid Layout) -->
                 <Grid Grid.Row="0" Margin="0,0,0,20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <!-- Card 0: Waiting Patients -->
-                    <Border Grid.Column="3" CornerRadius="10" Padding="15" Margin="8,0,0,0">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#0284C7" Offset="0"/> <!-- Sky 700 -->
-                                <GradientStop Color="#38BDF8" Offset="1"/> <!-- Sky 400 -->
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Border.Effect>
-                            <DropShadowEffect Color="#0F172A" Opacity="0.1" BlurRadius="15" ShadowDepth="1.5" Direction="270"/>
-                        </Border.Effect>
-                        <StackPanel>
-                            <TextBlock Text="Waiting Patients" FontSize="13" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Text="المرضى المنتظرون" FontSize="9.5" Foreground="#E0F2FE" Margin="0,1,0,0"/>
-                            <TextBlock Text="{Binding WaitingPatientsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,5"/>
-                            <TextBlock Text="Updated just now | تم التحديث الآن" FontSize="9.5" Foreground="#BAE6FD"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Card 1: Attending Patients -->
-                    <Border Grid.Column="2" CornerRadius="10" Padding="15" Margin="8,0,8,0">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#059669" Offset="0"/> <!-- Emerald 600 -->
-                                <GradientStop Color="#34D399" Offset="1"/> <!-- Emerald 400 -->
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Border.Effect>
-                            <DropShadowEffect Color="#0F172A" Opacity="0.1" BlurRadius="15" ShadowDepth="1.5" Direction="270"/>
-                        </Border.Effect>
-                        <StackPanel>
-                            <TextBlock Text="Attending Patients" FontSize="13" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Text="المرضى الحاضرون" FontSize="9.5" Foreground="#D1FAE5" Margin="0,1,0,0"/>
-                            <TextBlock Text="{Binding AttendingPatientsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,5"/>
-                            <TextBlock Text="Updated just now | تم التحديث الآن" FontSize="9.5" Foreground="#A7F3D0"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Card 2: New Patients -->
-                    <Border Grid.Column="1" CornerRadius="10" Padding="15" Margin="8,0,8,0">
-                        <Border.Background>
-                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                <GradientStop Color="#4F46E5" Offset="0"/> <!-- Indigo 600 -->
-                                <GradientStop Color="#818CF8" Offset="1"/> <!-- Indigo 400 -->
-                            </LinearGradientBrush>
-                        </Border.Background>
-                        <Border.Effect>
-                            <DropShadowEffect Color="#0F172A" Opacity="0.1" BlurRadius="15" ShadowDepth="1.5" Direction="270"/>
-                        </Border.Effect>
-                        <StackPanel>
-                            <TextBlock Text="New Patients Today" FontSize="13" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Text="المرضى الجدد اليوم" FontSize="9.5" Foreground="#E0E7FF" Margin="0,1,0,0"/>
-                            <TextBlock Text="{Binding NewPatientsTodayCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,5"/>
-                            <TextBlock Text="Updated just now | تم التحديث الآن" FontSize="9.5" Foreground="#C7D2FE"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- Card 3: Total Patients -->
-                    <Border Grid.Column="0" CornerRadius="10" Padding="15" Margin="0,0,8,0">
+                    <!-- Card 0: Total Registered -->
+                    <Border Grid.Row="0" Grid.Column="0" CornerRadius="10" Padding="14,12" Margin="0,0,12,12">
                         <Border.Background>
                             <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                 <GradientStop Color="#0D9488" Offset="0"/> <!-- Teal 600 -->
@@ -234,14 +180,151 @@
                             </LinearGradientBrush>
                         </Border.Background>
                         <Border.Effect>
-                            <DropShadowEffect Color="#0F172A" Opacity="0.1" BlurRadius="15" ShadowDepth="1.5" Direction="270"/>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
                         </Border.Effect>
-                        <StackPanel>
-                            <TextBlock Text="Total Registered" FontSize="13" FontWeight="Bold" Foreground="White"/>
-                            <TextBlock Text="جميع المرضى المسجلين" FontSize="9.5" Foreground="#CCFBF1" Margin="0,1,0,0"/>
-                            <TextBlock Text="{Binding TotalPatientsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,8,0,5"/>
-                            <TextBlock Text="Updated just now | تم التحديث الآن" FontSize="9.5" Foreground="#99F6E4"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <TextBlock Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock Text="إجمالي المرضى المسجلين" FontSize="11.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Grid.Row="1" Text="{Binding TotalPatientsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,6,0,4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Text="Total Registered Patients" FontSize="10" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Card 1: New Patients -->
+                    <Border Grid.Row="0" Grid.Column="1" CornerRadius="10" Padding="14,12" Margin="0,0,12,12">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#4F46E5" Offset="0"/> <!-- Indigo 600 -->
+                                <GradientStop Color="#818CF8" Offset="1"/> <!-- Indigo 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <TextBlock Text="&#xE8FA;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock Text="المرضى الجدد اليوم" FontSize="11.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Grid.Row="1" Text="{Binding NewPatientsTodayCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,6,0,4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Text="New Patients Registered Today" FontSize="10" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Card 2: Waiting Patients -->
+                    <Border Grid.Row="0" Grid.Column="2" CornerRadius="10" Padding="14,12" Margin="0,0,0,12">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#0284C7" Offset="0"/> <!-- Sky 700 -->
+                                <GradientStop Color="#38BDF8" Offset="1"/> <!-- Sky 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <TextBlock Text="&#xE916;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock Text="المرضى في الانتظار" FontSize="11.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Grid.Row="1" Text="{Binding WaitingPatientsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,6,0,4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Text="Waiting Patients in Queue" FontSize="10" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Card 3: Active Consultations -->
+                    <Border Grid.Row="1" Grid.Column="0" CornerRadius="10" Padding="14,12" Margin="0,0,12,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#E11D48" Offset="0"/> <!-- Rose 600 -->
+                                <GradientStop Color="#F43F5E" Offset="1"/> <!-- Rose 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <TextBlock Text="&#xE957;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock Text="الزيارات غير المنتهية" FontSize="11.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Grid.Row="1" Text="{Binding IncompleteVisitsCount}" FontSize="28" FontWeight="Bold" Foreground="White" Margin="0,6,0,4" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            <TextBlock Grid.Row="2" Text="Active Unfinished Visits" FontSize="10" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Card 4: Patient in Exam Room -->
+                    <Border Grid.Row="1" Grid.Column="1" CornerRadius="10" Padding="14,12" Margin="0,0,12,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#D97706" Offset="0"/> <!-- Amber 600 -->
+                                <GradientStop Color="#F59E0B" Offset="1"/> <!-- Amber 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock Text="المريض في غرفة الطبيب" FontSize="11.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Grid.Row="1" Text="{Binding PatientInDoctorRoomName}" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,11,0,7" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" ToolTip="{Binding PatientInDoctorRoomName}"/>
+                            <TextBlock Grid.Row="2" Text="Patient with Attending Doctor" FontSize="10" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
+                        </Grid>
+                    </Border>
+
+                    <!-- Card 5: Next Patient -->
+                    <Border Grid.Row="1" Grid.Column="2" CornerRadius="10" Padding="14,12" Margin="0,0,0,0">
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Color="#7C3AED" Offset="0"/> <!-- Purple 600 -->
+                                <GradientStop Color="#A855F7" Offset="1"/> <!-- Violet 400 -->
+                            </LinearGradientBrush>
+                        </Border.Background>
+                        <Border.Effect>
+                            <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <TextBlock Text="&#xE893;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                <TextBlock Text="المريض التالي" FontSize="11.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBlock Grid.Row="1" Text="{Binding NextPatientName}" FontSize="17" FontWeight="Bold" Foreground="White" Margin="0,11,0,7" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" ToolTip="{Binding NextPatientName}"/>
+                            <TextBlock Grid.Row="2" Text="Next Patient in Queue" FontSize="10" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
+                        </Grid>
                     </Border>
                 </Grid>
 

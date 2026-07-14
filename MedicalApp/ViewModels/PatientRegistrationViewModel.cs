@@ -103,6 +103,15 @@ namespace MedicalApp.ViewModels
         private int _waitingPatientsCount;
 
         [ObservableProperty]
+        private int _incompleteVisitsCount;
+
+        [ObservableProperty]
+        private string _patientInDoctorRoomName = "No active patient | لا يوجد مريض";
+
+        [ObservableProperty]
+        private string _nextPatientName = "No waiting patient | لا يوجد مريض";
+
+        [ObservableProperty]
         private ObservableCollection<QueueEntry> _waitingVisits = new();
 
         [ObservableProperty]
@@ -432,6 +441,17 @@ namespace MedicalApp.ViewModels
                 // New patients today
                 NewPatientsTodayCount = System.Linq.Enumerable.Count(Patients, p => p.CreatedAt.Date == DateTime.Today);
 
+                // Incomplete count
+                IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
+
+                // Active patient in doctor room
+                var activeEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
+                PatientInDoctorRoomName = activeEntry != null ? activeEntry.PatientName : "No active patient | لا يوجد مريض";
+
+                // Next patient in queue
+                var nextEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "Pending");
+                NextPatientName = nextEntry != null ? nextEntry.PatientName : "No waiting patient | لا يوجد مريض";
+
                 // Waitlist list for left sidebar (status Pending)
                 WaitingVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "Pending"));
                 
@@ -460,6 +480,14 @@ namespace MedicalApp.ViewModels
                             AttendingPatientsCount = System.Linq.Enumerable.Count(activeQueue);
                             WaitingPatientsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "Pending");
                             
+                            IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
+
+                            var activeEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
+                            PatientInDoctorRoomName = activeEntry != null ? activeEntry.PatientName : "No active patient | لا يوجد مريض";
+
+                            var nextEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "Pending");
+                            NextPatientName = nextEntry != null ? nextEntry.PatientName : "No waiting patient | لا يوجد مريض";
+
                             WaitingVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "Pending"));
                             IncompleteVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho"));
                         });
