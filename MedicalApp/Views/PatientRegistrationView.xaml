@@ -20,6 +20,7 @@
 
         <!-- Custom Green Toggle Switch Style matching mockup -->
         <Style x:Key="ToggleSwitchStyle" TargetType="CheckBox">
+            <Setter Property="Foreground" Value="{DynamicResource TextColor}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="CheckBox">
