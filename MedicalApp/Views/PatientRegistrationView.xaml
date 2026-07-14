@@ -967,7 +967,8 @@
                         <Button Grid.Column="5" Tag="&#xE8C7;" ToolTip="Finance | الحسابات" FontSize="20"
                                 Command="{Binding ShowFinanceViewCommand}"/>
                         <Button Grid.Column="6" Tag="&#xE713;" ToolTip="Settings | الإعدادات" FontSize="20"
-                                Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                                Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                CommandParameter="Secretary"/>
                         <Button Grid.Column="7" Tag="&#xE72B;" ToolTip="Exit | خروج" FontSize="20"
                                 Command="{Binding DataContext.NavigateToHomeCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </Grid>

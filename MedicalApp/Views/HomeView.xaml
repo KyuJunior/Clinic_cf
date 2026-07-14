@@ -109,10 +109,19 @@
                     </Button.Style>
                 </Button>
 
-                <!-- Settings Button -->
+                <!-- Settings Button (Home/General) -->
                 <Button Style="{StaticResource NavButton}" Padding="10" Width="40" Height="40"
-                        Tag="&#xE713;" ToolTip="Print &amp; Calibration Settings"
-                        Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
+                        Tag="&#xE713;" ToolTip="System Settings | إعدادات النظام"
+                        Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="Home"
+                        Visibility="{Binding IsDoctorDashboardVisible, Converter={StaticResource InverseBooleanToVisibilityConverter}}"/>
+
+                <!-- Settings Button (Doctor Dashboard) -->
+                <Button Style="{StaticResource NavButton}" Padding="10" Width="40" Height="40"
+                        Tag="&#xE713;" ToolTip="Doctor Print &amp; Calibration Settings | إعدادات الطبيب"
+                        Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                        CommandParameter="Doctor"
+                        Visibility="{Binding IsDoctorDashboardVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
             </StackPanel>
         </Grid>
 

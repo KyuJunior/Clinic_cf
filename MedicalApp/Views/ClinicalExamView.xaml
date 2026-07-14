@@ -118,8 +118,8 @@
                                     </StackPanel>
                                 </Border>
 
-                                <!-- Section Settings Gear -->
-                                <ToggleButton Name="BtnSectionSettings" Style="{StaticResource IconToggleButton}" Tag="&#xE713;" ToolTip="Configure Sections" FontSize="17" Width="40" Height="40" Foreground="White" Margin="0,0,10,0"/>
+                                <!-- Section Settings (Configure visible panels) -->
+                                <ToggleButton Name="BtnSectionSettings" Style="{StaticResource IconToggleButton}" Tag="&#xE8A4;" ToolTip="Visible Sections | الأقسام الظاهرة" FontSize="17" Width="40" Height="40" Foreground="White" Margin="0,0,10,0"/>
                                 <Popup IsOpen="{Binding IsChecked, ElementName=BtnSectionSettings}" PlacementTarget="{Binding ElementName=BtnSectionSettings}" Placement="Bottom" StaysOpen="False" PopupAnimation="Fade">
                                     <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="15" Width="220" Margin="0,5,0,0">
                                         <Border.Effect>
@@ -136,6 +136,11 @@
                                         </StackPanel>
                                     </Border>
                                 </Popup>
+
+                                <!-- Print & Calibration Settings Gear -->
+                                <Button Style="{StaticResource IconButton}" Tag="&#xE713;" ToolTip="Doctor Print &amp; Calibration Settings | إعدادات الطبيب"
+                                        Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="Doctor" Foreground="White" FontSize="17" Width="40" Height="40" Margin="0,0,10,0"/>
 
                                 <!-- Pause Button -->
                                 <Button Style="{StaticResource WarningButton}" Content="⏸ Pause" Command="{Binding HoldSessionCommand}" Height="36" Padding="18,0" Margin="0,0,10,0" FontSize="13"/>

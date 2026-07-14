@@ -34,18 +34,70 @@
             <!-- Sidebar Navigation panel -->
             <Border Grid.Column="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1.5" CornerRadius="10" Padding="8" VerticalAlignment="Stretch">
                 <StackPanel>
-                    <TextBlock Text="System Settings" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="10,10,10,5"/>
-                    <TextBlock Text="إعدادات النظام العام" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="10,0,10,20"/>
+                    <!-- Header for Home -->
+                    <StackPanel Visibility="Collapsed">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Home">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="Portal Settings" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="10,10,10,5"/>
+                        <TextBlock Text="إعدادات البوابة الرئيسية" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="10,0,10,20"/>
+                    </StackPanel>
 
-                    <!-- Tab 0 Button -->
-                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="0">
+                    <!-- Header for Secretary -->
+                    <StackPanel Visibility="Collapsed">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Secretary">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="Secretary Settings" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="10,10,10,5"/>
+                        <TextBlock Text="إعدادات السكرتارية" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="10,0,10,20"/>
+                    </StackPanel>
+
+                    <!-- Header for Doctor -->
+                    <StackPanel Visibility="Collapsed">
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Doctor">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+                        <TextBlock Text="Doctor Settings" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="10,10,10,5"/>
+                        <TextBlock Text="إعدادات العيادة والطبيب" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="10,0,10,20"/>
+                    </StackPanel>
+
+                    <!-- Tab 0 Button (Print Calibration) -->
+                    <Button HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="0">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Doctor">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE767;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBlock Text="Print Calibration | الطباعة" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- Tab 1 Button -->
+                    <!-- Tab 1 Button (Clinic Profile) -->
                     <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="1">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE780;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
@@ -53,24 +105,60 @@
                         </StackPanel>
                     </Button>
 
-                    <!-- Tab 2 Button -->
-                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="2">
+                    <!-- Tab 2 Button (Database & Backup) -->
+                    <Button HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="2">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Home">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Secretary">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE926;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBlock Text="Database &amp; Backup | الحفظ" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- Tab 3 Button -->
-                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="3">
+                    <!-- Tab 3 Button (Security & Staff) -->
+                    <Button HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="3">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Home">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Secretary">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE727;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBlock Text="Security &amp; Staff | الأمان" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>
                         </StackPanel>
                     </Button>
 
-                    <!-- Tab 4 Button -->
-                    <Button Style="{StaticResource MaterialDesignFlatButton}" HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="4">
+                    <!-- Tab 4 Button (Report Templates) -->
+                    <Button HorizontalContentAlignment="Left" Padding="12,10" Height="Auto" Margin="0,2" Command="{Binding SwitchTabCommand}" CommandParameter="4">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OpenedFrom}" Value="Doctor">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xEC50;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                             <TextBlock Text="Report Templates | القوالب" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextColor}"/>

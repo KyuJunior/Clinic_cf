@@ -67,6 +67,9 @@ namespace MedicalApp.ViewModels
         private int _activeTab = 0; // 0=Print, 1=Clinic, 2=Database, 3=Staff, 4=Templates
 
         [ObservableProperty]
+        private string _openedFrom = "Home"; // "Home", "Secretary", "Doctor"
+
+        [ObservableProperty]
         private string _selectedCategory = "Prescription"; // "Prescription", "Investigation", "Imaging"
 
         // ------------------ Backing Store for Categories ------------------
@@ -518,7 +521,25 @@ namespace MedicalApp.ViewModels
         public void NavigateBack()
         {
             var mainVm = _serviceProvider.GetRequiredService<MainViewModel>();
-            mainVm.NavigateToHome();
+            if (OpenedFrom == "Secretary")
+            {
+                mainVm.NavigateToPatientRegistration();
+            }
+            else if (OpenedFrom == "Doctor")
+            {
+                if (_sharedStateService.CurrentPatient != null)
+                {
+                    mainVm.NavigateToClinicalExam();
+                }
+                else
+                {
+                    mainVm.NavigateToHome();
+                }
+            }
+            else
+            {
+                mainVm.NavigateToHome();
+            }
         }
     }
 }

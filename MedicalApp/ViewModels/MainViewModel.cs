@@ -116,9 +116,27 @@ namespace MedicalApp.ViewModels
         public bool IsPrintSettingsActive => CurrentView is PrintSettingsViewModel;
 
         [RelayCommand]
-        public void NavigateToPrintSettings()
+        public void NavigateToPrintSettings(string? from)
         {
-            CurrentView = _printSettingsVm.Value;
+            var fromStr = from ?? "Home";
+            var vm = _printSettingsVm.Value;
+            vm.OpenedFrom = fromStr;
+
+            // Set the default tab based on the source
+            if (fromStr == "Home")
+            {
+                vm.ActiveTab = 2; // Database & Backup
+            }
+            else if (fromStr == "Secretary")
+            {
+                vm.ActiveTab = 1; // Clinic Profile
+            }
+            else if (fromStr == "Doctor")
+            {
+                vm.ActiveTab = 0; // Print Calibration
+            }
+
+            CurrentView = vm;
         }
 
         [RelayCommand]
