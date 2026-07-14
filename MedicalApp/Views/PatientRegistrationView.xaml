@@ -799,7 +799,7 @@
                 </Border>
 
                 <!-- Row 2: Bottom Floating Responsive Bar -->
-                <Border Grid.Row="2" CornerRadius="24" Height="50" Margin="0,15,0,5" MaxWidth="520" HorizontalAlignment="Center" Padding="20,0" BorderThickness="1.5">
+                <Border Grid.Row="2" CornerRadius="28" Height="56" Margin="0,15,0,5" MaxWidth="720" HorizontalAlignment="Center" Padding="30,0" BorderThickness="1.5">
                     <Border.Background>
                         <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
                             <GradientStop Color="{DynamicResource SecondaryColorVal}" Offset="0"/>
@@ -818,6 +818,8 @@
                             <Setter Property="Foreground" Value="White"/>
                             <Setter Property="Background" Value="Transparent"/>
                             <Setter Property="Cursor" Value="Hand"/>
+                            <Setter Property="Width" Value="44"/>
+                            <Setter Property="Height" Value="44"/>
                             <Setter Property="RenderTransformOrigin" Value="0.5,0.5"/>
                             <Style.Triggers>
                                 <Trigger Property="IsMouseOver" Value="True">
@@ -841,19 +843,19 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <Button Grid.Column="0" Tag="&#xE8A5;" ToolTip="Home | الرئيسية" FontSize="18"
+                        <Button Grid.Column="0" Tag="&#xE8A5;" ToolTip="Home | الرئيسية" FontSize="20"
                                 Command="{Binding DataContext.NavigateToHomeCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
-                        <Button Grid.Column="1" Tag="&#xE77B;" ToolTip="Patients | المرضى" FontSize="18"
+                        <Button Grid.Column="1" Tag="&#xE77B;" ToolTip="Patients | المرضى" FontSize="20"
                                 Command="{Binding ShowAllPatientsViewCommand}"/>
-                        <Button Grid.Column="2" Tag="&#xE81C;" ToolTip="Visits History | السجل اليومي" FontSize="18"
+                        <Button Grid.Column="2" Tag="&#xE81C;" ToolTip="Visits History | السجل اليومي" FontSize="20"
                                 Command="{Binding ShowTodayVisitsViewCommand}"/>
-                        <Button Grid.Column="3" Tag="&#xE710;" ToolTip="Add Patient | إضافة مريض" FontSize="22" FontWeight="Bold"
+                        <Button Grid.Column="3" Tag="&#xE710;" ToolTip="Add Patient | إضافة مريض" FontSize="24" FontWeight="Bold"
                                 Command="{Binding OpenRegistrationModalCommand}"/>
-                        <Button Grid.Column="4" Tag="&#xE787;" ToolTip="Calendar | التقويم" FontSize="18"
+                        <Button Grid.Column="4" Tag="&#xE787;" ToolTip="Calendar | التقويم" FontSize="20"
                                 Command="{Binding ShowAppointmentsCalendarViewCommand}"/>
-                        <Button Grid.Column="5" Tag="&#xE8C7;" ToolTip="Finance | الحسابات" FontSize="18"
+                        <Button Grid.Column="5" Tag="&#xE8C7;" ToolTip="Finance | الحسابات" FontSize="20"
                                 Command="{Binding ShowFinanceViewCommand}"/>
-                        <Button Grid.Column="6" Tag="&#xE713;" ToolTip="Settings | الإعدادات" FontSize="18"
+                        <Button Grid.Column="6" Tag="&#xE713;" ToolTip="Settings | الإعدادات" FontSize="20"
                                 Command="{Binding DataContext.NavigateToPrintSettingsCommand, RelativeSource={RelativeSource AncestorType=Window}}"/>
                     </Grid>
                 </Border>

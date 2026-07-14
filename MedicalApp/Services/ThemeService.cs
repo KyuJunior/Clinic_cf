@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Windows;
+using System.Linq;
 
 namespace MedicalApp.Services
 {
@@ -44,15 +45,10 @@ namespace MedicalApp.Services
             var mergedDicts = app.Resources.MergedDictionaries;
             
             // Find and remove existing theme dictionary (LightTheme.xaml or DarkTheme.xaml)
-            ResourceDictionary? existingTheme = null;
-            foreach (var dict in mergedDicts)
-            {
-                if (dict.Source != null && (dict.Source.OriginalString.Contains("LightTheme.xaml") || dict.Source.OriginalString.Contains("DarkTheme.xaml")))
-                {
-                    existingTheme = dict;
-                    break;
-                }
-            }
+            var existingTheme = mergedDicts.FirstOrDefault(dict => 
+                dict.Source != null && 
+                (dict.Source.OriginalString.Contains("LightTheme.xaml", StringComparison.OrdinalIgnoreCase) || 
+                 dict.Source.OriginalString.Contains("DarkTheme.xaml", StringComparison.OrdinalIgnoreCase)));
 
             if (existingTheme != null)
             {

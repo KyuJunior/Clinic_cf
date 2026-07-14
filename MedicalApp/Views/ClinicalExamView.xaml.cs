@@ -27,27 +27,22 @@ namespace MedicalApp.Views
 
 
 
+        private readonly System.Collections.Generic.Dictionary<string, FrameworkElement> _elementCache = new();
+
         private void HighlightElement(FrameworkElement element)
         {
-            System.Windows.Media.Brush? originalBrush = null;
-            Thickness originalThickness = new Thickness(0);
-            Action<System.Windows.Media.Brush?>? setBrush = null;
-            Action<Thickness>? setThickness = null;
-
-            if (element is Control control)
+            var (setBrush, setThickness, originalBrush, originalThickness) = element switch
             {
-                originalBrush = control.BorderBrush;
-                originalThickness = control.BorderThickness;
-                setBrush = b => control.BorderBrush = b;
-                setThickness = t => control.BorderThickness = t;
-            }
-            else if (element is Border border)
-            {
-                originalBrush = border.BorderBrush;
-                originalThickness = border.BorderThickness;
-                setBrush = b => border.BorderBrush = b;
-                setThickness = t => border.BorderThickness = t;
-            }
+                Control control => (new Action<System.Windows.Media.Brush?>(b => control.BorderBrush = b),
+                                    new Action<Thickness>(t => control.BorderThickness = t),
+                                    control.BorderBrush,
+                                    control.BorderThickness),
+                Border border => (new Action<System.Windows.Media.Brush?>(b => border.BorderBrush = b),
+                                  new Action<Thickness>(t => border.BorderThickness = t),
+                                  border.BorderBrush,
+                                  border.BorderThickness),
+                _ => (null, null, null, default)
+            };
 
             if (setBrush != null && setThickness != null)
             {
@@ -59,16 +54,9 @@ namespace MedicalApp.Views
                 setThickness(new Thickness(2));
                 setBrush(animBrush);
 
-                System.Windows.Media.Color targetColor;
-                if (originalBrush is System.Windows.Media.SolidColorBrush scb)
-                {
-                    targetColor = scb.Color;
-                }
-                else
-                {
-                    // Fallback to dark theme card border color if original is not solid
-                    targetColor = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D2D30");
-                }
+                var targetColor = originalBrush is System.Windows.Media.SolidColorBrush scb
+                    ? scb.Color
+                    : (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString("#2D2D30");
 
                 var animation = new System.Windows.Media.Animation.ColorAnimation
                 {
@@ -80,8 +68,11 @@ namespace MedicalApp.Views
 
                 animation.Completed += (s, args) =>
                 {
-                    setBrush(originalBrush);
-                    setThickness(originalThickness);
+                    if (element.IsLoaded)
+                    {
+                        setBrush(originalBrush);
+                        setThickness(originalThickness);
+                    }
                 };
 
                 animBrush.BeginAnimation(System.Windows.Media.SolidColorBrush.ColorProperty, animation);
@@ -92,7 +83,15 @@ namespace MedicalApp.Views
         {
             if (sender is System.Windows.Controls.Primitives.ButtonBase button && button.CommandParameter is string targetName)
             {
-                var targetElement = CenterScrollViewer.FindName(targetName) as FrameworkElement;
+                if (!_elementCache.TryGetValue(targetName, out var targetElement))
+                {
+                    targetElement = CenterScrollViewer.FindName(targetName) as FrameworkElement;
+                    if (targetElement != null)
+                    {
+                        _elementCache[targetName] = targetElement;
+                    }
+                }
+
                 if (targetElement != null)
                 {
                     targetElement.BringIntoView();
@@ -119,12 +118,11 @@ namespace MedicalApp.Views
 
         private void DrugSuggestionsListBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Enter)
+            if (e.Key == System.Windows.Input.Key.Enter && DrugSuggestionsListBox.SelectedItem is string selectedDrug)
             {
-                if (DrugSuggestionsListBox.SelectedItem is string selectedDrug)
+                if (DataContext is ViewModels.ClinicalExamViewModel vm)
                 {
-                    var vm = DataContext as ViewModels.ClinicalExamViewModel;
-                    vm?.SelectSuggestedDrugCommand.Execute(selectedDrug);
+                    vm.SelectSuggestedDrugCommand.Execute(selectedDrug);
                     DrugSearchTextBox.Focus();
                     e.Handled = true;
                 }
@@ -138,23 +136,21 @@ namespace MedicalApp.Views
 
         private void ComboBox_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (e.Key == System.Windows.Input.Key.Enter)
+            if (e.Key == System.Windows.Input.Key.Enter && sender is ComboBox comboBox)
             {
-                var comboBox = sender as ComboBox;
-                if (comboBox != null)
-                {
-                    var expression = comboBox.GetBindingExpression(ComboBox.TextProperty);
-                    expression?.UpdateSource();
+                var expression = comboBox.GetBindingExpression(ComboBox.TextProperty);
+                expression?.UpdateSource();
 
-                    var vm = DataContext as ViewModels.ClinicalExamViewModel;
+                if (DataContext is ViewModels.ClinicalExamViewModel vm)
+                {
                     if (comboBox.Name == "LabsComboBox")
                     {
-                        vm?.AddInvestigationCommand.Execute(null);
+                        vm.AddInvestigationCommand.Execute(null);
                         e.Handled = true;
                     }
                     else if (comboBox.Name == "ImagingComboBox")
                     {
-                        vm?.AddImagingCommand.Execute(null);
+                        vm.AddImagingCommand.Execute(null);
                         e.Handled = true;
                     }
                 }
