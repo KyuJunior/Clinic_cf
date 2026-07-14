@@ -52,6 +52,30 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private Patient? _selectedPatient;
 
+        // Custom Settings & Dynamic KPI Counts
+        [ObservableProperty]
+        private PrintSettings _settings = new();
+
+        [ObservableProperty]
+        private int _totalVisitsCountToday;
+
+        [ObservableProperty]
+        private int _completedConsultationsCountToday;
+
+        public void ReloadSettings()
+        {
+            try
+            {
+                var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "print_settings.json");
+                if (System.IO.File.Exists(path))
+                {
+                    var json = System.IO.File.ReadAllText(path);
+                    Settings = System.Text.Json.JsonSerializer.Deserialize<PrintSettings>(json) ?? new PrintSettings();
+                }
+            }
+            catch { /* fallback */ }
+        }
+
         // Registration form fields
         [ObservableProperty]
         private string _name = string.Empty;
@@ -370,6 +394,8 @@ namespace MedicalApp.ViewModels
             _visitService = visitService;
             _themeService = themeService;
 
+            ReloadSettings();
+
             System.Windows.WeakEventManager<IThemeService, EventArgs>.AddHandler(_themeService, nameof(IThemeService.ThemeChanged), (s, ev) => OnPropertyChanged(nameof(IsDarkMode)));
             
             // Sync with current selection
@@ -432,6 +458,13 @@ namespace MedicalApp.ViewModels
                 // Attending count is total daily entries
                 AttendingPatientsCount = System.Linq.Enumerable.Count(activeQueue);
                 
+                // Get completed count today
+                var completedTodayCount = await _queueService.GetCompletedCountTodayAsync(null);
+                CompletedConsultationsCountToday = completedTodayCount;
+
+                // Total visits is attending (active waitlist/exam) + completed today
+                TotalVisitsCountToday = AttendingPatientsCount + completedTodayCount;
+
                 // Waiting count is those pending
                 WaitingPatientsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "Pending");
                 
@@ -471,6 +504,7 @@ namespace MedicalApp.ViewModels
                 try
                 {
                     var activeQueue = await _queueService.GetActiveQueueAsync();
+                    var completedTodayCount = await _queueService.GetCompletedCountTodayAsync(null);
                     
                     // Update stats & waitlists safely on dispatcher thread
                     if (System.Windows.Application.Current != null)
@@ -478,8 +512,10 @@ namespace MedicalApp.ViewModels
                         System.Windows.Application.Current.Dispatcher.Invoke(() =>
                         {
                             AttendingPatientsCount = System.Linq.Enumerable.Count(activeQueue);
+                            CompletedConsultationsCountToday = completedTodayCount;
+                            TotalVisitsCountToday = AttendingPatientsCount + completedTodayCount;
+
                             WaitingPatientsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "Pending");
-                            
                             IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
 
                             var activeEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
@@ -497,7 +533,10 @@ namespace MedicalApp.ViewModels
                 {
                     // Ignore transient network/DB errors during background poll
                 }
-                await Task.Delay(3000);
+
+                int delaySeconds = Settings?.QueuePollingInterval ?? 3;
+                if (delaySeconds < 1) delaySeconds = 3;
+                await Task.Delay(delaySeconds * 1000);
             }
         }
 
@@ -1194,6 +1233,8 @@ namespace MedicalApp.ViewModels
         [RelayCommand]
         public void ShowDashboardView()
         {
+            ReloadSettings();
+            _ = LoadPatientsAsync();
             ActiveSubView = "Dashboard";
         }
 

@@ -11,6 +11,7 @@ using MedicalApp.Models;
 using MedicalApp.Data;
 using MedicalApp.Services;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace MedicalApp.ViewModels
 {
@@ -272,6 +273,34 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private bool _requireLogin = false;
 
+        // Home Dashboard Polling and Customizations
+        [ObservableProperty]
+        private int _queuePollingInterval = 3;
+
+        [ObservableProperty]
+        private bool _showTotalPatientsCard = true;
+
+        [ObservableProperty]
+        private bool _showNewPatientsCard = true;
+
+        [ObservableProperty]
+        private bool _showWaitingPatientsCard = true;
+
+        [ObservableProperty]
+        private bool _showActiveConsultationsCard = true;
+
+        [ObservableProperty]
+        private bool _showExamRoomCard = true;
+
+        [ObservableProperty]
+        private bool _showNextPatientCard = true;
+
+        [ObservableProperty]
+        private bool _showTotalVisitsCard = true;
+
+        [ObservableProperty]
+        private bool _showCompletedConsultationsCard = true;
+
         [RelayCommand]
         public void SwitchTab(string tabIndex)
         {
@@ -373,6 +402,17 @@ namespace MedicalApp.ViewModels
                     // Staff Settings
                     AdminPassword = settings.AdminPassword ?? "••••••••";
                     RequireLogin = settings.RequireLogin;
+
+                    // Home Dashboard Polling and Customizations
+                    QueuePollingInterval = settings.QueuePollingInterval;
+                    ShowTotalPatientsCard = settings.ShowTotalPatientsCard;
+                    ShowNewPatientsCard = settings.ShowNewPatientsCard;
+                    ShowWaitingPatientsCard = settings.ShowWaitingPatientsCard;
+                    ShowActiveConsultationsCard = settings.ShowActiveConsultationsCard;
+                    ShowExamRoomCard = settings.ShowExamRoomCard;
+                    ShowNextPatientCard = settings.ShowNextPatientCard;
+                    ShowTotalVisitsCard = settings.ShowTotalVisitsCard;
+                    ShowCompletedConsultationsCard = settings.ShowCompletedConsultationsCard;
 
                     // Populate Active values
                     LoadActiveCategoryValues(SelectedCategory);
@@ -479,7 +519,18 @@ namespace MedicalApp.ViewModels
                     DbAutoBackupEnabled = DbAutoBackupEnabled,
 
                     AdminPassword = AdminPassword,
-                    RequireLogin = RequireLogin
+                    RequireLogin = RequireLogin,
+
+                    // Home Dashboard Polling and Customizations
+                    QueuePollingInterval = QueuePollingInterval,
+                    ShowTotalPatientsCard = ShowTotalPatientsCard,
+                    ShowNewPatientsCard = ShowNewPatientsCard,
+                    ShowWaitingPatientsCard = ShowWaitingPatientsCard,
+                    ShowActiveConsultationsCard = ShowActiveConsultationsCard,
+                    ShowExamRoomCard = ShowExamRoomCard,
+                    ShowNextPatientCard = ShowNextPatientCard,
+                    ShowTotalVisitsCard = ShowTotalVisitsCard,
+                    ShowCompletedConsultationsCard = ShowCompletedConsultationsCard
                 };
 
                 // Save to database for active doctor
@@ -539,6 +590,23 @@ namespace MedicalApp.ViewModels
             else
             {
                 mainVm.NavigateToHome();
+            }
+        }
+
+        [RelayCommand]
+        public void ConfigureDatabaseConnection()
+        {
+            var config = _serviceProvider.GetRequiredService<Microsoft.Extensions.Configuration.IConfiguration>();
+            var connectionString = config.GetConnectionString("DefaultConnection") ?? "";
+            
+            var configWin = new MedicalApp.Views.DbConfigWindow(connectionString, "");
+            if (configWin.ShowDialog() == true)
+            {
+                var newConnStr = configWin.SelectedConnectionString;
+                var configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "db_config.json");
+                var configContent = $"{{\n  \"ConnectionStrings\": {{\n    \"DefaultConnection\": \"{newConnStr.Replace("\\", "\\\\")}\"\n  }}\n}}";
+                File.WriteAllText(configPath, configContent);
+                MessageBox.Show("Database configuration saved successfully! Please restart the application to apply the changes.", "Database Config Saved", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
     }

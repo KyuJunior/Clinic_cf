@@ -75,5 +75,16 @@ namespace MedicalApp.Models
         // Staff Settings (Placeholders)
         public string AdminPassword { get; set; } = "••••••••";
         public bool RequireLogin { get; set; } = false;
+
+        // Home Dashboard Polling and Customizations
+        public int QueuePollingInterval { get; set; } = 3;
+        public bool ShowTotalPatientsCard { get; set; } = true;
+        public bool ShowNewPatientsCard { get; set; } = true;
+        public bool ShowWaitingPatientsCard { get; set; } = true;
+        public bool ShowActiveConsultationsCard { get; set; } = true;
+        public bool ShowExamRoomCard { get; set; } = true;
+        public bool ShowNextPatientCard { get; set; } = true;
+        public bool ShowTotalVisitsCard { get; set; } = true;
+        public bool ShowCompletedConsultationsCard { get; set; } = true;
     }
 }

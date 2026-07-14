@@ -412,12 +412,19 @@
                             <TextBlock Text="Database &amp; Auto-Backup Setup" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
                             <TextBlock Text="Set backup locations, retention logs, and automate backups to secure patient data." Style="{StaticResource Subheading}" Margin="0,0,0,25"/>
 
-                            <!-- Connection Status -->
+                            <!-- Connection Status & Server Config Button -->
                             <Border Background="{DynamicResource BackgroundColor}" Padding="15" CornerRadius="8" Margin="0,0,0,20">
-                                <StackPanel>
-                                    <TextBlock Text="Active Database Connection Source:" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
-                                    <TextBlock Text="SQLite Database File (active: MedicalApp.db)" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" Margin="0,4,0,0"/>
-                                </StackPanel>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="Active Database Connection Source:" FontSize="11" Foreground="{StaticResource SubtextColor}"/>
+                                        <TextBlock Text="SQL Server / Database File Connection Source" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" Margin="0,4,0,0"/>
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Configure SQL Server | إعدادات السيرفر" Command="{Binding ConfigureDatabaseConnectionCommand}" VerticalAlignment="Center" Padding="15,5"/>
+                                </Grid>
                             </Border>
 
                             <!-- Backup Path -->
@@ -496,7 +503,37 @@
                                 </StackPanel>
                             </Border>
 
-                            <Button Style="{StaticResource ModernButton}" Content="Save Security Settings" Command="{Binding SaveSettingsCommand}" Width="200" HorizontalAlignment="Left"/>
+                            <!-- Home Dashboard Customizations Section -->
+                            <TextBlock Text="Dashboard Customizations | تخصيص لوحة التحكم" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,15,0,8"/>
+                            <Border BorderBrush="{StaticResource BorderColor}" BorderThickness="1.5" CornerRadius="8" Padding="15" Margin="0,0,0,25">
+                                <StackPanel>
+                                    <!-- Queue Polling Interval -->
+                                    <TextBlock Text="Queue Polling Interval (Seconds) | فترة تحديث الطابور (بالثواني)" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,4"/>
+                                    <Grid Margin="0,0,0,20">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Slider Minimum="1" Maximum="30" Value="{Binding QueuePollingInterval}" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding QueuePollingInterval, StringFormat='\{0\} seconds'}" FontWeight="SemiBold" VerticalAlignment="Center" Width="80"/>
+                                    </Grid>
+
+                                    <!-- Visible KPI Cards Checkboxes -->
+                                    <TextBlock Text="Visible KPI Cards on Secretary Dashboard | بطاقات الإحصائيات الظاهرة في لوحة السكرتارية" FontSize="11" Foreground="{StaticResource SubtextColor}" Margin="0,0,0,8"/>
+                                    <WrapPanel Margin="5,0,0,0">
+                                        <CheckBox Content="Total Registered | إجمالي المسجلين" IsChecked="{Binding ShowTotalPatientsCard}" Margin="0,0,15,8" Width="220"/>
+                                        <CheckBox Content="New Patients | مرضى جدد" IsChecked="{Binding ShowNewPatientsCard}" Margin="0,0,15,8" Width="220"/>
+                                        <CheckBox Content="Waiting Patients | الانتظار" IsChecked="{Binding ShowWaitingPatientsCard}" Margin="0,0,15,8" Width="220"/>
+                                        <CheckBox Content="Active Consults | الجارية" IsChecked="{Binding ShowActiveConsultationsCard}" Margin="0,0,15,8" Width="220"/>
+                                        <CheckBox Content="Patient in Exam | في الفحص" IsChecked="{Binding ShowExamRoomCard}" Margin="0,0,15,8" Width="220"/>
+                                        <CheckBox Content="Next Patient | المريض التالي" IsChecked="{Binding ShowNextPatientCard}" Margin="0,0,15,8" Width="220"/>
+                                        <CheckBox Content="Total Visits Today | زيارات اليوم" IsChecked="{Binding ShowTotalVisitsCard}" Margin="0,0,15,8" Width="220"/>
+                                        <CheckBox Content="Completed Consults | المكتملة" IsChecked="{Binding ShowCompletedConsultationsCard}" Margin="0,0,15,8" Width="220"/>
+                                    </WrapPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Style="{StaticResource ModernButton}" Content="Save Settings | حفظ الإعدادات" Command="{Binding SaveSettingsCommand}" Width="200" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </Border>
                 </Grid>

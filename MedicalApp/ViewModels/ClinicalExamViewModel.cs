@@ -353,8 +353,27 @@ namespace MedicalApp.ViewModels
             _ = SearchPatientsAsync();
 
             // Set up 2-second queue polling timer
+            // Set up queue polling timer using dynamic interval from settings
+            int intervalSeconds = 2;
+            try
+            {
+                var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "print_settings.json");
+                if (System.IO.File.Exists(path))
+                {
+                    var json = System.IO.File.ReadAllText(path);
+                    var settings = System.Text.Json.JsonSerializer.Deserialize<PrintSettings>(json);
+                    if (settings != null)
+                    {
+                        intervalSeconds = settings.QueuePollingInterval;
+                    }
+                }
+            }
+            catch { /* fallback */ }
+
+            if (intervalSeconds < 1) intervalSeconds = 2;
+
             _pollingTimer = new System.Windows.Threading.DispatcherTimer();
-            _pollingTimer.Interval = TimeSpan.FromSeconds(2);
+            _pollingTimer.Interval = TimeSpan.FromSeconds(intervalSeconds);
             _pollingTimer.Tick += OnPollingTimerTick;
             _pollingTimer.Start();
             if (!string.IsNullOrWhiteSpace(_sharedStateService.ActiveDoctorName))

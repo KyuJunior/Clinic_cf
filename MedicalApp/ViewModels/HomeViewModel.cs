@@ -97,7 +97,29 @@ namespace MedicalApp.ViewModels
         {
             if (IsDoctorDashboardVisible)
             {
-                _pollingTimer?.Start();
+                int intervalSeconds = 2;
+                try
+                {
+                    var path = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "print_settings.json");
+                    if (System.IO.File.Exists(path))
+                    {
+                        var json = System.IO.File.ReadAllText(path);
+                        var settings = System.Text.Json.JsonSerializer.Deserialize<PrintSettings>(json);
+                        if (settings != null)
+                        {
+                            intervalSeconds = settings.QueuePollingInterval;
+                        }
+                    }
+                }
+                catch { /* fallback */ }
+
+                if (intervalSeconds < 1) intervalSeconds = 2;
+
+                if (_pollingTimer != null)
+                {
+                    _pollingTimer.Interval = TimeSpan.FromSeconds(intervalSeconds);
+                    _pollingTimer.Start();
+                }
                 _ = PollQueueAsync();
             }
         }

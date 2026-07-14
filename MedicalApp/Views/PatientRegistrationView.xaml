@@ -174,12 +174,13 @@
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
-                        
-                        <!-- Center the 2x3 grid (2 columns, 3 rows) of KPI cards vertically -->
-                        <UniformGrid Columns="2" Rows="3" VerticalAlignment="Center" Margin="20,10" MaxWidth="1200" Height="580">
+
+                        <!-- Center the responsive grid of KPI cards vertically -->
+                        <helpers:ResponsiveUniformGrid Columns="2" VerticalAlignment="Center" Margin="20,10" MaxWidth="1200" Height="580">
 
                             <!-- Card 0: Total Registered (Clickable Card) -->
-                            <Button Command="{Binding ShowAllPatientsViewCommand}" Margin="16" Cursor="Hand" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Button Command="{Binding ShowAllPatientsViewCommand}" Margin="16" Cursor="Hand" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                    Visibility="{Binding Settings.ShowTotalPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Button.Template>
                                     <ControlTemplate TargetType="Button">
                                         <Border CornerRadius="10" Padding="18,16">
@@ -212,7 +213,8 @@
                             </Button>
 
                             <!-- Card 1: New Patients -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16">
+                            <Border CornerRadius="10" Padding="18,16" Margin="16"
+                                    Visibility="{Binding Settings.ShowNewPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientStop Color="#4F46E5" Offset="0"/> <!-- Indigo 600 -->
@@ -238,7 +240,8 @@
                             </Border>
 
                             <!-- Card 2: Waiting Patients -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16">
+                            <Border CornerRadius="10" Padding="18,16" Margin="16"
+                                    Visibility="{Binding Settings.ShowWaitingPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientStop Color="#0284C7" Offset="0"/> <!-- Sky 700 -->
@@ -264,7 +267,8 @@
                             </Border>
 
                             <!-- Card 3: Active Consultations -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16">
+                            <Border CornerRadius="10" Padding="18,16" Margin="16"
+                                    Visibility="{Binding Settings.ShowActiveConsultationsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientStop Color="#E11D48" Offset="0"/> <!-- Rose 600 -->
@@ -290,7 +294,8 @@
                             </Border>
 
                             <!-- Card 4: Patient in Exam Room -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16">
+                            <Border CornerRadius="10" Padding="18,16" Margin="16"
+                                    Visibility="{Binding Settings.ShowExamRoomCard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientStop Color="#D97706" Offset="0"/> <!-- Amber 600 -->
@@ -316,7 +321,8 @@
                             </Border>
 
                             <!-- Card 5: Next Patient -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16">
+                            <Border CornerRadius="10" Padding="18,16" Margin="16"
+                                    Visibility="{Binding Settings.ShowNextPatientCard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <Border.Background>
                                     <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
                                         <GradientStop Color="#7C3AED" Offset="0"/> <!-- Purple 600 -->
@@ -340,7 +346,61 @@
                                     <TextBlock Grid.Row="2" Text="Next Patient in Queue" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                 </Grid>
                             </Border>
-                        </UniformGrid>
+
+                            <!-- Card 6: Total Visits Today -->
+                            <Border CornerRadius="10" Padding="18,16" Margin="16"
+                                    Visibility="{Binding Settings.ShowTotalVisitsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#0369A1" Offset="0"/> <!-- Sky 800 -->
+                                        <GradientStop Color="#0EA5E9" Offset="1"/> <!-- Sky 500 -->
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                </Border.Effect>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <TextBlock Text="&#xE77C;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Text="إجمالي زيارات اليوم" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    <TextBlock Grid.Row="1" Text="{Binding TotalVisitsCountToday}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Row="2" Text="Total Checked-In Visits Today" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Card 7: Completed Consultations Today -->
+                            <Border CornerRadius="10" Padding="18,16" Margin="16"
+                                    Visibility="{Binding Settings.ShowCompletedConsultationsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                        <GradientStop Color="#15803D" Offset="0"/> <!-- Green 700 -->
+                                        <GradientStop Color="#22C55E" Offset="1"/> <!-- Green 500 -->
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                </Border.Effect>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0">
+                                        <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                        <TextBlock Text="الاستشارات المكتملة" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    <TextBlock Grid.Row="1" Text="{Binding CompletedConsultationsCountToday}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                    <TextBlock Grid.Row="2" Text="Completed Doctor Consultations Today" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
+                                </Grid>
+                            </Border>
+                        </helpers:ResponsiveUniformGrid>
                     </Grid>
 
                     <!-- Panels container border (for AllPatients, TodayVisits, AppointmentsCalendar, Finance) -->
