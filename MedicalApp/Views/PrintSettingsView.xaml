@@ -104,17 +104,27 @@
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel Margin="5">
                                 <TextBlock Text="Print Template Calibration" Style="{StaticResource Header2}" Margin="0,0,0,5"/>
-                                <TextBlock Text="Adjust print alignment offsets and backgrounds for pre-printed A5 prescription sheets." Style="{StaticResource Subheading}" Margin="0,0,0,20" TextWrapping="Wrap"/>
+                                <TextBlock Text="Adjust print alignment offsets and backgrounds for each printable item." Style="{StaticResource Subheading}" Margin="0,0,0,20" TextWrapping="Wrap"/>
+
+                                <!-- Calibration Item Selector -->
+                                <TextBlock Text="Select Printable Item to Configure" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,6"/>
+                                <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="38" Margin="0,0,0,20" 
+                                          SelectedValuePath="Content"
+                                          SelectedValue="{Binding SelectedCategory, Mode=TwoWay}">
+                                    <ComboBoxItem Content="Prescription"/>
+                                    <ComboBoxItem Content="Investigation"/>
+                                    <ComboBoxItem Content="Imaging"/>
+                                </ComboBox>
 
                                 <!-- Image Upload section -->
-                                <TextBlock Text="Prescription Background Template" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,8"/>
+                                <TextBlock Text="Background Template Image" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,8"/>
                                 <Grid Margin="0,0,0,15">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding RxBackgroundPath, Mode=OneWay}" IsReadOnly="True" VerticalAlignment="Center" Margin="0,0,10,0" FontSize="11"/>
-                                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Upload A5 Image" Command="{Binding UploadImageCommand}" Padding="15,8"/>
+                                    <Button Grid.Column="1" Style="{StaticResource ModernButton}" Content="Upload Image" Command="{Binding UploadImageCommand}" Padding="15,8"/>
                                 </Grid>
 
                                 <CheckBox Content="Print background image on paper" IsChecked="{Binding PrintBackground}" Margin="0,0,0,20" FontWeight="SemiBold"/>
@@ -156,7 +166,7 @@
                                 </Grid>
 
                                 <!-- Sliders for Date -->
-                                <TextBlock Text="Prescription Date Coordinates" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,3"/>
+                                <TextBlock Text="Date Coordinates" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,3"/>
                                 <Grid Margin="0,0,0,12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -172,28 +182,31 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <!-- Sliders for Rx Symbol -->
-                                <Grid Margin="0,0,0,3">
-                                    <TextBlock Text="Rx Symbol Header" FontWeight="Bold" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
-                                    <CheckBox Content="Show" IsChecked="{Binding ShowRxSymbol}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                </Grid>
-                                <Grid Margin="0,0,0,12" Visibility="{Binding ShowRxSymbol, Converter={StaticResource BoolToVis}}">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <StackPanel Margin="0,0,5,0">
-                                        <TextBlock Text="{Binding RxSymbolX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
-                                        <Slider Minimum="0" Maximum="300" Value="{Binding RxSymbolX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                                        <TextBlock Text="{Binding RxSymbolY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
-                                        <Slider Minimum="0" Maximum="450" Value="{Binding RxSymbolY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
-                                    </StackPanel>
-                                </Grid>
+                                <!-- Sliders for Rx Symbol (Only visible for Prescription) -->
+                                <StackPanel Visibility="{Binding IsRxCategory, Converter={StaticResource BoolToVis}}">
+                                    <Grid Margin="0,0,0,3">
+                                        <TextBlock Text="Rx Symbol Header" FontWeight="Bold" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+                                        <CheckBox Content="Show" IsChecked="{Binding ShowRxSymbol}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,12" Visibility="{Binding ShowRxSymbol, Converter={StaticResource BoolToVis}}">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Margin="0,0,5,0">
+                                            <TextBlock Text="{Binding RxSymbolX, StringFormat='X: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                            <Slider Minimum="0" Maximum="300" Value="{Binding RxSymbolX}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                            <TextBlock Text="{Binding RxSymbolY, StringFormat='Y: \{0:F0\} px'}" FontSize="11" Foreground="{DynamicResource SubtextColor}"/>
+                                            <Slider Minimum="0" Maximum="450" Value="{Binding RxSymbolY}" TickFrequency="5" IsSnapToTickEnabled="True"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <Border Height="1" Background="{DynamicResource BorderColor}" Margin="0,0,0,10"/>
+                                </StackPanel>
 
-                                <!-- Sliders for Drugs list -->
-                                <TextBlock Text="Drugs List Coordinates" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,3"/>
+                                <!-- Sliders for Content list -->
+                                <TextBlock Text="Content Coordinates" FontWeight="Bold" Foreground="{DynamicResource TextColor}" Margin="0,0,0,3"/>
                                 <Grid Margin="0,0,0,12">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
@@ -211,7 +224,7 @@
 
                                 <StackPanel Margin="0,0,0,20">
                                     <Grid Margin="0,0,0,4">
-                                        <TextBlock Text="Medication Font Size" FontSize="12" Foreground="{DynamicResource SubtextColor}"/>
+                                        <TextBlock Text="Print Font Size" FontSize="12" Foreground="{DynamicResource SubtextColor}"/>
                                         <TextBlock Text="{Binding FontSize, StringFormat='\{0:F0\} pt'}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryColor}" HorizontalAlignment="Right"/>
                                     </Grid>
                                     <Slider Minimum="10" Maximum="24" Value="{Binding FontSize}" TickFrequency="1" IsSnapToTickEnabled="True"/>
@@ -240,10 +253,10 @@
                                         <TextBlock Canvas.Left="{Binding PatientNameX}" Canvas.Top="{Binding PatientNameY}" Text="Patient Name: John Doe" FontSize="11" FontWeight="SemiBold" Foreground="#1E293B"/>
                                         <TextBlock Canvas.Left="{Binding PatientDateX}" Canvas.Top="{Binding PatientDateY}" Text="Date: 07/07/2026" FontSize="9" Foreground="#64748B"/>
                                         <TextBlock Canvas.Left="{Binding PatientAgeGenderX}" Canvas.Top="{Binding PatientAgeGenderY}" Text="Age: 45 yrs | Gender: Male" FontSize="9" Foreground="#64748B"/>
-                                        <TextBlock Canvas.Left="{Binding RxSymbolX}" Canvas.Top="{Binding RxSymbolY}" Text="Rx" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Visibility="{Binding ShowRxSymbol, Converter={StaticResource BoolToVis}}"/>
+                                        <TextBlock Canvas.Left="{Binding RxSymbolX}" Canvas.Top="{Binding RxSymbolY}" Text="Rx" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Visibility="{Binding ShowRxSymbolPreview, Converter={StaticResource BoolToVis}}"/>
                                         <StackPanel Canvas.Left="{Binding DrugsX}" Canvas.Top="{Binding DrugsY}">
-                                            <TextBlock Text="1. Amoxicillin 500mg (1x3 Daily)" FontSize="{Binding FontSize}" FontWeight="SemiBold" Foreground="#1E293B"/>
-                                            <TextBlock Text="2. Paracetamol 1000mg (As needed for pain)" FontSize="{Binding FontSize}" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,4,0,0"/>
+                                            <TextBlock Text="{Binding PreviewContentText1}" FontSize="{Binding FontSize}" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                            <TextBlock Text="{Binding PreviewContentText2}" FontSize="{Binding FontSize}" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,4,0,0"/>
                                         </StackPanel>
                                     </Canvas>
                                 </Grid>

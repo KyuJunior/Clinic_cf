@@ -17,7 +17,7 @@ namespace MedicalApp.Services
     {
         void PrintReport(Patient patient, Visit visit);
         void PrintPrescription(Patient patient, string prescriptionText);
-        void PrintClinicalAttachment(Patient patient, ClinicalAttachment attachment);
+        void PrintClinicalAttachment(Patient patient, ClinicalAttachment attachment, string category);
     }
 
     public class PrintService : IPrintService
@@ -300,7 +300,7 @@ namespace MedicalApp.Services
             preview.ShowDialog();
         }
 
-        public void PrintClinicalAttachment(Patient patient, ClinicalAttachment attachment)
+        public void PrintClinicalAttachment(Patient patient, ClinicalAttachment attachment, string category)
         {
             var settings = LoadSettings();
             var doc = new FlowDocument
@@ -318,11 +318,63 @@ namespace MedicalApp.Services
                 Height = 794
             };
 
+            // Resolve settings based on category
+            string backgroundPath = "";
+            bool printBackground = false;
+            double nameX = 40, nameY = 100;
+            double ageGenderX = 40, ageGenderY = 125;
+            double dateX = 230, dateY = 100;
+            double contentX = 40, contentY = 200;
+            double fontSize = 14;
+
+            if (category.Equals("Investigation", StringComparison.OrdinalIgnoreCase))
+            {
+                backgroundPath = settings.InvBackgroundPath;
+                printBackground = settings.PrintInvBackground;
+                nameX = settings.InvPatientNameX;
+                nameY = settings.InvPatientNameY;
+                ageGenderX = settings.InvPatientAgeGenderX;
+                ageGenderY = settings.InvPatientAgeGenderY;
+                dateX = settings.InvPatientDateX;
+                dateY = settings.InvPatientDateY;
+                contentX = settings.InvContentX;
+                contentY = settings.InvContentY;
+                fontSize = settings.InvFontSize;
+            }
+            else if (category.Equals("Imaging", StringComparison.OrdinalIgnoreCase))
+            {
+                backgroundPath = settings.ImgBackgroundPath;
+                printBackground = settings.PrintImgBackground;
+                nameX = settings.ImgPatientNameX;
+                nameY = settings.ImgPatientNameY;
+                ageGenderX = settings.ImgPatientAgeGenderX;
+                ageGenderY = settings.ImgPatientAgeGenderY;
+                dateX = settings.ImgPatientDateX;
+                dateY = settings.ImgPatientDateY;
+                contentX = settings.ImgContentX;
+                contentY = settings.ImgContentY;
+                fontSize = settings.ImgFontSize;
+            }
+            else // Fallback to prescription (Rx) settings
+            {
+                backgroundPath = settings.RxBackgroundPath;
+                printBackground = settings.PrintBackground;
+                nameX = settings.PatientNameX;
+                nameY = settings.PatientNameY;
+                ageGenderX = settings.PatientAgeGenderX;
+                ageGenderY = settings.PatientAgeGenderY;
+                dateX = settings.PatientDateX;
+                dateY = settings.PatientDateY;
+                contentX = settings.DrugsX;
+                contentY = settings.DrugsY;
+                fontSize = settings.FontSize;
+            }
+
             Image? img = null;
             // 1. Draw background template image (always draw for preview if file exists)
-            if (File.Exists(settings.RxBackgroundPath))
+            if (!string.IsNullOrEmpty(backgroundPath) && File.Exists(backgroundPath))
             {
-                var bitmap = LoadBitmapImage(settings.RxBackgroundPath);
+                var bitmap = LoadBitmapImage(backgroundPath);
                 if (bitmap != null)
                 {
                     img = new Image
@@ -347,8 +399,8 @@ namespace MedicalApp.Services
                 Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59))
             };
             canvas.Children.Add(nameBlock);
-            Canvas.SetLeft(nameBlock, settings.PatientNameX * (560.0 / 350.0));
-            Canvas.SetTop(nameBlock, settings.PatientNameY * (794.0 / 495.0));
+            Canvas.SetLeft(nameBlock, nameX * (560.0 / 350.0));
+            Canvas.SetTop(nameBlock, nameY * (794.0 / 495.0));
 
             // 3. Draw Age & Gender
             var ageGenderBlock = new TextBlock
@@ -358,8 +410,8 @@ namespace MedicalApp.Services
                 Foreground = Brushes.SlateGray
             };
             canvas.Children.Add(ageGenderBlock);
-            Canvas.SetLeft(ageGenderBlock, settings.PatientAgeGenderX * (560.0 / 350.0));
-            Canvas.SetTop(ageGenderBlock, settings.PatientAgeGenderY * (794.0 / 495.0));
+            Canvas.SetLeft(ageGenderBlock, ageGenderX * (560.0 / 350.0));
+            Canvas.SetTop(ageGenderBlock, ageGenderY * (794.0 / 495.0));
 
             // 4. Draw Date
             var dateBlock = new TextBlock
@@ -369,41 +421,67 @@ namespace MedicalApp.Services
                 Foreground = Brushes.SlateGray
             };
             canvas.Children.Add(dateBlock);
-            Canvas.SetLeft(dateBlock, settings.PatientDateX * (560.0 / 350.0));
-            Canvas.SetTop(dateBlock, settings.PatientDateY * (794.0 / 495.0));
+            Canvas.SetLeft(dateBlock, dateX * (560.0 / 350.0));
+            Canvas.SetTop(dateBlock, dateY * (794.0 / 495.0));
 
-            // 5. Draw Content Block (scaled)
-            var contentPanel = new StackPanel();
+            // 5. Draw Content Block (chosen image or request name)
+            var contentPanel = new StackPanel { Width = 450 };
             
-            // Add a title line for the attachment
-            contentPanel.Children.Add(new TextBlock 
-            { 
-                Text = "Clinical Request / Report:", 
-                FontSize = settings.FontSize + 2, 
-                FontWeight = FontWeights.Bold,
-                Foreground = new SolidColorBrush(Color.FromRgb(13, 148, 136)),
-                Margin = new Thickness(0, 0, 0, 10)
-            });
+            if (attachment.IsImage && File.Exists(attachment.AttachmentPath))
+            {
+                var chosenImageBitmap = LoadBitmapImage(attachment.AttachmentPath);
+                if (chosenImageBitmap != null)
+                {
+                    contentPanel.Children.Add(new TextBlock 
+                    { 
+                        Text = $"{category} Request / Attachment: {attachment.Name}", 
+                        FontSize = fontSize, 
+                        FontWeight = FontWeights.Bold,
+                        Foreground = new SolidColorBrush(Color.FromRgb(13, 148, 136)),
+                        Margin = new Thickness(0, 0, 0, 10)
+                    });
 
-            contentPanel.Children.Add(new TextBlock 
-            { 
-                Text = attachment.Name, 
-                FontSize = settings.FontSize, 
-                FontWeight = FontWeights.SemiBold,
-                Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59)),
-                Margin = new Thickness(0, 5, 0, 0), 
-                TextWrapping = TextWrapping.Wrap,
-                Width = 450
-            });
+                    var chosenImg = new Image
+                    {
+                        Source = chosenImageBitmap,
+                        Width = 450,
+                        Height = 400,
+                        Stretch = Stretch.Uniform
+                    };
+                    contentPanel.Children.Add(chosenImg);
+                }
+            }
+            else
+            {
+                contentPanel.Children.Add(new TextBlock 
+                { 
+                    Text = $"{category} Request:", 
+                    FontSize = fontSize + 2, 
+                    FontWeight = FontWeights.Bold,
+                    Foreground = new SolidColorBrush(Color.FromRgb(13, 148, 136)),
+                    Margin = new Thickness(0, 0, 0, 10)
+                });
+
+                contentPanel.Children.Add(new TextBlock 
+                { 
+                    Text = attachment.Name, 
+                    FontSize = fontSize, 
+                    FontWeight = FontWeights.SemiBold,
+                    Foreground = new SolidColorBrush(Color.FromRgb(30, 41, 59)),
+                    Margin = new Thickness(0, 5, 0, 0), 
+                    TextWrapping = TextWrapping.Wrap,
+                    Width = 450
+                });
+            }
 
             canvas.Children.Add(contentPanel);
-            Canvas.SetLeft(contentPanel, settings.DrugsX * (560.0 / 350.0));
-            Canvas.SetTop(contentPanel, settings.DrugsY * (794.0 / 495.0));
+            Canvas.SetLeft(contentPanel, contentX * (560.0 / 350.0));
+            Canvas.SetTop(contentPanel, contentY * (794.0 / 495.0));
 
             doc.Blocks.Add(new BlockUIContainer(canvas));
 
             // Open Print Preview Window
-            var preview = new Views.PrintPreviewWindow(doc, $"CardioCenter Clinical Doc - {patient.Name}", settings.PrintBackground, img)
+            var preview = new Views.PrintPreviewWindow(doc, $"CardioCenter {category} - {patient.Name}", printBackground, img)
             {
                 Owner = Application.Current.MainWindow
             };

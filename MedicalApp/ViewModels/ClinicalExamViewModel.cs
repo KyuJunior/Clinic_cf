@@ -2101,8 +2101,18 @@ namespace MedicalApp.ViewModels
 
             try
             {
-                _printService.PrintClinicalAttachment(CurrentPatient, item);
-                StatusMessage = "Clinical document print preview opened.";
+                string category = "Prescription";
+                if (AddedInvestigations.Contains(item))
+                {
+                    category = "Investigation";
+                }
+                else if (AddedImagings.Contains(item))
+                {
+                    category = "Imaging";
+                }
+
+                _printService.PrintClinicalAttachment(CurrentPatient, item, category);
+                StatusMessage = $"Clinical {category.ToLower()} print preview opened.";
             }
             catch (Exception ex)
             {

@@ -2,6 +2,7 @@ namespace MedicalApp.Models
 {
     public class PrintSettings
     {
+        // ------------------ Prescription (Rx) Settings ------------------
         public string RxBackgroundPath { get; set; } = string.Empty;
         public bool PrintBackground { get; set; } = false;
         
@@ -22,6 +23,42 @@ namespace MedicalApp.Models
         public double DrugsY { get; set; } = 200;
 
         public double FontSize { get; set; } = 14;
+
+        // ------------------ Investigation (Inv) Settings ------------------
+        public string InvBackgroundPath { get; set; } = string.Empty;
+        public bool PrintInvBackground { get; set; } = false;
+
+        public double InvPatientNameX { get; set; } = 40;
+        public double InvPatientNameY { get; set; } = 100;
+
+        public double InvPatientAgeGenderX { get; set; } = 40;
+        public double InvPatientAgeGenderY { get; set; } = 125;
+
+        public double InvPatientDateX { get; set; } = 230;
+        public double InvPatientDateY { get; set; } = 100;
+
+        public double InvContentX { get; set; } = 40;
+        public double InvContentY { get; set; } = 200;
+
+        public double InvFontSize { get; set; } = 14;
+
+        // ------------------ Imaging (Img) Settings ------------------
+        public string ImgBackgroundPath { get; set; } = string.Empty;
+        public bool PrintImgBackground { get; set; } = false;
+
+        public double ImgPatientNameX { get; set; } = 40;
+        public double ImgPatientNameY { get; set; } = 100;
+
+        public double ImgPatientAgeGenderX { get; set; } = 40;
+        public double ImgPatientAgeGenderY { get; set; } = 125;
+
+        public double ImgPatientDateX { get; set; } = 230;
+        public double ImgPatientDateY { get; set; } = 100;
+
+        public double ImgContentX { get; set; } = 40;
+        public double ImgContentY { get; set; } = 200;
+
+        public double ImgFontSize { get; set; } = 14;
 
         // Clinic Profile Settings (Placeholders)
         public string ClinicNameAr { get; set; } = "عيادتي التخصصية";

@@ -66,6 +66,176 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private int _activeTab = 0; // 0=Print, 1=Clinic, 2=Database, 3=Staff, 4=Templates
 
+        [ObservableProperty]
+        private string _selectedCategory = "Prescription"; // "Prescription", "Investigation", "Imaging"
+
+        // ------------------ Backing Store for Categories ------------------
+        private string _rxBackingBackgroundPath = string.Empty;
+        private bool _rxBackingPrintBackground;
+        private double _rxPatientNameX = 40;
+        private double _rxPatientNameY = 100;
+        private double _rxPatientAgeGenderX = 40;
+        private double _rxPatientAgeGenderY = 125;
+        private double _rxPatientDateX = 230;
+        private double _rxPatientDateY = 100;
+        private double _rxDrugsX = 40;
+        private double _rxDrugsY = 200;
+        private double _rxFontSize = 14;
+
+        private string _invBackgroundPath = string.Empty;
+        private bool _printInvBackground;
+        private double _invPatientNameX = 40;
+        private double _invPatientNameY = 100;
+        private double _invPatientAgeGenderX = 40;
+        private double _invPatientAgeGenderY = 125;
+        private double _invPatientDateX = 230;
+        private double _invPatientDateY = 100;
+        private double _invContentX = 40;
+        private double _invContentY = 200;
+        private double _invFontSize = 14;
+
+        private string _imgBackgroundPath = string.Empty;
+        private bool _printImgBackground;
+        private double _imgPatientNameX = 40;
+        private double _imgPatientNameY = 100;
+        private double _imgPatientAgeGenderX = 40;
+        private double _imgPatientAgeGenderY = 125;
+        private double _imgPatientDateX = 230;
+        private double _imgPatientDateY = 100;
+        private double _imgContentX = 40;
+        private double _imgContentY = 200;
+        private double _imgFontSize = 14;
+
+        // Swapping Active Values
+        partial void OnSelectedCategoryChanging(string? oldValue, string newValue)
+        {
+            if (string.IsNullOrEmpty(oldValue)) return;
+            SaveActiveCategoryValues(oldValue);
+        }
+
+        partial void OnSelectedCategoryChanged(string value)
+        {
+            LoadActiveCategoryValues(value);
+            OnPropertyChanged(nameof(IsRxCategory));
+            OnPropertyChanged(nameof(ShowRxSymbolPreview));
+            OnPropertyChanged(nameof(PreviewContentText1));
+            OnPropertyChanged(nameof(PreviewContentText2));
+        }
+
+        partial void OnShowRxSymbolChanged(bool value)
+        {
+            OnPropertyChanged(nameof(ShowRxSymbolPreview));
+        }
+
+        public bool IsRxCategory => SelectedCategory == "Prescription";
+        public bool ShowRxSymbolPreview => IsRxCategory && ShowRxSymbol;
+
+        public string PreviewContentText1 => SelectedCategory switch
+        {
+            "Investigation" => "1. Complete Blood Count (CBC) - Attached Image",
+            "Imaging" => "1. Chest X-Ray - Attached Image",
+            _ => "1. Amoxicillin 500mg (1x3 Daily)"
+        };
+
+        public string PreviewContentText2 => SelectedCategory switch
+        {
+            "Investigation" => "2. Thyroid Profile (TSH, Free T3, Free T4)",
+            "Imaging" => "2. Pelvic Ultrasound",
+            _ => "2. Paracetamol 1000mg (As needed for pain)"
+        };
+
+        private void SaveActiveCategoryValues(string category)
+        {
+            if (category == "Prescription")
+            {
+                _rxBackingBackgroundPath = RxBackgroundPath;
+                _rxBackingPrintBackground = PrintBackground;
+                _rxPatientNameX = PatientNameX;
+                _rxPatientNameY = PatientNameY;
+                _rxPatientAgeGenderX = PatientAgeGenderX;
+                _rxPatientAgeGenderY = PatientAgeGenderY;
+                _rxPatientDateX = PatientDateX;
+                _rxPatientDateY = PatientDateY;
+                _rxDrugsX = DrugsX;
+                _rxDrugsY = DrugsY;
+                _rxFontSize = FontSize;
+            }
+            else if (category == "Investigation")
+            {
+                _invBackgroundPath = RxBackgroundPath;
+                _printInvBackground = PrintBackground;
+                _invPatientNameX = PatientNameX;
+                _invPatientNameY = PatientNameY;
+                _invPatientAgeGenderX = PatientAgeGenderX;
+                _invPatientAgeGenderY = PatientAgeGenderY;
+                _invPatientDateX = PatientDateX;
+                _invPatientDateY = PatientDateY;
+                _invContentX = DrugsX;
+                _invContentY = DrugsY;
+                _invFontSize = FontSize;
+            }
+            else if (category == "Imaging")
+            {
+                _imgBackgroundPath = RxBackgroundPath;
+                _printImgBackground = PrintBackground;
+                _imgPatientNameX = PatientNameX;
+                _imgPatientNameY = PatientNameY;
+                _imgPatientAgeGenderX = PatientAgeGenderX;
+                _imgPatientAgeGenderY = PatientAgeGenderY;
+                _imgPatientDateX = PatientDateX;
+                _imgPatientDateY = PatientDateY;
+                _imgContentX = DrugsX;
+                _imgContentY = DrugsY;
+                _imgFontSize = FontSize;
+            }
+        }
+
+        private void LoadActiveCategoryValues(string category)
+        {
+            if (category == "Prescription")
+            {
+                RxBackgroundPath = _rxBackingBackgroundPath;
+                PrintBackground = _rxBackingPrintBackground;
+                PatientNameX = _rxPatientNameX;
+                PatientNameY = _rxPatientNameY;
+                PatientAgeGenderX = _rxPatientAgeGenderX;
+                PatientAgeGenderY = _rxPatientAgeGenderY;
+                PatientDateX = _rxPatientDateX;
+                PatientDateY = _rxPatientDateY;
+                DrugsX = _rxDrugsX;
+                DrugsY = _rxDrugsY;
+                FontSize = _rxFontSize;
+            }
+            else if (category == "Investigation")
+            {
+                RxBackgroundPath = _invBackgroundPath;
+                PrintBackground = _printInvBackground;
+                PatientNameX = _invPatientNameX;
+                PatientNameY = _invPatientNameY;
+                PatientAgeGenderX = _invPatientAgeGenderX;
+                PatientAgeGenderY = _invPatientAgeGenderY;
+                PatientDateX = _invPatientDateX;
+                PatientDateY = _invPatientDateY;
+                DrugsX = _invContentX;
+                DrugsY = _invContentY;
+                FontSize = _invFontSize;
+            }
+            else if (category == "Imaging")
+            {
+                RxBackgroundPath = _imgBackgroundPath;
+                PrintBackground = _printImgBackground;
+                PatientNameX = _imgPatientNameX;
+                PatientNameY = _imgPatientNameY;
+                PatientAgeGenderX = _imgPatientAgeGenderX;
+                PatientAgeGenderY = _imgPatientAgeGenderY;
+                PatientDateX = _imgPatientDateX;
+                PatientDateY = _imgPatientDateY;
+                DrugsX = _imgContentX;
+                DrugsY = _imgContentY;
+                FontSize = _imgFontSize;
+            }
+        }
+
         // Clinic Profile Settings
         [ObservableProperty]
         private string _clinicNameAr = "عيادتي التخصصية";
@@ -146,25 +316,44 @@ namespace MedicalApp.ViewModels
 
                 if (settings != null)
                 {
-                    RxBackgroundPath = settings.RxBackgroundPath;
-                    PrintBackground = settings.PrintBackground;
-                    
-                    PatientNameX = settings.PatientNameX;
-                    PatientNameY = settings.PatientNameY;
-                    
-                    PatientAgeGenderX = settings.PatientAgeGenderX;
-                    PatientAgeGenderY = settings.PatientAgeGenderY;
-                    
-                    PatientDateX = settings.PatientDateX;
-                    PatientDateY = settings.PatientDateY;
-                    
-                    RxSymbolX = settings.RxSymbolX;
-                    RxSymbolY = settings.RxSymbolY;
-                    ShowRxSymbol = settings.ShowRxSymbol;
-                    
-                    DrugsX = settings.DrugsX;
-                    DrugsY = settings.DrugsY;
-                    FontSize = settings.FontSize;
+                    // Rx settings
+                    _rxBackingBackgroundPath = settings.RxBackgroundPath ?? string.Empty;
+                    _rxBackingPrintBackground = settings.PrintBackground;
+                    _rxPatientNameX = settings.PatientNameX;
+                    _rxPatientNameY = settings.PatientNameY;
+                    _rxPatientAgeGenderX = settings.PatientAgeGenderX;
+                    _rxPatientAgeGenderY = settings.PatientAgeGenderY;
+                    _rxPatientDateX = settings.PatientDateX;
+                    _rxPatientDateY = settings.PatientDateY;
+                    _rxDrugsX = settings.DrugsX;
+                    _rxDrugsY = settings.DrugsY;
+                    _rxFontSize = settings.FontSize;
+
+                    // Inv settings
+                    _invBackgroundPath = settings.InvBackgroundPath ?? string.Empty;
+                    _printInvBackground = settings.PrintInvBackground;
+                    _invPatientNameX = settings.InvPatientNameX;
+                    _invPatientNameY = settings.InvPatientNameY;
+                    _invPatientAgeGenderX = settings.InvPatientAgeGenderX;
+                    _invPatientAgeGenderY = settings.InvPatientAgeGenderY;
+                    _invPatientDateX = settings.InvPatientDateX;
+                    _invPatientDateY = settings.InvPatientDateY;
+                    _invContentX = settings.InvContentX;
+                    _invContentY = settings.InvContentY;
+                    _invFontSize = settings.InvFontSize;
+
+                    // Img settings
+                    _imgBackgroundPath = settings.ImgBackgroundPath ?? string.Empty;
+                    _printImgBackground = settings.PrintImgBackground;
+                    _imgPatientNameX = settings.ImgPatientNameX;
+                    _imgPatientNameY = settings.ImgPatientNameY;
+                    _imgPatientAgeGenderX = settings.ImgPatientAgeGenderX;
+                    _imgPatientAgeGenderY = settings.ImgPatientAgeGenderY;
+                    _imgPatientDateX = settings.ImgPatientDateX;
+                    _imgPatientDateY = settings.ImgPatientDateY;
+                    _imgContentX = settings.ImgContentX;
+                    _imgContentY = settings.ImgContentY;
+                    _imgFontSize = settings.ImgFontSize;
 
                     // Clinic Profile
                     ClinicNameAr = settings.ClinicNameAr ?? "عيادتي التخصصية";
@@ -181,6 +370,9 @@ namespace MedicalApp.ViewModels
                     // Staff Settings
                     AdminPassword = settings.AdminPassword ?? "••••••••";
                     RequireLogin = settings.RequireLogin;
+
+                    // Populate Active values
+                    LoadActiveCategoryValues(SelectedCategory);
                 }
             }
             catch (Exception ex)
@@ -195,7 +387,7 @@ namespace MedicalApp.ViewModels
             var openFileDialog = new OpenFileDialog
             {
                 Filter = "Image Files (*.png;*.jpg;*.jpeg)|*.png;*.jpg;*.jpeg",
-                Title = "Select Prescription Background Image Template"
+                Title = $"Select {SelectedCategory} Background Image Template"
             };
 
             if (openFileDialog.ShowDialog() == true)
@@ -205,7 +397,8 @@ namespace MedicalApp.ViewModels
                     string ext = Path.GetExtension(openFileDialog.FileName);
                     var activeDocName = _sharedStateService.ActiveDoctorName;
                     var suffix = string.IsNullOrEmpty(activeDocName) ? "default" : activeDocName.Replace(" ", "_").Replace(".", "");
-                    string destPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"rx_template_{suffix}{ext}");
+                    string categoryPrefix = SelectedCategory.ToLower();
+                    string destPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, $"{categoryPrefix}_template_{suffix}{ext}");
 
                     // If file already exists, delete it first to overwrite cleanly
                     if (File.Exists(destPath))
@@ -214,8 +407,8 @@ namespace MedicalApp.ViewModels
                     }
 
                     File.Copy(openFileDialog.FileName, destPath, true);
-                    RxBackgroundPath = destPath;
-                    MessageBox.Show("Background template uploaded successfully!", "Template Uploaded", MessageBoxButton.OK, MessageBoxImage.Information);
+                    RxBackgroundPath = destPath; // This updates active property
+                    MessageBox.Show($"{SelectedCategory} background template uploaded successfully!", "Template Uploaded", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 catch (Exception ex)
                 {
@@ -229,27 +422,48 @@ namespace MedicalApp.ViewModels
         {
             try
             {
+                SaveActiveCategoryValues(SelectedCategory);
+
                 var settings = new PrintSettings
                 {
-                    RxBackgroundPath = RxBackgroundPath,
-                    PrintBackground = PrintBackground,
-                    
-                    PatientNameX = PatientNameX,
-                    PatientNameY = PatientNameY,
-                    
-                    PatientAgeGenderX = PatientAgeGenderX,
-                    PatientAgeGenderY = PatientAgeGenderY,
-                    
-                    PatientDateX = PatientDateX,
-                    PatientDateY = PatientDateY,
-                    
+                    RxBackgroundPath = _rxBackingBackgroundPath,
+                    PrintBackground = _rxBackingPrintBackground,
+                    PatientNameX = _rxPatientNameX,
+                    PatientNameY = _rxPatientNameY,
+                    PatientAgeGenderX = _rxPatientAgeGenderX,
+                    PatientAgeGenderY = _rxPatientAgeGenderY,
+                    PatientDateX = _rxPatientDateX,
+                    PatientDateY = _rxPatientDateY,
                     RxSymbolX = RxSymbolX,
                     RxSymbolY = RxSymbolY,
                     ShowRxSymbol = ShowRxSymbol,
-                    
-                    DrugsX = DrugsX,
-                    DrugsY = DrugsY,
-                    FontSize = FontSize,
+                    DrugsX = _rxDrugsX,
+                    DrugsY = _rxDrugsY,
+                    FontSize = _rxFontSize,
+
+                    InvBackgroundPath = _invBackgroundPath,
+                    PrintInvBackground = _printInvBackground,
+                    InvPatientNameX = _invPatientNameX,
+                    InvPatientNameY = _invPatientNameY,
+                    InvPatientAgeGenderX = _invPatientAgeGenderX,
+                    InvPatientAgeGenderY = _invPatientAgeGenderY,
+                    InvPatientDateX = _invPatientDateX,
+                    InvPatientDateY = _invPatientDateY,
+                    InvContentX = _invContentX,
+                    InvContentY = _invContentY,
+                    InvFontSize = _invFontSize,
+
+                    ImgBackgroundPath = _imgBackgroundPath,
+                    PrintImgBackground = _printImgBackground,
+                    ImgPatientNameX = _imgPatientNameX,
+                    ImgPatientNameY = _imgPatientNameY,
+                    ImgPatientAgeGenderX = _imgPatientAgeGenderX,
+                    ImgPatientAgeGenderY = _imgPatientAgeGenderY,
+                    ImgPatientDateX = _imgPatientDateX,
+                    ImgPatientDateY = _imgPatientDateY,
+                    ImgContentX = _imgContentX,
+                    ImgContentY = _imgContentY,
+                    ImgFontSize = _imgFontSize,
 
                     ClinicNameAr = ClinicNameAr,
                     ClinicNameEn = ClinicNameEn,
