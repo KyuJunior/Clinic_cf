@@ -24,6 +24,7 @@ namespace MedicalApp.ViewModels
         private readonly IDbContextFactory<Data.AppDbContext> _dbContextFactory;
         private readonly System.Windows.Threading.DispatcherTimer _pollingTimer;
         private readonly IThemeService _themeService;
+        private readonly IScannerService _scannerService;
 
         public bool IsDarkMode => _themeService.IsDarkMode;
 
@@ -316,7 +317,8 @@ namespace MedicalApp.ViewModels
             IQueueService queueService,
             IPrintService printService,
             IDbContextFactory<Data.AppDbContext> dbContextFactory,
-            IThemeService themeService)
+            IThemeService themeService,
+            IScannerService scannerService)
         {
             _visitService = visitService;
             _patientService = patientService;
@@ -325,6 +327,7 @@ namespace MedicalApp.ViewModels
             _printService = printService;
             _dbContextFactory = dbContextFactory;
             _themeService = themeService;
+            _scannerService = scannerService;
 
             System.Windows.WeakEventManager<IThemeService, EventArgs>.AddHandler(_themeService, nameof(IThemeService.ThemeChanged), (s, ev) => OnPropertyChanged(nameof(IsDarkMode)));
 
@@ -1886,6 +1889,48 @@ namespace MedicalApp.ViewModels
             item.AttachmentPath = string.Empty;
             StatusMessage = "Imaging attachment removed.";
             TriggerAutoSave();
+        }
+
+        [RelayCommand]
+        public void ScanDocument(object? parameter)
+        {
+            if (parameter is not ClinicalAttachment item) return;
+
+            try
+            {
+                var uploadsDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Uploads");
+                if (!Directory.Exists(uploadsDir))
+                {
+                    Directory.CreateDirectory(uploadsDir);
+                }
+
+                // Call scanner service
+                var scannedFilePath = _scannerService.ScanFromDefaultDevice(uploadsDir);
+                if (string.IsNullOrEmpty(scannedFilePath))
+                {
+                    StatusMessage = "Scan cancelled by user.";
+                    return;
+                }
+
+                // If scanned successfully, delete old file if it exists
+                if (!string.IsNullOrEmpty(item.AttachmentPath) && File.Exists(item.AttachmentPath))
+                {
+                    try { File.Delete(item.AttachmentPath); } catch {}
+                }
+
+                item.AttachmentPath = scannedFilePath;
+                StatusMessage = "Document scanned and attached successfully!";
+                TriggerAutoSave();
+            }
+            catch (Exception ex)
+            {
+                StatusMessage = $"Scan failed: {ex.Message}";
+                System.Windows.MessageBox.Show(
+                    $"Failed to scan document:\n{ex.Message}", 
+                    "Scanner Error", 
+                    System.Windows.MessageBoxButton.OK, 
+                    System.Windows.MessageBoxImage.Error);
+            }
         }
 
         [RelayCommand]

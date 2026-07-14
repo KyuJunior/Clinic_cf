@@ -604,6 +604,8 @@
                                                                     <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
                                                                     
                                                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                                        <!-- Scan Document Button -->
+                                                                        <Button Style="{StaticResource IconButton}" Tag="&#xE294;" ToolTip="Scan Document | مسح ضوئي" Command="{Binding DataContext.ScanDocumentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource SecondaryColor}" FontSize="15" Margin="0,0,6,0"/>
                                                                         <!-- Upload/Attach File Button -->
                                                                         <Button Style="{StaticResource IconButton}" Tag="&#xE71B;" ToolTip="Attach File | إرفاق ملف" Command="{Binding DataContext.UploadInvestigationFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource PrimaryColor}" FontSize="15" Margin="0,0,6,0"/>
                                                                         <!-- Delete Card Button -->
@@ -709,6 +711,8 @@
                                                                      <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
                                                                      
                                                                      <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                                         <!-- Scan Document Button -->
+                                                                         <Button Style="{StaticResource IconButton}" Tag="&#xE294;" ToolTip="Scan Document | مسح ضوئي" Command="{Binding DataContext.ScanDocumentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource SecondaryColor}" FontSize="15" Margin="0,0,6,0"/>
                                                                          <!-- Upload/Attach File Button -->
                                                                          <Button Style="{StaticResource IconButton}" Tag="&#xE71B;" ToolTip="Attach File | إرفاق ملف" Command="{Binding DataContext.UploadImagingFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource PrimaryColor}" FontSize="15" Margin="0,0,6,0"/>
                                                                          <!-- Delete Card Button -->

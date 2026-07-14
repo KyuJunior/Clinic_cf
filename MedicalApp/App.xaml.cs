@@ -407,6 +407,7 @@ namespace MedicalApp
             services.AddTransient<IVisitService, VisitService>();
             services.AddTransient<IQueueService, QueueService>();
             services.AddSingleton<IPrintService, PrintService>();
+            services.AddSingleton<IScannerService, ScannerService>();
 
             // Register ViewModels
             services.AddSingleton<MainViewModel>();
