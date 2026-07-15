@@ -130,7 +130,7 @@ namespace MedicalApp.ViewModels
         private int _incompleteVisitsCount;
 
         [ObservableProperty]
-        private string _patientInDoctorRoomName = "No active patient | لا يوجد مريض";
+        private string _patientInDoctorRoomName = "no patient (لا احد)";
 
         [ObservableProperty]
         private string _nextPatientName = "No waiting patient | لا يوجد مريض";
@@ -412,6 +412,24 @@ namespace MedicalApp.ViewModels
 
             // Periodically refresh the waitlist and incomplete queue
             _ = PollQueueAsync();
+
+            _sharedStateService.CurrentPatientChanged += OnSharedPatientChanged;
+            OnSharedPatientChanged(_sharedStateService.CurrentPatient);
+        }
+
+        private void OnSharedPatientChanged(Patient? patient)
+        {
+            if (System.Windows.Application.Current != null)
+            {
+                System.Windows.Application.Current.Dispatcher.Invoke(() =>
+                {
+                    PatientInDoctorRoomName = patient != null ? patient.Name : "no patient (لا احد)";
+                });
+            }
+            else
+            {
+                PatientInDoctorRoomName = patient != null ? patient.Name : "no patient (لا احد)";
+            }
         }
 
         public async Task LoadDoctorsAsync()
@@ -478,8 +496,7 @@ namespace MedicalApp.ViewModels
                 IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
 
                 // Active patient in doctor room
-                var activeEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
-                PatientInDoctorRoomName = activeEntry != null ? activeEntry.PatientName : "No active patient | لا يوجد مريض";
+                PatientInDoctorRoomName = _sharedStateService.CurrentPatient != null ? _sharedStateService.CurrentPatient.Name : "no patient (لا احد)";
 
                 // Next patient in queue
                 var nextEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "Pending");
@@ -518,8 +535,7 @@ namespace MedicalApp.ViewModels
                             WaitingPatientsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "Pending");
                             IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
 
-                            var activeEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
-                            PatientInDoctorRoomName = activeEntry != null ? activeEntry.PatientName : "No active patient | لا يوجد مريض";
+                            PatientInDoctorRoomName = _sharedStateService.CurrentPatient != null ? _sharedStateService.CurrentPatient.Name : "no patient (لا احد)";
 
                             var nextEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "Pending");
                             NextPatientName = nextEntry != null ? nextEntry.PatientName : "No waiting patient | لا يوجد مريض";
