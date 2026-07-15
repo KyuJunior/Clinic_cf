@@ -205,10 +205,29 @@
                         </Border>
                                            <!-- COL 1: CENTER CLINICAL WORKSPACE (Modern Single-Column Dashboard) -->
                         <ScrollViewer x:Name="CenterScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="20,0,20,15">
-                            <StackPanel Margin="0,0,0,10">
+                            <Grid Margin="0,0,0,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
                                 
                                 <!-- 1. Chief Complaint -->
-                                <ui:Card x:Name="CardComplaints" Margin="0,0,0,12" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ui:Card x:Name="CardComplaints" Grid.Row="{Binding ComplaintsRow}" Margin="0,0,0,12" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <Grid Margin="0,0,0,8">
                                             <StackPanel Orientation="Horizontal">
@@ -231,7 +250,7 @@
                                 </ui:Card>
 
                                 <!-- 2. Vital Signs -->
-                                <ui:Card x:Name="CardVitals" Margin="0,0,0,12" Visibility="{Binding ShowVitals, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ui:Card x:Name="CardVitals" Grid.Row="{Binding VitalsRow}" Margin="0,0,0,12" Visibility="{Binding ShowVitals, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <Grid Margin="0,0,0,12">
                                             <StackPanel Orientation="Horizontal">
@@ -419,7 +438,8 @@
                                 </ui:Card>
 
                                 <!-- 3. HPI & Physical Exam -->
-                                <ui:Card x:Name="CardHpi" Margin="0,0,0,12" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <!-- 3. HPI (History of Present Illness) -->
+                                <ui:Card x:Name="CardHpi" Grid.Row="{Binding HpiRow}" Margin="0,0,0,12" Visibility="{Binding ShowHpi, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <Grid Margin="0,0,0,8">
                                             <StackPanel Orientation="Horizontal">
@@ -428,33 +448,102 @@
                                             </StackPanel>
                                             <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="HPI"/>
                                         </Grid>
-                                        <ui:TextBox Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="75" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,12"/>
-
-                                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,1,0,0" Padding="0,12,0,0">
-                                            <StackPanel x:Name="CardExam">
-                                                <Grid Margin="0,0,0,8">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="&#xE97C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                        <TextBlock Text="Examination | الفحص السريري" Style="{StaticResource Header2}" Margin="0"/>
-                                                    </StackPanel>
-                                                    <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="PhysicalExam"/>
-                                                </Grid>
-                                                <ui:TextBox Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="75" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,8"/>
-                                                
-                                                <!-- Quick Narrative Chips for Physical Exam -->
-                                                <WrapPanel>
-                                                    <Button Style="{StaticResource ChipButton}" Content="Chest Clear | الصدر صافي" Command="{Binding AppendTextCommand}" CommandParameter="Exam:Chest is clear / الصدر صافي بالإصغاء"/>
-                                                    <Button Style="{StaticResource ChipButton}" Content="ENT Normal | الحلق طبيعي" Command="{Binding AppendTextCommand}" CommandParameter="Exam:ENT normal / الأنف والأذن والحنجرة طبيعي"/>
-                                                    <Button Style="{StaticResource ChipButton}" Content="Abdomen Soft | البطن لين" Command="{Binding AppendTextCommand}" CommandParameter="Exam:Abdomen soft, lax / البطن لين ولا يوجد مضض"/>
-                                                    <Button Style="{StaticResource ChipButton}" Content="Stable | حالة مستقرة" Command="{Binding AppendTextCommand}" CommandParameter="Exam:General condition stable / الحالة العامة مستقرة"/>
-                                                </WrapPanel>
-                                            </StackPanel>
-                                        </Border>
+                                        <ui:TextBox Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="75" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
                                     </StackPanel>
                                 </ui:Card>
 
-                                <!-- 4. Diagnosis & Return -->
-                                <Border x:Name="CardDx" Style="{StaticResource AccentCardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <!-- 4. Clinical Examination Split -->
+                                <ui:Card x:Name="CardExam" Grid.Row="{Binding ExaminationRow}" Margin="0,0,0,12" Visibility="{Binding ShowExamination, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE97C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Examination | الفحص السريري" Style="{StaticResource Header2}" Margin="0"/>
+                                            </StackPanel>
+                                            <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="PhysicalExam"/>
+                                        </Grid>
+                                        
+                                        <!-- Positive Signs vs Relative Negatives split layout -->
+                                        <Grid Margin="0,4,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                <TextBlock Text="Positive Signs (Abnormal Findings) | العلامات الإيجابية" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding PhysicalExamPositive, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" PlaceholderText="Enter abnormal findings..."/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
+                                                <TextBlock Text="Relative Negatives (Rule-outs) | السلبيات ذات الصلة" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding PhysicalExamNegative, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" PlaceholderText="Enter rule-out findings..."/>
+                                            </StackPanel>
+                                        </Grid>
+                                        
+                                        <!-- Quick Narrative Chips for Physical Exam -->
+                                        <WrapPanel Margin="0,10,0,0">
+                                            <Button Style="{StaticResource ChipButton}" Content="Chest Clear | الصدر صافي" Command="{Binding AppendTextCommand}" CommandParameter="Exam:Chest is clear / الصدر صافي بالإصغاء"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="ENT Normal | الحلق طبيعي" Command="{Binding AppendTextCommand}" CommandParameter="Exam:ENT normal / الأنف والأذن والحنجرة طبيعي"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Abdomen Soft | البطن لين" Command="{Binding AppendTextCommand}" CommandParameter="Exam:Abdomen soft, lax / البطن لين ولا يوجد مضض"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Stable | حالة مستقرة" Command="{Binding AppendTextCommand}" CommandParameter="Exam:General condition stable / الحالة العامة مستقرة"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 5. Procedures Section -->
+                                <ui:Card x:Name="CardProcedures" Grid.Row="{Binding ProceduresRow}" Margin="0,0,0,12" Visibility="{Binding ShowProcedures, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE90B;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Procedures Performed | الإجراءات الطبية والكلفة" Style="{StaticResource Header2}" Margin="0"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        
+                                        <!-- Cost & Procedure entry form -->
+                                        <Grid Margin="0,4,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            
+                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
+                                                <TextBlock Text="Procedure Name | اسم الإجراء" Style="{StaticResource Subheading}"/>
+                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding SelectedProcedureName, UpdateSourceTrigger=PropertyChanged}" Height="36"/>
+                                            </StackPanel>
+                                            
+                                            <StackPanel Grid.Column="1" Margin="0,0,8,0">
+                                                <TextBlock Text="Cost (IQD) | الكلفة" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding ProcedureCostText, UpdateSourceTrigger=PropertyChanged}" Height="36" PlaceholderText="0"/>
+                                            </StackPanel>
+                                            
+                                            <Button Grid.Column="2" Content="Add | إضافة" Style="{StaticResource PrimaryButton}" Command="{Binding AddProcedureCommand}" Height="36" VerticalAlignment="Bottom" Padding="15,0"/>
+                                        </Grid>
+                                        
+                                        <!-- Performed procedures list -->
+                                        <ItemsControl ItemsSource="{Binding PerformedProcedures}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="12,8" Margin="0,0,0,6">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBlock Text="{Binding Name}" Foreground="White" VerticalAlignment="Center" FontSize="13" FontWeight="SemiBold"/>
+                                                            <TextBlock Grid.Column="1" Text="{Binding Cost, StringFormat={}{0:N0} IQD}" Foreground="#10B981" VerticalAlignment="Center" Margin="0,0,15,0" FontWeight="Bold"/>
+                                                            <Button Grid.Column="2" Style="{StaticResource IconButton}" Tag="&#xE74D;" Command="{Binding DataContext.RemoveProcedureCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="#EF4444" FontSize="12"/>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 6. Diagnosis & Return -->
+                                <Border x:Name="CardDx" Grid.Row="{Binding DiagnosisRow}" Style="{StaticResource AccentCardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                             <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
@@ -485,13 +574,13 @@
                                     </StackPanel>
                                 </Border>
 
-                                <!-- 5. Prescription -->
-                                <ui:Card x:Name="CardRx" Margin="0,0,0,12" Visibility="{Binding ShowDrugs, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <!-- 7. Prescription & Instructions -->
+                                <ui:Card x:Name="CardRx" Grid.Row="{Binding PrescriptionRow}" Margin="0,0,0,12" Visibility="{Binding ShowPrescription, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <Grid Margin="0,0,0,8">
                                             <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                <TextBlock Text="Prescription | الوصفة الطبية" Style="{StaticResource Header2}" Margin="0"/>
+                                                <TextBlock Text="Prescription &amp; Instructions | الوصفة والإرشادات" Style="{StaticResource Header2}" Margin="0"/>
                                             </StackPanel>
                                             <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Prescription"/>
                                         </Grid>
@@ -617,11 +706,47 @@
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
+                                        
+                                        <!-- Medical Instructions & Presets Manager (NEW) -->
+                                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,1,0,0" Padding="0,12,0,0" Margin="0,10,0,0">
+                                            <StackPanel>
+                                                <Grid Margin="0,0,0,6">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    
+                                                    <StackPanel Orientation="Horizontal" Grid.Column="0">
+                                                        <TextBlock Text="&#xE90A;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="Medical Instructions Presets | تعليمات وإرشادات الطبيب" Style="{StaticResource Header2}" Margin="0"/>
+                                                    </StackPanel>
+                                                    
+                                                    <!-- Preset Selector -->
+                                                    <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                                        <TextBlock Text="Select Preset:" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="11"/>
+                                                        <ComboBox Width="200" Height="30" ItemsSource="{Binding InstructionPresetsList}" DisplayMemberPath="Title" SelectedValuePath="Content" SelectedValue="{Binding MedicalInstructions}" Style="{StaticResource ModernComboBox}"/>
+                                                    </StackPanel>
+                                                </Grid>
+                                                
+                                                <!-- Rich Text / Instructions Textbox -->
+                                                <ui:TextBox Text="{Binding MedicalInstructions, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" PlaceholderText="Write custom medical instructions or modify chosen preset... | اكتب هنا النصائح والتعليمات للمريض..."/>
+                                                
+                                                <!-- Save preset action -->
+                                                <Grid Margin="0,8,0,0">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <ui:TextBox x:Name="NewPresetTitleTextBox" PlaceholderText="Enter new preset template title... | اسم القالب الجديد..." Height="30" Margin="0,0,8,0"/>
+                                                    <Button Grid.Column="1" Content="Save Preset | حفظ كقالب" Style="{StaticResource ActionButton}" Height="30" Command="{Binding SaveInstructionPresetCommand}" CommandParameter="{Binding Text, ElementName=NewPresetTitleTextBox}" Padding="12,0"/>
+                                                </Grid>
+                                            </StackPanel>
+                                        </Border>
                                     </StackPanel>
                                 </ui:Card>
 
-                                <!-- 6. Labs & Investigations -->
-                                <ui:Card x:Name="CardLabs" Margin="0,0,0,12" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <!-- 8. Labs & Investigations -->
+                                <ui:Card x:Name="CardLabs" Grid.Row="{Binding InvestigationsRow}" Margin="0,0,0,12" Visibility="{Binding ShowInvestigations, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                             <TextBlock Text="&#xF191;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
@@ -683,7 +808,8 @@
                                 </ui:Card>
 
                                 <!-- 7. Imaging & Radiology -->
-                                <ui:Card x:Name="CardImaging" Margin="0,0,0,12" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <!-- 9. Imaging & Radiology -->
+                                <ui:Card x:Name="CardImaging" Grid.Row="{Binding ImagingRow}" Margin="0,0,0,12" Visibility="{Binding ShowImaging, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <Grid Margin="0,0,0,8">
                                             <StackPanel Orientation="Horizontal">
@@ -747,7 +873,7 @@
                                 </ui:Card>
 
                                 <!-- 8. Treatment Plan / Notes -->
-                                <ui:Card x:Name="CardPlan" Margin="0,0,0,12">
+                                <ui:Card x:Name="CardPlan" Grid.Row="{Binding TreatmentPlanRow}" Margin="0,0,0,12" Visibility="{Binding ShowPlan, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <Grid Margin="0,0,0,8">
                                             <StackPanel Orientation="Horizontal">
@@ -769,7 +895,7 @@
                                 </ui:Card>
 
                                 <!-- 9. Obstetrics & Gynecology (Conditional) -->
-                                <ui:Card Margin="0,0,0,12" Visibility="{Binding ShowObstetricsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ui:Card x:Name="CardObstetrics" Grid.Row="{Binding ObstetricsRow}" Margin="0,0,0,12" Visibility="{Binding ShowObstetrics, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="Obstetrics &amp; Gynecology | التوليد والنساء" Style="{StaticResource Header2}"/>
                                         <WrapPanel Margin="0,5,0,0">
@@ -798,16 +924,16 @@
                                 </ui:Card>
 
                                 <!-- 10. Review of Systems (ROS) -->
-                                <ui:Card Margin="0,0,0,12" Visibility="{Binding ShowSystemReviewSection, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ui:Card x:Name="CardSystemReview" Grid.Row="{Binding SystemReviewRow}" Margin="0,0,0,12" Visibility="{Binding ShowSystemReview, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="Review of Systems (ROS) | فحص أجهزة الجسم" Style="{StaticResource Header2}"/>
                                         <StackPanel>
                                             <WrapPanel>
-                                                <CheckBox Content="CVS" IsChecked="{Binding SysShowCVS}" Margin="0,0,20,8"/>
-                                                <CheckBox Content="Respiratory" IsChecked="{Binding SysShowResp}" Margin="0,0,20,8"/>
-                                                <CheckBox Content="GI" IsChecked="{Binding SysShowGI}" Margin="0,0,20,8"/>
-                                                <CheckBox Content="Neurological" IsChecked="{Binding SysShowCNS}" Margin="0,0,20,8"/>
-                                                <CheckBox Content="Other systems" IsChecked="{Binding SysShowOther}" Margin="0,0,20,8"/>
+                                                <CheckBox Content="CVS" IsChecked="{Binding SysShowCVS}" Margin="0,0,20,8" Foreground="White"/>
+                                                <CheckBox Content="Respiratory" IsChecked="{Binding SysShowResp}" Margin="0,0,20,8" Foreground="White"/>
+                                                <CheckBox Content="GI" IsChecked="{Binding SysShowGI}" Margin="0,0,20,8" Foreground="White"/>
+                                                <CheckBox Content="Neurological" IsChecked="{Binding SysShowCNS}" Margin="0,0,20,8" Foreground="White"/>
+                                                <CheckBox Content="Other systems" IsChecked="{Binding SysShowOther}" Margin="0,0,20,8" Foreground="White"/>
                                             </WrapPanel>
                                             <Grid Margin="0,10,0,0">
                                                 <StackPanel>
@@ -823,27 +949,134 @@
                                 </ui:Card>
 
                                 <!-- 11. Patient History & Lifestyle -->
-                                <ui:Card x:Name="CardHistory" Margin="0,0,0,12">
+                                <ui:Card x:Name="CardHistory" Grid.Row="{Binding HistoryRow}" Margin="0,0,0,12" Visibility="{Binding ShowHistory, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
                                             <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                            <TextBlock Text="Patient History &amp; Lifestyle | التاريخ المرضي" Style="{StaticResource Header2}"/>
+                                            <TextBlock Text="Patient History &amp; Lifestyle | التاريخ المرضي ونمط الحياة" Style="{StaticResource Header2}"/>
                                         </StackPanel>
-                                        <StackPanel Margin="0,4,0,0">
-                                            <TextBlock Text="Allergies | الحساسية" Style="{StaticResource Subheading}"/>
-                                            <ui:TextBox Text="{Binding PatientAllergy, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Enter allergies..." Margin="0,0,0,10"/>
+                                        
+                                        <Grid Margin="0,4,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
                                             
-                                            <TextBlock Text="Smoking | التدخين" Style="{StaticResource Subheading}"/>
-                                            <ui:TextBox Text="{Binding PatientSmoking, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 10 cig/day for 5 yrs" Margin="0,0,0,10"/>
+                                            <!-- Col 0: Past Clinical History -->
+                                            <StackPanel Grid.Column="0" Margin="0,0,12,0">
+                                                <TextBlock Text="Past Medical History | التاريخ الطبي السابق" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding PastMedicalHistory, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. Diabetes, Hypertension..." Margin="0,0,0,10" Height="50" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                                
+                                                <TextBlock Text="Past Surgical History | العمليات الجراحية السابقة" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding PastSurgicalHistory, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. Appendectomy 2018..." Margin="0,0,0,10" Height="50" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                                
+                                                <TextBlock Text="Past Drug History | التاريخ الدوائي" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding PastDrugHistory, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. Metformin, Aspirin..." Margin="0,0,0,10" Height="50" TextWrapping="Wrap" AcceptsReturn="True"/>
+                                                
+                                                <TextBlock Text="Past Family History | التاريخ العائلي" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding PastFamilyHistory, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. Ischemic Heart Disease..." Margin="0,0,0,10" Height="50" TextWrapping="Wrap" AcceptsReturn="True"/>
+
+                                                <TextBlock Text="Allergies | الحساسية" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding PatientAllergy, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. Penicillin, Sulfa..." Margin="0,0,0,10"/>
+                                            </StackPanel>
                                             
-                                            <TextBlock Text="Alcohol | الكحول" Style="{StaticResource Subheading}"/>
-                                            <ui:TextBox Text="{Binding PatientAlcohol, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. None, Occasional" Margin="0,0,0,5"/>
+                                            <!-- Col 1: Lifestyle / Social History -->
+                                            <StackPanel Grid.Column="1" Margin="12,0,0,0">
+                                                <!-- Smoking Details -->
+                                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,15" Background="#1E293B">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Smoking Metrics | مقاييس التدخين" Style="{StaticResource Subheading}" Foreground="{DynamicResource PrimaryColor}" FontWeight="Bold" Margin="0,0,0,8"/>
+                                                        
+                                                        <TextBlock Text="Cigarettes per Day | عدد السجائر يومياً" Style="{StaticResource Subheading}"/>
+                                                        <ui:TextBox Text="{Binding SmokingCigarettesPerDay, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 10 or 20" Margin="0,0,0,8"/>
+                                                        
+                                                        <TextBlock Text="Smoking Years | عدد سنوات التدخين" Style="{StaticResource Subheading}"/>
+                                                        <ui:TextBox Text="{Binding SmokingYears, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 5 or 10 years" Margin="0,0,0,0"/>
+                                                    </StackPanel>
+                                                </Border>
+                                                
+                                                <!-- Alcohol Details -->
+                                                <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="6" Padding="12" Background="#1E293B">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Alcohol Intake | تعاطي الكحول" Style="{StaticResource Subheading}" Foreground="{DynamicResource PrimaryColor}" FontWeight="Bold" Margin="0,0,0,8"/>
+                                                        
+                                                        <TextBlock Text="Beverage Type | نوع المشروب" Style="{StaticResource Subheading}"/>
+                                                        <ui:TextBox Text="{Binding AlcoholType, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. Wine, Beer, Spirit" Margin="0,0,0,8"/>
+                                                        
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="*"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                                                <TextBlock Text="Concentration (%) | النسبة" Style="{StaticResource Subheading}"/>
+                                                                <ui:TextBox Text="{Binding AlcoholConcentration, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 5% or 40%"/>
+                                                            </StackPanel>
+                                                            <StackPanel Grid.Column="1" Margin="6,0,0,0">
+                                                                <TextBlock Text="Volume (ml) | الحجم" Style="{StaticResource Subheading}"/>
+                                                                <ui:TextBox Text="{Binding AlcoholVolume, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 250 or 500"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </StackPanel>
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 12. Nutritional Status -->
+                                <ui:Card x:Name="CardNutrition" Grid.Row="{Binding NutritionRow}" Margin="0,0,0,12" Visibility="{Binding ShowNutrition, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="&#xE95E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Nutritional Status | الحالة الغذائية" Style="{StaticResource Header2}"/>
                                         </StackPanel>
+                                        <Grid Margin="0,4,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Margin="0,0,10,0">
+                                                <TextBlock Text="Weight (kg) | الوزن" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding NutritionalWeight, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 70"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                                <TextBlock Text="Height (cm) | الطول" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding NutritionalHeight, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 175"/>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="2">
+                                                <TextBlock Text="Diet / Nutritional Notes | ملاحظات التغذية" Style="{StaticResource Subheading}"/>
+                                                <ui:TextBox Text="{Binding NutritionalDietNotes, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. Low sodium, diabetes diet..."/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 14. Dentist Notes -->
+                                <ui:Card x:Name="CardDentistNotes" Grid.Row="{Binding DentistNotesRow}" Margin="0,0,0,12" Visibility="{Binding ShowDentistNotes, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Dentist Notes | ملاحظات طبيب الأسنان" Style="{StaticResource Header2}"/>
+                                        </StackPanel>
+                                        <ui:TextBox Text="{Binding DentistNotesText, UpdateSourceTrigger=PropertyChanged}" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" PlaceholderText="Dental treatment notes, teeth numbers..."/>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 15. Visit Summary -->
+                                <ui:Card x:Name="CardVisitSummary" Grid.Row="{Binding VisitSummaryRow}" Margin="0,0,0,12" Visibility="{Binding ShowVisitSummary, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="&#xE90A;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Visit Summary | ملخص الزيارة" Style="{StaticResource Header2}"/>
+                                        </StackPanel>
+                                        <ui:TextBox Text="{Binding VisitSummaryNotesText, UpdateSourceTrigger=PropertyChanged}" Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" PlaceholderText="Overall visit summary notes..."/>
                                     </StackPanel>
                                 </ui:Card>
 
                                 <!-- 12. Past Visits History -->
-                                <Border Style="{StaticResource AccentCardBorder}" Padding="15">
+                                <Border Grid.Row="16" Style="{StaticResource AccentCardBorder}" Padding="15">
                                     <Expander Header="Past Visits History | سجل الزيارات" Style="{StaticResource {x:Type Expander}}" ExpandDirection="Down">
                                         <ScrollViewer Height="220" VerticalScrollBarVisibility="Auto">
                                             <ItemsControl ItemsSource="{Binding VisitHistory}" Margin="0,10,0,0">
@@ -868,7 +1101,7 @@
                                         </ScrollViewer>
                                     </Expander>
                                 </Border>
-                                </StackPanel>
+                            </Grid>
                         </ScrollViewer>
 
                         <!-- COL 2: RIGHT PATIENT DOSSIER PANEL -->

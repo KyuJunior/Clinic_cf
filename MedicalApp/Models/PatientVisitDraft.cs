@@ -38,6 +38,23 @@ namespace MedicalApp.Models
         public string PatientAlcohol { get; set; } = string.Empty;
         public string PatientBloodGroup { get; set; } = string.Empty;
 
+        // Structured History Draft Fields
+        public string PatientPastMedicalHistory { get; set; } = string.Empty;
+        public string PatientPastSurgicalHistory { get; set; } = string.Empty;
+        public string PatientPastDrugHistory { get; set; } = string.Empty;
+        public string PatientPastFamilyHistory { get; set; } = string.Empty;
+        public string PatientSmokingCigarettesPerDay { get; set; } = string.Empty;
+        public string PatientSmokingYears { get; set; } = string.Empty;
+        public string PatientAlcoholType { get; set; } = string.Empty;
+        public string PatientAlcoholConcentration { get; set; } = string.Empty;
+        public string PatientAlcoholVolume { get; set; } = string.Empty;
+
+        // Procedures, Split Exam & Instructions Draft Fields
+        public string ProceduresPerformed { get; set; } = string.Empty;
+        public string PhysicalExamPositive { get; set; } = string.Empty;
+        public string PhysicalExamNegative { get; set; } = string.Empty;
+        public string MedicalInstructions { get; set; } = string.Empty;
+
         // Attachments
         public string InvestigationAttachmentPath { get; set; } = string.Empty;
         public string ImagingAttachmentPath { get; set; } = string.Empty;

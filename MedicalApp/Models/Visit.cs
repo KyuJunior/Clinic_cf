@@ -38,6 +38,12 @@ namespace MedicalApp.Models
         public decimal VisitPrice { get; set; } = 0;
         public string DoctorName { get; set; } = "Dr. Yaser";
 
+        // New Clinical & Exam Properties
+        public string ProceduresPerformed { get; set; } = string.Empty;
+        public string PhysicalExamPositive { get; set; } = string.Empty;
+        public string PhysicalExamNegative { get; set; } = string.Empty;
+        public string MedicalInstructions { get; set; } = string.Empty;
+
         // Navigation Property
         public Patient? Patient { get; set; }
     }

@@ -17,6 +17,7 @@ namespace MedicalApp.Data
         public DbSet<DoctorSetting> DoctorSettings => Set<DoctorSetting>();
         public DbSet<Investigation> Investigations => Set<Investigation>();
         public DbSet<Imaging> Imagings => Set<Imaging>();
+        public DbSet<InstructionPreset> InstructionPresets => Set<InstructionPreset>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

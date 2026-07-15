@@ -214,7 +214,10 @@ namespace MedicalApp.ViewModels
         // Computed indicators for sidebar badge dots
         public bool HasChiefComplaint => !string.IsNullOrWhiteSpace(ChiefComplaint);
         public bool HasHPI => !string.IsNullOrWhiteSpace(HistoryOfPresentIllness);
-        public bool HasPhysicalExam => !string.IsNullOrWhiteSpace(PhysicalExamination);
+        public bool HasPhysicalExam => !string.IsNullOrWhiteSpace(PhysicalExamination) || 
+                                       !string.IsNullOrWhiteSpace(PhysicalExamPositive) || 
+                                       !string.IsNullOrWhiteSpace(PhysicalExamNegative);
+        public bool HasProcedures => PerformedProcedures != null && PerformedProcedures.Count > 0;
         public bool HasDiagnosis => !string.IsNullOrWhiteSpace(Diagnosis);
         public bool HasTreatmentPlan => !string.IsNullOrWhiteSpace(TreatmentPlan);
         public bool HasVitals => !string.IsNullOrWhiteSpace(VitalHR) ||
@@ -223,13 +226,28 @@ namespace MedicalApp.ViewModels
                                  !string.IsNullOrWhiteSpace(VitalRR) ||
                                  !string.IsNullOrWhiteSpace(VitalSPO2) ||
                                  !string.IsNullOrWhiteSpace(VitalTemp);
-        public bool HasPrescription => PrescribedDrugs != null && PrescribedDrugs.Count > 0;
+        public bool HasPrescription => (PrescribedDrugs != null && PrescribedDrugs.Count > 0) || !string.IsNullOrWhiteSpace(MedicalInstructions);
         public bool HasInvestigations => AddedInvestigations != null && AddedInvestigations.Count > 0;
         public bool HasImaging => AddedImagings != null && AddedImagings.Count > 0;
         public bool HasHistory => CurrentPatient != null && (
                                   !string.IsNullOrWhiteSpace(CurrentPatient.Allergy) ||
                                   !string.IsNullOrWhiteSpace(CurrentPatient.Smoking) ||
-                                  !string.IsNullOrWhiteSpace(CurrentPatient.Alcohol));
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.Alcohol) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.PastMedicalHistory) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.PastSurgicalHistory) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.PastDrugHistory) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.PastFamilyHistory) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.SmokingCigarettesPerDay) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.SmokingYears) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.AlcoholType) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.AlcoholConcentration) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.AlcoholVolume));
+
+        public bool HasObstetrics => !string.IsNullOrEmpty(ObAbortionNote) || !string.IsNullOrEmpty(ObLastUltrasoundNote);
+        public bool HasSystemReview => false;
+        public bool HasNutrition => !string.IsNullOrEmpty(NutritionalWeight) || !string.IsNullOrEmpty(NutritionalHeight);
+        public bool HasDentistNotes => false;
+        public bool HasVisitSummary => false;
 
         [RelayCommand]
         private void ToggleSidebar()
@@ -238,24 +256,6 @@ namespace MedicalApp.ViewModels
         }
 
         // View Toggling Settings (Show/Hide sections)
-        [ObservableProperty]
-        private bool _showComplaint = true;
-
-        [ObservableProperty]
-        private bool _showPhysicalExam = true;
-
-        [ObservableProperty]
-        private bool _showVitals = true;
-
-        [ObservableProperty]
-        private bool _showInvestigation = true;
-
-        [ObservableProperty]
-        private bool _showDiagnosis = true;
-
-        [ObservableProperty]
-        private bool _showDrugs = true;
-
         // Vital Signs Fields
         [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(HasVitals))]
@@ -315,6 +315,88 @@ namespace MedicalApp.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<ClinicalAttachment> _addedImagings = new();
+
+        [ObservableProperty] private int _complaintsRow = 0;
+        [ObservableProperty] private int _vitalsRow = 1;
+        [ObservableProperty] private int _examinationRow = 2;
+        [ObservableProperty] private int _hpiRow = 3;
+        [ObservableProperty] private int _proceduresRow = 4;
+        [ObservableProperty] private int _diagnosisRow = 5;
+        [ObservableProperty] private int _prescriptionRow = 6;
+        [ObservableProperty] private int _investigationsRow = 7;
+        [ObservableProperty] private int _imagingRow = 8;
+        [ObservableProperty] private int _obstetricsRow = 9;
+        [ObservableProperty] private int _systemReviewRow = 10;
+        [ObservableProperty] private int _nutritionRow = 11;
+        [ObservableProperty] private int _historyRow = 12;
+        [ObservableProperty] private int _dentistNotesRow = 13;
+        [ObservableProperty] private int _visitSummaryRow = 14;
+        [ObservableProperty] private int _treatmentPlanRow = 15;
+
+        [ObservableProperty] private bool _showComplaint = true;
+        [ObservableProperty] private bool _showVitals = true;
+        [ObservableProperty] private bool _showExamination = true;
+        [ObservableProperty] private bool _showPlan = true;
+        [ObservableProperty] private bool _showHpi = true;
+        [ObservableProperty] private bool _showProcedures = true;
+        [ObservableProperty] private bool _showDiagnosis = true;
+        [ObservableProperty] private bool _showPrescription = true;
+        [ObservableProperty] private bool _showInvestigations = true;
+        [ObservableProperty] private bool _showImaging = true;
+        [ObservableProperty] private bool _showObstetrics = true;
+        [ObservableProperty] private bool _showSystemReview = true;
+        [ObservableProperty] private bool _showNutrition = true;
+        [ObservableProperty] private bool _showHistory = true;
+        [ObservableProperty] private bool _showDentistNotes = true;
+        [ObservableProperty] private bool _showVisitSummary = true;
+
+        public ObservableCollection<SectionOrderItem> SectionOrderList { get; } = new();
+
+        [ObservableProperty]
+        private ObservableCollection<PerformedProcedure> _performedProcedures = new();
+
+        [ObservableProperty]
+        private string _selectedProcedureName = string.Empty;
+
+        [ObservableProperty]
+        private string _procedureCostText = string.Empty;
+
+        [ObservableProperty]
+        private ObservableCollection<string> _procedureSuggestions = new()
+        {
+            "Ultrasound (Sounar) / سونار",
+            "ECG / تخطيط قلب",
+            "Wound Dressing / غيار جرح",
+            "Nebulizer / جهاز تبخير",
+            "Minor Stitching / خياطة جرح",
+            "Injection / زرق إبرة"
+        };
+
+        [ObservableProperty]
+        private string _physicalExamPositive = string.Empty;
+
+        [ObservableProperty]
+        private string _physicalExamNegative = string.Empty;
+
+        [ObservableProperty]
+        private string _medicalInstructions = string.Empty;
+
+        [ObservableProperty]
+        private ObservableCollection<InstructionPreset> _instructionPresetsList = new();
+
+        [ObservableProperty]
+        private InstructionPreset? _selectedInstructionPreset;
+
+        [ObservableProperty] private string _pastMedicalHistory = string.Empty;
+        [ObservableProperty] private string _pastSurgicalHistory = string.Empty;
+        [ObservableProperty] private string _pastDrugHistory = string.Empty;
+        [ObservableProperty] private string _pastFamilyHistory = string.Empty;
+        [ObservableProperty] private string _smokingCigarettesPerDay = string.Empty;
+        [ObservableProperty] private string _smokingYears = string.Empty;
+        [ObservableProperty] private string _alcoholType = string.Empty;
+        [ObservableProperty] private string _alcoholConcentration = string.Empty;
+        [ObservableProperty] private string _alcoholVolume = string.Empty;
+
 
         [ObservableProperty]
         private ObservableCollection<string> _investigationList = new()
@@ -424,7 +506,8 @@ namespace MedicalApp.ViewModels
             // Load doctors
             _ = LoadDoctorsAsync();
 
-            LoadViewSettings();
+            InitializeSectionsOrder();
+            _ = LoadInstructionPresetsAsync();
             _ = LoadDatabaseSuggestionsAsync();
         }
 
@@ -646,12 +729,25 @@ namespace MedicalApp.ViewModels
                         patientInDb.Smoking = CurrentPatient.Smoking ?? string.Empty;
                         patientInDb.Alcohol = CurrentPatient.Alcohol ?? string.Empty;
                         patientInDb.BloodGroup = CurrentPatient.BloodGroup ?? string.Empty;
+
+                        patientInDb.PastMedicalHistory = PastMedicalHistory ?? string.Empty;
+                        patientInDb.PastSurgicalHistory = PastSurgicalHistory ?? string.Empty;
+                        patientInDb.PastDrugHistory = PastDrugHistory ?? string.Empty;
+                        patientInDb.PastFamilyHistory = PastFamilyHistory ?? string.Empty;
+                        patientInDb.SmokingCigarettesPerDay = SmokingCigarettesPerDay ?? string.Empty;
+                        patientInDb.SmokingYears = SmokingYears ?? string.Empty;
+                        patientInDb.AlcoholType = AlcoholType ?? string.Empty;
+                        patientInDb.AlcoholConcentration = AlcoholConcentration ?? string.Empty;
+                        patientInDb.AlcoholVolume = AlcoholVolume ?? string.Empty;
+
                         db.Patients.Update(patientInDb);
                     }
 
                     var today = DateTime.UtcNow.Date;
                     var existingVisit = await db.Visits
                         .FirstOrDefaultAsync(v => v.PatientId == CurrentPatient.PatientId && v.VisitDate >= today);
+
+                    var proceduresText = string.Join(";", PerformedProcedures.Select(p => $"{p.Name}|{p.Cost}"));
 
                     if (existingVisit != null)
                     {
@@ -672,6 +768,11 @@ namespace MedicalApp.ViewModels
                         existingVisit.ReturnDate = ReturnDate;
                         existingVisit.InvestigationAttachmentPath = string.Join(";", AddedInvestigations.Select(x => x.AttachmentPath));
                         existingVisit.ImagingAttachmentPath = string.Join(";", AddedImagings.Select(x => x.AttachmentPath));
+
+                        existingVisit.ProceduresPerformed = proceduresText;
+                        existingVisit.PhysicalExamPositive = PhysicalExamPositive ?? string.Empty;
+                        existingVisit.PhysicalExamNegative = PhysicalExamNegative ?? string.Empty;
+                        existingVisit.MedicalInstructions = MedicalInstructions ?? string.Empty;
 
                         db.Visits.Update(existingVisit);
                     }
@@ -697,6 +798,10 @@ namespace MedicalApp.ViewModels
                             ReturnDate = ReturnDate,
                             InvestigationAttachmentPath = string.Join(";", AddedInvestigations.Select(x => x.AttachmentPath)),
                             ImagingAttachmentPath = string.Join(";", AddedImagings.Select(x => x.AttachmentPath)),
+                            ProceduresPerformed = proceduresText,
+                            PhysicalExamPositive = PhysicalExamPositive ?? string.Empty,
+                            PhysicalExamNegative = PhysicalExamNegative ?? string.Empty,
+                            MedicalInstructions = MedicalInstructions ?? string.Empty,
                             VisitDate = DateTime.UtcNow
                         };
                         await db.Visits.AddAsync(visit);
@@ -1343,7 +1448,24 @@ namespace MedicalApp.ViewModels
                     PatientAllergy = CurrentPatient.Allergy ?? string.Empty,
                     PatientSmoking = CurrentPatient.Smoking ?? string.Empty,
                     PatientAlcohol = CurrentPatient.Alcohol ?? string.Empty,
-                    PatientBloodGroup = CurrentPatient.BloodGroup ?? string.Empty
+                    PatientBloodGroup = CurrentPatient.BloodGroup ?? string.Empty,
+
+                    // Structured History
+                    PatientPastMedicalHistory = PastMedicalHistory ?? string.Empty,
+                    PatientPastSurgicalHistory = PastSurgicalHistory ?? string.Empty,
+                    PatientPastDrugHistory = PastDrugHistory ?? string.Empty,
+                    PatientPastFamilyHistory = PastFamilyHistory ?? string.Empty,
+                    PatientSmokingCigarettesPerDay = SmokingCigarettesPerDay ?? string.Empty,
+                    PatientSmokingYears = SmokingYears ?? string.Empty,
+                    PatientAlcoholType = AlcoholType ?? string.Empty,
+                    PatientAlcoholConcentration = AlcoholConcentration ?? string.Empty,
+                    PatientAlcoholVolume = AlcoholVolume ?? string.Empty,
+
+                    // Procedures, Split Exam & Instructions
+                    ProceduresPerformed = string.Join(";", PerformedProcedures.Select(p => $"{p.Name}|{p.Cost}")),
+                    PhysicalExamPositive = PhysicalExamPositive ?? string.Empty,
+                    PhysicalExamNegative = PhysicalExamNegative ?? string.Empty,
+                    MedicalInstructions = MedicalInstructions ?? string.Empty
                 };
 
                 string outputJson = JsonSerializer.Serialize(drafts, new JsonSerializerOptions { WriteIndented = true });
@@ -1434,6 +1556,38 @@ namespace MedicalApp.ViewModels
                         newCollection.CollectionChanged += (s, e) => TriggerAutoSave();
                         PrescribedDrugs = newCollection;
 
+                        // Load procedures
+                        var newProcs = new ObservableCollection<PerformedProcedure>();
+                        if (!string.IsNullOrEmpty(draft.ProceduresPerformed))
+                        {
+                            var procs = draft.ProceduresPerformed.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries);
+                            foreach (var p in procs)
+                            {
+                                var parts = p.Split('|');
+                                if (parts.Length > 0)
+                                {
+                                    decimal cost = 0;
+                                    if (parts.Length > 1) decimal.TryParse(parts[1], out cost);
+                                    newProcs.Add(new PerformedProcedure { Name = parts[0], Cost = cost });
+                                }
+                            }
+                        }
+                        PerformedProcedures = newProcs;
+                        
+                        PhysicalExamPositive = draft.PhysicalExamPositive ?? string.Empty;
+                        PhysicalExamNegative = draft.PhysicalExamNegative ?? string.Empty;
+                        MedicalInstructions = draft.MedicalInstructions ?? string.Empty;
+
+                        PastMedicalHistory = draft.PatientPastMedicalHistory ?? string.Empty;
+                        PastSurgicalHistory = draft.PatientPastSurgicalHistory ?? string.Empty;
+                        PastDrugHistory = draft.PatientPastDrugHistory ?? string.Empty;
+                        PastFamilyHistory = draft.PatientPastFamilyHistory ?? string.Empty;
+                        SmokingCigarettesPerDay = draft.PatientSmokingCigarettesPerDay ?? string.Empty;
+                        SmokingYears = draft.PatientSmokingYears ?? string.Empty;
+                        AlcoholType = draft.PatientAlcoholType ?? string.Empty;
+                        AlcoholConcentration = draft.PatientAlcoholConcentration ?? string.Empty;
+                        AlcoholVolume = draft.PatientAlcoholVolume ?? string.Empty;
+
                         if (CurrentPatient != null)
                         {
                             CurrentPatient.Notes = draft.PatientNotes ?? string.Empty;
@@ -1441,7 +1595,23 @@ namespace MedicalApp.ViewModels
                             CurrentPatient.Smoking = draft.PatientSmoking ?? string.Empty;
                             CurrentPatient.Alcohol = draft.PatientAlcohol ?? string.Empty;
                             CurrentPatient.BloodGroup = draft.PatientBloodGroup ?? string.Empty;
+
+                            CurrentPatient.PastMedicalHistory = draft.PatientPastMedicalHistory ?? string.Empty;
+                            CurrentPatient.PastSurgicalHistory = draft.PatientPastSurgicalHistory ?? string.Empty;
+                            CurrentPatient.PastDrugHistory = draft.PatientPastDrugHistory ?? string.Empty;
+                            CurrentPatient.PastFamilyHistory = draft.PatientPastFamilyHistory ?? string.Empty;
+                            CurrentPatient.SmokingCigarettesPerDay = draft.PatientSmokingCigarettesPerDay ?? string.Empty;
+                            CurrentPatient.SmokingYears = draft.PatientSmokingYears ?? string.Empty;
+                            CurrentPatient.AlcoholType = draft.PatientAlcoholType ?? string.Empty;
+                            CurrentPatient.AlcoholConcentration = draft.PatientAlcoholConcentration ?? string.Empty;
+                            CurrentPatient.AlcoholVolume = draft.PatientAlcoholVolume ?? string.Empty;
                         }
+
+                        // Fire property notifications to update green dots and controls
+                        OnPropertyChanged(nameof(PatientAllergy));
+                        OnPropertyChanged(nameof(PatientSmoking));
+                        OnPropertyChanged(nameof(PatientAlcohol));
+                        OnPropertyChanged(nameof(HasHistory));
 
                         ShowSavedBadge = true;
                         return;
@@ -1504,6 +1674,23 @@ namespace MedicalApp.ViewModels
             ReturnDate = null;
             InvestigationAttachmentPath = string.Empty;
             ImagingAttachmentPath = string.Empty;
+
+            // Clear new clinical fields
+            PerformedProcedures.Clear();
+            PhysicalExamPositive = string.Empty;
+            PhysicalExamNegative = string.Empty;
+            MedicalInstructions = string.Empty;
+
+            // Clear structured history fields
+            PastMedicalHistory = string.Empty;
+            PastSurgicalHistory = string.Empty;
+            PastDrugHistory = string.Empty;
+            PastFamilyHistory = string.Empty;
+            SmokingCigarettesPerDay = string.Empty;
+            SmokingYears = string.Empty;
+            AlcoholType = string.Empty;
+            AlcoholConcentration = string.Empty;
+            AlcoholVolume = string.Empty;
             
             var newCollection = new ObservableCollection<PrescribedMedication>();
             newCollection.CollectionChanged += (s, e) => TriggerAutoSave();
@@ -1555,64 +1742,7 @@ namespace MedicalApp.ViewModels
             StatusMessage = $"Captured voice input for {fieldName}.";
         }
 
-        // View settings load and save
-        private static readonly string SettingsFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "doctor_view_settings.json");
-
-        private void LoadViewSettings()
-        {
-            try
-            {
-                if (File.Exists(SettingsFile))
-                {
-                    string json = File.ReadAllText(SettingsFile);
-                    var settings = JsonSerializer.Deserialize<Dictionary<string, bool>>(json);
-                    if (settings != null)
-                    {
-                        bool val;
-                        if (settings.TryGetValue("ShowComplaint", out val)) ShowComplaint = val;
-                        if (settings.TryGetValue("ShowPhysicalExam", out val)) ShowPhysicalExam = val;
-                        if (settings.TryGetValue("ShowVitals", out val)) ShowVitals = val;
-                        if (settings.TryGetValue("ShowInvestigation", out val)) ShowInvestigation = val;
-                        if (settings.TryGetValue("ShowDiagnosis", out val)) ShowDiagnosis = val;
-                        if (settings.TryGetValue("ShowDrugs", out val)) ShowDrugs = val;
-                    }
-                }
-            }
-            catch
-            {
-                // Fallback to default true values
-            }
-        }
-
-        private void SaveViewSettings()
-        {
-            try
-            {
-                var settings = new Dictionary<string, bool>
-                {
-                    { "ShowComplaint", ShowComplaint },
-                    { "ShowPhysicalExam", ShowPhysicalExam },
-                    { "ShowVitals", ShowVitals },
-                    { "ShowInvestigation", ShowInvestigation },
-                    { "ShowDiagnosis", ShowDiagnosis },
-                    { "ShowDrugs", ShowDrugs }
-                };
-                string json = JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true });
-                File.WriteAllText(SettingsFile, json);
-            }
-            catch
-            {
-                // Silently ignore settings save errors
-            }
-        }
-
         // Changed handlers for auto-saving view/draft fields
-        partial void OnShowComplaintChanged(bool value) => SaveViewSettings();
-        partial void OnShowPhysicalExamChanged(bool value) => SaveViewSettings();
-        partial void OnShowVitalsChanged(bool value) => SaveViewSettings();
-        partial void OnShowInvestigationChanged(bool value) => SaveViewSettings();
-        partial void OnShowDiagnosisChanged(bool value) => SaveViewSettings();
-        partial void OnShowDrugsChanged(bool value) => SaveViewSettings();
 
         partial void OnVitalHRChanged(string value)
         {
@@ -2268,6 +2398,305 @@ namespace MedicalApp.ViewModels
             {
                 StatusMessage = $"Print failed: {ex.Message}";
             }
+        }
+
+        private static readonly string SectionOrderFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "doctor_sections_order.json");
+
+        private void InitializeSectionsOrder()
+        {
+            var defaultKeys = new List<(string Key, string En, string Ar)>
+            {
+                ("Complaints", "Chief Complaint", "الشكوى الرئيسية"),
+                ("Vitals", "Vital Signs", "العلامات الحيوية"),
+                ("Examination", "Clinical Examination", "الفحص السريري"),
+                ("Hpi", "History of Present Illness", "تاريخ المرض الحالي"),
+                ("Procedures", "Procedures performed", "الإجراءات الطبية"),
+                ("Diagnosis", "Diagnosis", "التشخيص"),
+                ("TreatmentPlan", "Treatment Plan", "خطة العلاج والملاحظات"),
+                ("Prescription", "Prescriptions & Instructions", "الوصفة والإرشادات"),
+                ("Investigations", "Investigations & Labs", "التحاليل والمختبر"),
+                ("Imaging", "Imaging & Radiology", "الأشعة والسونار"),
+                ("Obstetrics", "Obstetrics & Gynecology", "التوليد وأمراض النساء"),
+                ("SystemReview", "System Review (ROS)", "مراجعة أجهزة الجسم"),
+                ("Nutrition", "Nutritional Status", "الحالة الغذائية"),
+                ("History", "Patient History & Lifestyle", "التاريخ المرضي ونمط الحياة"),
+                ("DentistNotes", "Dentist Notes", "ملاحظات طبيب الأسنان"),
+                ("VisitSummary", "Visit Summary notes", "ملخص الزيارة")
+            };
+
+            List<SectionConfig>? saved = null;
+            try
+            {
+                if (File.Exists(SectionOrderFile))
+                {
+                    string json = File.ReadAllText(SectionOrderFile);
+                    saved = JsonSerializer.Deserialize<List<SectionConfig>>(json);
+                }
+            }
+            catch { /* ignore */ }
+
+            SectionOrderList.Clear();
+            int order = 0;
+            if (saved != null && saved.Count > 0)
+            {
+                foreach (var s in saved)
+                {
+                    var def = defaultKeys.FirstOrDefault(dk => dk.Key == s.Key);
+                    if (def != default)
+                    {
+                        var item = new SectionOrderItem
+                        {
+                            SectionKey = s.Key,
+                            DisplayNameEn = def.En,
+                            DisplayNameAr = def.Ar,
+                            IsVisible = s.IsVisible,
+                            DisplayOrder = order++
+                        };
+                        item.PropertyChanged += (sender, e) => {
+                            if (e.PropertyName == nameof(SectionOrderItem.IsVisible))
+                            {
+                                ApplySectionsOrderAndVisibility();
+                            }
+                        };
+                        SectionOrderList.Add(item);
+                    }
+                }
+                foreach (var dk in defaultKeys)
+                {
+                    if (!SectionOrderList.Any(sol => sol.SectionKey == dk.Key))
+                    {
+                        var item = new SectionOrderItem
+                        {
+                            SectionKey = dk.Key,
+                            DisplayNameEn = dk.En,
+                            DisplayNameAr = dk.Ar,
+                            IsVisible = true,
+                            DisplayOrder = order++
+                        };
+                        item.PropertyChanged += (sender, e) => {
+                            if (e.PropertyName == nameof(SectionOrderItem.IsVisible))
+                            {
+                                ApplySectionsOrderAndVisibility();
+                            }
+                        };
+                        SectionOrderList.Add(item);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var dk in defaultKeys)
+                {
+                    bool isVis = dk.Key != "SystemReview" && dk.Key != "DentistNotes" && dk.Key != "Nutrition";
+                    var item = new SectionOrderItem
+                    {
+                        SectionKey = dk.Key,
+                        DisplayNameEn = dk.En,
+                        DisplayNameAr = dk.Ar,
+                        IsVisible = isVis,
+                        DisplayOrder = order++
+                    };
+                    item.PropertyChanged += (sender, e) => {
+                        if (e.PropertyName == nameof(SectionOrderItem.IsVisible))
+                        {
+                            ApplySectionsOrderAndVisibility();
+                        }
+                    };
+                    SectionOrderList.Add(item);
+                }
+            }
+
+            ApplySectionsOrderAndVisibility();
+        }
+
+        private void ApplySectionsOrderAndVisibility()
+        {
+            for (int i = 0; i < SectionOrderList.Count; i++)
+            {
+                var item = SectionOrderList[i];
+                item.DisplayOrder = i;
+
+                switch (item.SectionKey)
+                {
+                    case "Complaints":
+                        ComplaintsRow = i;
+                        ShowComplaint = item.IsVisible;
+                        break;
+                    case "Vitals":
+                        VitalsRow = i;
+                        ShowVitals = item.IsVisible;
+                        break;
+                    case "Examination":
+                        ExaminationRow = i;
+                        ShowExamination = item.IsVisible;
+                        break;
+                    case "Hpi":
+                        HpiRow = i;
+                        ShowHpi = item.IsVisible;
+                        break;
+                    case "Procedures":
+                        ProceduresRow = i;
+                        ShowProcedures = item.IsVisible;
+                        break;
+                    case "Diagnosis":
+                        DiagnosisRow = i;
+                        ShowDiagnosis = item.IsVisible;
+                        break;
+                    case "TreatmentPlan":
+                        TreatmentPlanRow = i;
+                        ShowPlan = item.IsVisible;
+                        break;
+                    case "Prescription":
+                        PrescriptionRow = i;
+                        ShowPrescription = item.IsVisible;
+                        break;
+                    case "Investigations":
+                        InvestigationsRow = i;
+                        ShowInvestigations = item.IsVisible;
+                        break;
+                    case "Imaging":
+                        ImagingRow = i;
+                        ShowImaging = item.IsVisible;
+                        break;
+                    case "Obstetrics":
+                        ObstetricsRow = i;
+                        ShowObstetrics = item.IsVisible;
+                        break;
+                    case "SystemReview":
+                        SystemReviewRow = i;
+                        ShowSystemReview = item.IsVisible;
+                        break;
+                    case "Nutrition":
+                        NutritionRow = i;
+                        ShowNutrition = item.IsVisible;
+                        break;
+                    case "History":
+                        HistoryRow = i;
+                        ShowHistory = item.IsVisible;
+                        break;
+                    case "DentistNotes":
+                        DentistNotesRow = i;
+                        ShowDentistNotes = item.IsVisible;
+                        break;
+                    case "VisitSummary":
+                        VisitSummaryRow = i;
+                        ShowVisitSummary = item.IsVisible;
+                        break;
+                }
+            }
+
+            OnPropertyChanged(nameof(ShowObstetricsCard));
+            OnPropertyChanged(nameof(ShowComplaint));
+            SaveSectionsConfig();
+        }
+
+        private void SaveSectionsConfig()
+        {
+            try
+            {
+                var configs = SectionOrderList.Select(s => new SectionConfig { Key = s.SectionKey, IsVisible = s.IsVisible }).ToList();
+                string json = JsonSerializer.Serialize(configs, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(SectionOrderFile, json);
+            }
+            catch { /* ignore */ }
+        }
+
+        private class SectionConfig
+        {
+            public string Key { get; set; } = string.Empty;
+            public bool IsVisible { get; set; }
+        }
+
+        [RelayCommand]
+        public void MoveSectionUp(SectionOrderItem item)
+        {
+            if (item == null) return;
+            int idx = SectionOrderList.IndexOf(item);
+            if (idx > 0)
+            {
+                SectionOrderList.RemoveAt(idx);
+                SectionOrderList.Insert(idx - 1, item);
+                ApplySectionsOrderAndVisibility();
+            }
+        }
+
+        [RelayCommand]
+        public void MoveSectionDown(SectionOrderItem item)
+        {
+            if (item == null) return;
+            int idx = SectionOrderList.IndexOf(item);
+            if (idx >= 0 && idx < SectionOrderList.Count - 1)
+            {
+                SectionOrderList.RemoveAt(idx);
+                SectionOrderList.Insert(idx + 1, item);
+                ApplySectionsOrderAndVisibility();
+            }
+        }
+
+        [RelayCommand]
+        public void AddProcedure()
+        {
+            if (string.IsNullOrWhiteSpace(SelectedProcedureName)) return;
+            decimal cost = 0;
+            decimal.TryParse(ProcedureCostText, out cost);
+
+            var proc = new PerformedProcedure
+            {
+                Name = SelectedProcedureName.Trim(),
+                Cost = cost
+            };
+            PerformedProcedures.Add(proc);
+
+            SelectedProcedureName = string.Empty;
+            ProcedureCostText = string.Empty;
+            TriggerAutoSave();
+        }
+
+        [RelayCommand]
+        public void RemoveProcedure(PerformedProcedure proc)
+        {
+            if (proc != null)
+            {
+                PerformedProcedures.Remove(proc);
+                TriggerAutoSave();
+            }
+        }
+
+        [RelayCommand]
+        public async Task LoadInstructionPresetsAsync()
+        {
+            try
+            {
+                using var db = await _dbContextFactory.CreateDbContextAsync();
+                var presets = await db.InstructionPresets.ToListAsync();
+                InstructionPresetsList = new ObservableCollection<InstructionPreset>(presets);
+            }
+            catch { /* ignore */ }
+        }
+
+        [RelayCommand]
+        public async Task SaveInstructionPresetAsync(string title)
+        {
+            if (string.IsNullOrWhiteSpace(title) || string.IsNullOrWhiteSpace(MedicalInstructions)) return;
+
+            try
+            {
+                using var db = await _dbContextFactory.CreateDbContextAsync();
+                var existing = await db.InstructionPresets.FirstOrDefaultAsync(p => p.Title == title);
+                if (existing != null)
+                {
+                    existing.Content = MedicalInstructions;
+                    db.InstructionPresets.Update(existing);
+                }
+                else
+                {
+                    var preset = new InstructionPreset { Title = title.Trim(), Content = MedicalInstructions };
+                    await db.InstructionPresets.AddAsync(preset);
+                }
+                await db.SaveChangesAsync();
+                await LoadInstructionPresetsAsync();
+            }
+            catch { /* ignore */ }
         }
 
         public void Dispose()

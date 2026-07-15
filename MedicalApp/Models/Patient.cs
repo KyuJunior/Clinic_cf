@@ -31,6 +31,15 @@ namespace MedicalApp.Models
         public string ReferredBy { get; set; } = string.Empty;
         public string SpouseBloodGroup { get; set; } = string.Empty;
         public string Allergy { get; set; } = string.Empty;
+        public string PastMedicalHistory { get; set; } = string.Empty;
+        public string PastSurgicalHistory { get; set; } = string.Empty;
+        public string PastDrugHistory { get; set; } = string.Empty;
+        public string PastFamilyHistory { get; set; } = string.Empty;
+        public string SmokingCigarettesPerDay { get; set; } = string.Empty;
+        public string SmokingYears { get; set; } = string.Empty;
+        public string AlcoholType { get; set; } = string.Empty;
+        public string AlcoholConcentration { get; set; } = string.Empty;
+        public string AlcoholVolume { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         // Navigation Properties

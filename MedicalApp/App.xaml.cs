@@ -288,6 +288,70 @@ namespace MedicalApp
                     "IF COL_LENGTH('dbo.Visits', 'VisitPrice') IS NULL ALTER TABLE dbo.Visits ADD VisitPrice DECIMAL(18,2) NOT NULL DEFAULT 0"
                 );
 
+                // Create InstructionPresets table if it doesn't exist
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF OBJECT_ID('dbo.InstructionPresets', 'U') IS NULL " +
+                    "CREATE TABLE dbo.InstructionPresets (" +
+                    "    InstructionPresetId INT IDENTITY(1,1) PRIMARY KEY," +
+                    "    Title NVARCHAR(200) NOT NULL UNIQUE," +
+                    "    Content NVARCHAR(MAX) NOT NULL" +
+                    ")"
+                );
+
+                // Seed default instruction presets if empty
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF NOT EXISTS (SELECT 1 FROM dbo.InstructionPresets) " +
+                    "BEGIN " +
+                    "  INSERT INTO dbo.InstructionPresets (Title, Content) VALUES " +
+                    "  ('Diabetic Diet / نظام غذائي لمرضى السكري', '1. Reduce simple sugars and refined carbs.\\n2. Eat small, frequent meals.\\n3. Increase fiber intake.'), " +
+                    "  ('Hypertension Care / إرشادات ضغط الدم', '1. Limit sodium intake to under 2g per day.\\n2. Exercise regularly.\\n3. Monitor blood pressure daily.'), " +
+                    "  ('General Recovery / إرشادات التعافي العام', '1. Take plenty of rest.\\n2. Drink warm fluids.\\n3. Complete the medication course as prescribed.') " +
+                    "END"
+                );
+
+                // Add advanced Visit columns
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'ProceduresPerformed') IS NULL ALTER TABLE dbo.Visits ADD ProceduresPerformed NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'PhysicalExamPositive') IS NULL ALTER TABLE dbo.Visits ADD PhysicalExamPositive NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'PhysicalExamNegative') IS NULL ALTER TABLE dbo.Visits ADD PhysicalExamNegative NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Visits', 'MedicalInstructions') IS NULL ALTER TABLE dbo.Visits ADD MedicalInstructions NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+
+                // Add advanced Patient columns
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'PastMedicalHistory') IS NULL ALTER TABLE dbo.Patients ADD PastMedicalHistory NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'PastSurgicalHistory') IS NULL ALTER TABLE dbo.Patients ADD PastSurgicalHistory NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'PastDrugHistory') IS NULL ALTER TABLE dbo.Patients ADD PastDrugHistory NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'PastFamilyHistory') IS NULL ALTER TABLE dbo.Patients ADD PastFamilyHistory NVARCHAR(MAX) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'SmokingCigarettesPerDay') IS NULL ALTER TABLE dbo.Patients ADD SmokingCigarettesPerDay NVARCHAR(100) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'SmokingYears') IS NULL ALTER TABLE dbo.Patients ADD SmokingYears NVARCHAR(100) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'AlcoholType') IS NULL ALTER TABLE dbo.Patients ADD AlcoholType NVARCHAR(100) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'AlcoholConcentration') IS NULL ALTER TABLE dbo.Patients ADD AlcoholConcentration NVARCHAR(100) NOT NULL DEFAULT ''"
+                );
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "IF COL_LENGTH('dbo.Patients', 'AlcoholVolume') IS NULL ALTER TABLE dbo.Patients ADD AlcoholVolume NVARCHAR(100) NOT NULL DEFAULT ''"
+                );
+
                 // Add Doctors table if not exist
                 await dbContext.Database.ExecuteSqlRawAsync(
                     "IF OBJECT_ID('dbo.Doctors', 'U') IS NULL " +
