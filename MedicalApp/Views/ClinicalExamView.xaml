@@ -517,7 +517,7 @@
                                                 <ui:TextBox Text="{Binding ProcedureCostText, UpdateSourceTrigger=PropertyChanged}" Height="36" PlaceholderText="0"/>
                                             </StackPanel>
                                             
-                                            <Button Grid.Column="2" Content="Add | إضافة" Style="{StaticResource PrimaryButton}" Command="{Binding AddProcedureCommand}" Height="36" VerticalAlignment="Bottom" Padding="15,0"/>
+                                            <Button Grid.Column="2" Content="Add | إضافة" Style="{StaticResource ModernButton}" Command="{Binding AddProcedureCommand}" Height="36" VerticalAlignment="Bottom" Padding="15,0"/>
                                         </Grid>
                                         
                                         <!-- Performed procedures list -->
@@ -724,7 +724,7 @@
                                                     <!-- Preset Selector -->
                                                     <StackPanel Orientation="Horizontal" Grid.Column="1">
                                                         <TextBlock Text="Select Preset:" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center" Margin="0,0,8,0" FontSize="11"/>
-                                                        <ComboBox Width="200" Height="30" ItemsSource="{Binding InstructionPresetsList}" DisplayMemberPath="Title" SelectedValuePath="Content" SelectedValue="{Binding MedicalInstructions}" Style="{StaticResource ModernComboBox}"/>
+                                                        <ComboBox Width="200" Height="30" ItemsSource="{Binding InstructionPresetsList}" DisplayMemberPath="Title" SelectedValuePath="Content" SelectedValue="{Binding MedicalInstructions}" Style="{StaticResource MaterialDesignOutlinedComboBox}"/>
                                                     </StackPanel>
                                                 </Grid>
                                                 
@@ -738,7 +738,7 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <ui:TextBox x:Name="NewPresetTitleTextBox" PlaceholderText="Enter new preset template title... | اسم القالب الجديد..." Height="30" Margin="0,0,8,0"/>
-                                                    <Button Grid.Column="1" Content="Save Preset | حفظ كقالب" Style="{StaticResource ActionButton}" Height="30" Command="{Binding SaveInstructionPresetCommand}" CommandParameter="{Binding Text, ElementName=NewPresetTitleTextBox}" Padding="12,0"/>
+                                                    <Button Grid.Column="1" Content="Save Preset | حفظ كقالب" Style="{StaticResource ModernButton}" Height="30" Command="{Binding SaveInstructionPresetCommand}" CommandParameter="{Binding Text, ElementName=NewPresetTitleTextBox}" Padding="12,0"/>
                                                 </Grid>
                                             </StackPanel>
                                         </Border>
