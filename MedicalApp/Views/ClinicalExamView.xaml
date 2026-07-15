@@ -175,16 +175,16 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <StackPanel Grid.Row="0">
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE90B;" Content="Complaints" Click="SidebarNav_Click" CommandParameter="CardComplaints" IsChecked="True" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE823;" Content="HPI" Click="SidebarNav_Click" CommandParameter="CardHpi" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE97C;" Content="Examination" Click="SidebarNav_Click" CommandParameter="CardExam" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE70F;" Content="Treatment Plan" Click="SidebarNav_Click" CommandParameter="CardPlan" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE8FB;" Content="Diagnosis" Click="SidebarNav_Click" CommandParameter="CardDx" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE95E;" Content="Vital Signs" Click="SidebarNav_Click" CommandParameter="CardVitals" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xEA1F;" Content="Prescription" Click="SidebarNav_Click" CommandParameter="CardRx" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xF191;" Content="Investigations" Click="SidebarNav_Click" CommandParameter="CardLabs" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE91B;" Content="Imaging" Click="SidebarNav_Click" CommandParameter="CardImaging" Margin="0,0,0,2"/>
-                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE81C;" Content="Past History" Click="SidebarNav_Click" CommandParameter="CardHistory" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE90B;" Content="Complaints" Click="SidebarNav_Click" CommandParameter="CardComplaints" helpers:BadgeHelper.HasData="{Binding HasChiefComplaint}" IsChecked="True" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE95E;" Content="Vital Signs" Click="SidebarNav_Click" CommandParameter="CardVitals" helpers:BadgeHelper.HasData="{Binding HasVitals}" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE823;" Content="HPI" Click="SidebarNav_Click" CommandParameter="CardHpi" helpers:BadgeHelper.HasData="{Binding HasHPI}" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE97C;" Content="Examination" Click="SidebarNav_Click" CommandParameter="CardExam" helpers:BadgeHelper.HasData="{Binding HasPhysicalExam}" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE70F;" Content="Treatment Plan" Click="SidebarNav_Click" CommandParameter="CardPlan" helpers:BadgeHelper.HasData="{Binding HasTreatmentPlan}" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE8FB;" Content="Diagnosis" Click="SidebarNav_Click" CommandParameter="CardDx" helpers:BadgeHelper.HasData="{Binding HasDiagnosis}" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xEA1F;" Content="Prescription" Click="SidebarNav_Click" CommandParameter="CardRx" helpers:BadgeHelper.HasData="{Binding HasPrescription}" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xF191;" Content="Investigations" Click="SidebarNav_Click" CommandParameter="CardLabs" helpers:BadgeHelper.HasData="{Binding HasInvestigations}" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE91B;" Content="Imaging" Click="SidebarNav_Click" CommandParameter="CardImaging" helpers:BadgeHelper.HasData="{Binding HasImaging}" Margin="0,0,0,2"/>
+                                    <RadioButton Style="{StaticResource SidebarNavRadioButton}" GroupName="SidebarGroup" Tag="&#xE81C;" Content="Past History" Click="SidebarNav_Click" CommandParameter="CardHistory" helpers:BadgeHelper.HasData="{Binding HasHistory}" Margin="0,0,0,2"/>
                                 </StackPanel>
                                 <!-- Collapse Toggle -->
                                 <Button Grid.Row="1" Command="{Binding ToggleSidebarCommand}" Foreground="{DynamicResource SubtextColor}" FontSize="16" Width="36" Height="36" Margin="0,0,0,8">
@@ -203,644 +203,672 @@
                                 </Button>
                             </Grid>
                         </Border>
-
-                        <!-- COL 1: CENTER CLINICAL WORKSPACE -->
-                        <ScrollViewer x:Name="CenterScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="15,0">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="1.4*"/> <!-- Left: Text Notes -->
-                                    <ColumnDefinition Width="1*"/>   <!-- Right: Vitals/Labs/Rx -->
-                                </Grid.ColumnDefinitions>
-
-                                <!-- LEFT CENTER: Clinical Narrative Sections -->
-                                <StackPanel Grid.Column="0" Margin="0,0,10,10">
-                                    <!-- Chief Complaint -->
-                                    <ui:Card x:Name="CardComplaints" Margin="0,0,0,12" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <Grid Margin="0,0,0,8">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="&#xE90B;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                    <TextBlock Text="Complaints | الشكوى الرئيسية" Style="{StaticResource Header2}" Margin="0"/>
-                                                </StackPanel>
-                                                <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" ToolTip="Voice Input" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="ChiefComplaint"/>
-                                            </Grid>
-                                            <ui:TextBox Text="{Binding ChiefComplaint, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
-                                        </StackPanel>
-                                    </ui:Card>
-
-                                    <!-- HPI -->
-                                    <ui:Card x:Name="CardHpi" Margin="0,0,0,12" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <Grid Margin="0,0,0,8">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                    <TextBlock Text="History of Present Illness (HPI) | القصة المرضية" Style="{StaticResource Header2}" Margin="0"/>
-                                                </StackPanel>
-                                                <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="HPI"/>
-                                            </Grid>
-                                            <ui:TextBox Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
-                                        </StackPanel>
-                                    </ui:Card>
-
-                                    <!-- Physical Exam (Optional) -->
-                                    <ui:Card x:Name="CardExam" Margin="0,0,0,12" Visibility="{Binding ShowPhysicalExam, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <Grid Margin="0,0,0,8">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="&#xE97C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                    <TextBlock Text="Examination | الفحص السريري" Style="{StaticResource Header2}" Margin="0"/>
-                                                </StackPanel>
-                                                <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="PhysicalExam"/>
-                                            </Grid>
-                                            <ui:TextBox Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="80" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
-                                        </StackPanel>
-                                    </ui:Card>
-
-                                    <!-- Treatment Plan -->
-                                    <ui:Card x:Name="CardPlan" Margin="0,0,0,12">
-                                        <StackPanel>
-                                            <Grid Margin="0,0,0,8">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                    <TextBlock Text="Treatment Plan / Notes | خطة العلاج" Style="{StaticResource Header2}" Margin="0"/>
-                                                </StackPanel>
-                                                <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="TreatmentPlan"/>
-                                            </Grid>
-                                            <ui:TextBox Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Height="85" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
-                                        </StackPanel>
-                                    </ui:Card>
-
-                                    <!-- Obstetrics (Conditional) -->
-                                    <ui:Card Margin="0,0,0,12" Visibility="{Binding ShowObstetricsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <TextBlock Text="Obstetrics &amp; Gynecology | التوليد" Style="{StaticResource Header2}"/>
-                                            <WrapPanel Margin="0,5,0,0">
-                                                <StackPanel Margin="0,0,15,8" Width="110">
-                                                    <TextBlock Text="LMP" Style="{StaticResource Subheading}"/>
-                                                    <DatePicker SelectedDate="{Binding ObLMP}" Height="34"/>
-                                                </StackPanel>
-                                                <StackPanel Margin="0,0,15,8" Width="110">
-                                                    <TextBlock Text="EDD" Style="{StaticResource Subheading}"/>
-                                                    <DatePicker SelectedDate="{Binding ObEDD}" Height="34"/>
-                                                </StackPanel>
-                                                <StackPanel Margin="0,0,15,8" Width="70">
-                                                    <TextBlock Text="Gravida" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding ObGravida}"/>
-                                                </StackPanel>
-                                                <StackPanel Margin="0,0,15,8" Width="70">
-                                                    <TextBlock Text="Para" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding ObPara}"/>
-                                                </StackPanel>
-                                                <StackPanel Margin="0,0,15,8" Width="70">
-                                                    <TextBlock Text="Abortion" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding ObAbortion}"/>
-                                                </StackPanel>
-                                            </WrapPanel>
-                                        </StackPanel>
-                                    </ui:Card>
-
-                                    <!-- System Review (Conditional) -->
-                                    <ui:Card Margin="0,0,0,12" Visibility="{Binding ShowSystemReviewSection, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <TextBlock Text="Review of Systems (ROS) | فحص أجهزة الجسم" Style="{StaticResource Header2}"/>
-                                            <StackPanel>
-                                                <WrapPanel>
-                                                    <CheckBox Content="CVS" IsChecked="{Binding SysShowCVS}" Margin="0,0,20,8"/>
-                                                    <CheckBox Content="Respiratory" IsChecked="{Binding SysShowResp}" Margin="0,0,20,8"/>
-                                                    <CheckBox Content="GI" IsChecked="{Binding SysShowGI}" Margin="0,0,20,8"/>
-                                                    <CheckBox Content="Neurological" IsChecked="{Binding SysShowCNS}" Margin="0,0,20,8"/>
-                                                    <CheckBox Content="Other systems" IsChecked="{Binding SysShowOther}" Margin="0,0,20,8"/>
-                                                </WrapPanel>
-                                                <Grid Margin="0,10,0,0">
-                                                    <StackPanel>
-                                                        <ui:TextBox Text="{Binding SysReviewCVS, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="CVS Findings..." Margin="0,0,0,8" Visibility="{Binding SysShowCVS, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                                        <ui:TextBox Text="{Binding SysReviewResp, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Respiratory..." Margin="0,0,0,8" Visibility="{Binding SysShowResp, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                                        <ui:TextBox Text="{Binding SysReviewGI, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="GI..." Margin="0,0,0,8" Visibility="{Binding SysShowGI, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                                        <ui:TextBox Text="{Binding SysReviewCNS, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Neurological..." Margin="0,0,0,8" Visibility="{Binding SysShowCNS, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                                        <ui:TextBox Text="{Binding SysReviewOther, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Other..." Margin="0,0,0,8" Visibility="{Binding SysShowOther, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                                    </StackPanel>
-                                                </Grid>
+                                           <!-- COL 1: CENTER CLINICAL WORKSPACE (Modern Single-Column Dashboard) -->
+                        <ScrollViewer x:Name="CenterScrollViewer" Grid.Column="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="20,0,20,15">
+                            <StackPanel Margin="0,0,0,10">
+                                
+                                <!-- 1. Chief Complaint -->
+                                <ui:Card x:Name="CardComplaints" Margin="0,0,0,12" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE90B;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Complaints | الشكوى الرئيسية" Style="{StaticResource Header2}" Margin="0"/>
                                             </StackPanel>
-                                        </StackPanel>
-                                    </ui:Card>
+                                            <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" ToolTip="Voice Input" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="ChiefComplaint"/>
+                                        </Grid>
+                                        <ui:TextBox Text="{Binding ChiefComplaint, UpdateSourceTrigger=PropertyChanged}" Height="70" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                                        
+                                        <!-- Quick Narrative Chips -->
+                                        <WrapPanel Margin="0,8,0,0">
+                                            <Button Style="{StaticResource ChipButton}" Content="Fever | حرارة" Command="{Binding AppendTextCommand}" CommandParameter="Complaint:Fever / حمى وارتفاع حرارة"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Cough | سعال" Command="{Binding AppendTextCommand}" CommandParameter="Complaint:Dry Cough / سعال جاف"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Headache | صداع" Command="{Binding AppendTextCommand}" CommandParameter="Complaint:Severe Headache / صداع شديد"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Abdominal Pain | ألم بطن" Command="{Binding AppendTextCommand}" CommandParameter="Complaint:Abdominal Pain / ألم في البطن"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Shortness of Breath | ضيق نفس" Command="{Binding AppendTextCommand}" CommandParameter="Complaint:Shortness of breath / ضيق وصعوبة في التنفس"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </ui:Card>
 
-                                    <!-- Diagnosis -->
-                                    <Border x:Name="CardDx" Style="{StaticResource AccentCardBorder}" Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                                <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                <TextBlock Text="Diagnosis &amp; Return | التشخيص والمراجعة" Style="{StaticResource Header2}"/>
+                                <!-- 2. Vital Signs -->
+                                <ui:Card x:Name="CardVitals" Margin="0,0,0,12" Visibility="{Binding ShowVitals, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,12">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE95E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Vital Signs | العلامات الحيوية" Style="{StaticResource Header2}" Margin="0"/>
                                             </StackPanel>
-                                            <Grid Margin="0,5,0,0">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="2*"/>
-                                                    <ColumnDefinition Width="1*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <StackPanel Grid.Column="0" Margin="0,0,15,0">
-                                                    <TextBlock Text="Diagnosis Description (Dx)" Style="{StaticResource Subheading}"/>
-                                                    <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. Flu, Tonsillitis | اكتب التشخيص الطبي هنا..."/>
-                                                    
-                                                    <!-- Quick Narrative Chips -->
-                                                    <WrapPanel Margin="0,6,0,0">
-                                                        <Button Style="{StaticResource ChipButton}" Content="Flu | إنفلونزا" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Common Flu / إنفلونزا ونزلة برد"/>
-                                                        <Button Style="{StaticResource ChipButton}" Content="Gastroenteritis | نزلة معوية" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Acute Gastroenteritis / التهاب المعدة والأمعاء الحاد"/>
-                                                        <Button Style="{StaticResource ChipButton}" Content="Hypertension | ضغط مرتفع" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Hypertension / ارتفاع ضغط الدم الشرياني"/>
-                                                        <Button Style="{StaticResource ChipButton}" Content="Tonsillitis | التهاب اللوزتين" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Acute Tonsillitis / التهاب اللوزتين الحاد"/>
-                                                    </WrapPanel>
-                                                </StackPanel>
-                                                <StackPanel Grid.Column="1">
-                                                    <TextBlock Text="Return Visit Date" Style="{StaticResource Subheading}"/>
-                                                    <DatePicker SelectedDate="{Binding ReturnDate}" Height="36"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </StackPanel>
-                                    </Border>
-                                </StackPanel>
-
-                                <!-- RIGHT CENTER: Vitals, Labs, Imaging, Prescription, Past History -->
-                                <StackPanel Grid.Column="1" Margin="10,0,0,10">
-                                    <!-- Vital Signs -->
-                                    <ui:Card x:Name="CardVitals" Margin="0,0,0,12" Visibility="{Binding ShowVitals, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <Grid Margin="0,0,0,12">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="&#xE95E;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                    <TextBlock Text="Vital Signs | العلامات الحيوية" Style="{StaticResource Header2}" Margin="0"/>
-                                                </StackPanel>
-                                                <CheckBox Content="Stable" IsChecked="{Binding IsVitallyStable}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                                            </Grid>
-                                            <UniformGrid Columns="2">
-                                                <!-- SPO2 -->
-                                                <StackPanel Margin="0,0,8,10">
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                                        <TextBlock Text="&#xE95A;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#3B82F6" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                        <TextBlock Text="SPO2" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                        <TextBlock Text=" (%)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
-                                                        <Border CornerRadius="8" Background="{Binding SPO2AlertBackground}" Visibility="{Binding IsSPO2AlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <CheckBox Content="Stable" IsChecked="{Binding IsVitallyStable}" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        
+                                        <!-- Premium 3-Column Metric Cards Grid -->
+                                        <UniformGrid Columns="3">
+                                            
+                                            <!-- SPO2 Card -->
+                                            <Border CornerRadius="8" Background="#1E293B" BorderThickness="1.5" Padding="12,10" Margin="0,0,8,10">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="BorderBrush" Value="#334155"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsSPO2AlertVisible}" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{Binding SPO2AlertBackground}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <StackPanel>
+                                                    <Grid Margin="0,0,0,6">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="&#xE95A;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#3B82F6" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                            <TextBlock Text="SPO2" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text=" (%)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <Border CornerRadius="6" Background="{Binding SPO2AlertBackground}" Visibility="{Binding IsSPO2AlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" HorizontalAlignment="Right">
                                                             <TextBlock Text="{Binding SPO2AlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
                                                         </Border>
-                                                    </StackPanel>
+                                                    </Grid>
                                                     <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalSPO2, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
+                                            </Border>
 
-                                                <!-- Temp -->
-                                                <StackPanel Margin="8,0,0,10">
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                                        <TextBlock Text="&#xE9CA;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#EF4444" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                        <TextBlock Text="Temp" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                        <TextBlock Text=" (°C)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
-                                                        <Border CornerRadius="8" Background="{Binding TempAlertBackground}" Visibility="{Binding IsTempAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <!-- Temperature Card -->
+                                            <Border CornerRadius="8" Background="#1E293B" BorderThickness="1.5" Padding="12,10" Margin="4,0,4,10">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="BorderBrush" Value="#334155"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsTempAlertVisible}" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{Binding TempAlertBackground}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <StackPanel>
+                                                    <Grid Margin="0,0,0,6">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="&#xE9CA;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#EF4444" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                            <TextBlock Text="Temp" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text=" (°C)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <Border CornerRadius="6" Background="{Binding TempAlertBackground}" Visibility="{Binding IsTempAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" HorizontalAlignment="Right">
                                                             <TextBlock Text="{Binding TempAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
                                                         </Border>
-                                                    </StackPanel>
+                                                    </Grid>
                                                     <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalTemp, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
+                                            </Border>
 
-                                                <!-- BP -->
-                                                <StackPanel Margin="0,0,8,10">
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                                        <TextBlock Text="&#xEC05;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#8B5CF6" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                        <TextBlock Text="Blood Pressure" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                        <TextBlock Text=" (mmHg)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
-                                                        <Border CornerRadius="8" Background="{Binding BPAlertBackground}" Visibility="{Binding IsBPAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <!-- Blood Pressure Card -->
+                                            <Border CornerRadius="8" Background="#1E293B" BorderThickness="1.5" Padding="12,10" Margin="8,0,0,10">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="BorderBrush" Value="#334155"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsBPAlertVisible}" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{Binding BPAlertBackground}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <StackPanel>
+                                                    <Grid Margin="0,0,0,6">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="&#xEC05;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#8B5CF6" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                            <TextBlock Text="BP" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text=" (mmHg)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <Border CornerRadius="6" Background="{Binding BPAlertBackground}" Visibility="{Binding IsBPAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" HorizontalAlignment="Right">
                                                             <TextBlock Text="{Binding BPAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
                                                         </Border>
-                                                    </StackPanel>
+                                                    </Grid>
                                                     <Grid>
                                                         <Grid.ColumnDefinitions>
                                                             <ColumnDefinition Width="*"/>
                                                             <ColumnDefinition Width="Auto"/>
                                                             <ColumnDefinition Width="*"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <TextBox Grid.Column="0" Style="{StaticResource CompactVitalInput}" Text="{Binding VitalSBP, UpdateSourceTrigger=PropertyChanged}" Tag="Systolic"/>
+                                                        <TextBox Grid.Column="0" Style="{StaticResource CompactVitalInput}" Text="{Binding VitalSBP, UpdateSourceTrigger=PropertyChanged}" Tag="Sys"/>
                                                         <TextBlock Grid.Column="1" Text="/" Margin="4,0,4,8" VerticalAlignment="Center" Foreground="{DynamicResource SubtextColor}" FontWeight="Bold"/>
-                                                        <TextBox Grid.Column="2" Style="{StaticResource CompactVitalInput}" Text="{Binding VitalDBP, UpdateSourceTrigger=PropertyChanged}" Tag="Diastolic"/>
+                                                        <TextBox Grid.Column="2" Style="{StaticResource CompactVitalInput}" Text="{Binding VitalDBP, UpdateSourceTrigger=PropertyChanged}" Tag="Dia"/>
                                                     </Grid>
                                                 </StackPanel>
+                                            </Border>
 
-                                                <!-- HR -->
-                                                <StackPanel Margin="8,0,0,10">
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                                        <TextBlock Text="&#xE95E;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#EC4899" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                        <TextBlock Text="Heart Rate" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                        <TextBlock Text=" (bpm)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
-                                                        <Border CornerRadius="8" Background="{Binding HRAlertBackground}" Visibility="{Binding IsHRAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <!-- Heart Rate Card -->
+                                            <Border CornerRadius="8" Background="#1E293B" BorderThickness="1.5" Padding="12,10" Margin="0,0,8,0">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="BorderBrush" Value="#334155"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsHRAlertVisible}" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{Binding HRAlertBackground}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <StackPanel>
+                                                    <Grid Margin="0,0,0,6">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="&#xE95E;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#EC4899" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                            <TextBlock Text="Heart Rate" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text=" (bpm)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <Border CornerRadius="6" Background="{Binding HRAlertBackground}" Visibility="{Binding IsHRAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" HorizontalAlignment="Right">
                                                             <TextBlock Text="{Binding HRAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
                                                         </Border>
-                                                    </StackPanel>
+                                                    </Grid>
                                                     <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalHR, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
+                                            </Border>
 
-                                                <!-- BS -->
-                                                <StackPanel Margin="0,0,8,10">
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                                        <TextBlock Text="&#xEA6C;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#10B981" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                        <TextBlock Text="Blood Sugar" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                        <TextBlock Text=" (mg/dL)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
-                                                        <Border CornerRadius="8" Background="{Binding BSAlertBackground}" Visibility="{Binding IsBSAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <!-- Blood Sugar Card -->
+                                            <Border CornerRadius="8" Background="#1E293B" BorderThickness="1.5" Padding="12,10" Margin="4,0,4,0">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="BorderBrush" Value="#334155"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsBSAlertVisible}" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{Binding BSAlertBackground}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <StackPanel>
+                                                    <Grid Margin="0,0,0,6">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="&#xEA6C;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#10B981" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                            <TextBlock Text="Blood Sugar" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text=" (mg/dL)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <Border CornerRadius="6" Background="{Binding BSAlertBackground}" Visibility="{Binding IsBSAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" HorizontalAlignment="Right">
                                                             <TextBlock Text="{Binding BSAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
                                                         </Border>
-                                                    </StackPanel>
+                                                    </Grid>
                                                     <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalBS, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
+                                            </Border>
 
-                                                <!-- RR -->
-                                                <StackPanel Margin="8,0,0,10">
-                                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                                        <TextBlock Text="&#xEC02;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#F59E0B" VerticalAlignment="Center" Margin="0,0,4,0"/>
-                                                        <TextBlock Text="Resp. Rate" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
-                                                        <TextBlock Text=" (bpm)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
-                                                        <Border CornerRadius="8" Background="{Binding RRAlertBackground}" Visibility="{Binding IsRRAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <!-- Respiratory Rate Card -->
+                                            <Border CornerRadius="8" Background="#1E293B" BorderThickness="1.5" Padding="12,10" Margin="8,0,0,0">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Setter Property="BorderBrush" Value="#334155"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsRRAlertVisible}" Value="True">
+                                                                <Setter Property="BorderBrush" Value="{Binding RRAlertBackground}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <StackPanel>
+                                                    <Grid Margin="0,0,0,6">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="&#xEC02;" FontFamily="Segoe MDL2 Assets" FontSize="12" Foreground="#F59E0B" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                            <TextBlock Text="Resp. Rate" Style="{StaticResource Subheading}" VerticalAlignment="Center"/>
+                                                            <TextBlock Text=" (bpm)" FontSize="11" Foreground="{DynamicResource SubtextColor}" VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                        <Border CornerRadius="6" Background="{Binding RRAlertBackground}" Visibility="{Binding IsRRAlertVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Padding="6,2" HorizontalAlignment="Right">
                                                             <TextBlock Text="{Binding RRAlertText}" Foreground="White" FontSize="9" FontWeight="Bold"/>
                                                         </Border>
-                                                    </StackPanel>
+                                                    </Grid>
                                                     <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding VitalRR, UpdateSourceTrigger=PropertyChanged}"/>
                                                 </StackPanel>
-                                            </UniformGrid>
+                                            </Border>
+                                        </UniformGrid>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 3. HPI & Physical Exam -->
+                                <ui:Card x:Name="CardHpi" Margin="0,0,0,12" Visibility="{Binding ShowComplaint, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE823;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="History of Present Illness (HPI) | القصة المرضية" Style="{StaticResource Header2}" Margin="0"/>
+                                            </StackPanel>
+                                            <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="HPI"/>
+                                        </Grid>
+                                        <ui:TextBox Text="{Binding HistoryOfPresentIllness, UpdateSourceTrigger=PropertyChanged}" Height="75" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,12"/>
+
+                                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,1,0,0" Padding="0,12,0,0">
+                                            <StackPanel x:Name="CardExam">
+                                                <Grid Margin="0,0,0,8">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="&#xE97C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                        <TextBlock Text="Examination | الفحص السريري" Style="{StaticResource Header2}" Margin="0"/>
+                                                    </StackPanel>
+                                                    <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="PhysicalExam"/>
+                                                </Grid>
+                                                <ui:TextBox Text="{Binding PhysicalExamination, UpdateSourceTrigger=PropertyChanged}" Height="75" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" Margin="0,0,0,8"/>
+                                                
+                                                <!-- Quick Narrative Chips for Physical Exam -->
+                                                <WrapPanel>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Chest Clear | الصدر صافي" Command="{Binding AppendTextCommand}" CommandParameter="Exam:Chest is clear / الصدر صافي بالإصغاء"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="ENT Normal | الحلق طبيعي" Command="{Binding AppendTextCommand}" CommandParameter="Exam:ENT normal / الأنف والأذن والحنجرة طبيعي"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Abdomen Soft | البطن لين" Command="{Binding AppendTextCommand}" CommandParameter="Exam:Abdomen soft, lax / البطن لين ولا يوجد مضض"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Stable | حالة مستقرة" Command="{Binding AppendTextCommand}" CommandParameter="Exam:General condition stable / الحالة العامة مستقرة"/>
+                                                </WrapPanel>
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 4. Diagnosis & Return -->
+                                <Border x:Name="CardDx" Style="{StaticResource AccentCardBorder}" Margin="0,0,0,12" Visibility="{Binding ShowDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="&#xE8FB;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Diagnosis &amp; Return | التشخيص والمراجعة" Style="{StaticResource Header2}"/>
                                         </StackPanel>
-                                    </ui:Card>
-                                
-<!-- Prescription -->
-                                    <ui:Card x:Name="CardRx" Margin="0,0,0,12" Visibility="{Binding ShowDrugs, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <Grid Margin="0,5,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="2*"/>
+                                                <ColumnDefinition Width="1*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Grid.Column="0" Margin="0,0,15,0">
+                                                <TextBlock Text="Diagnosis Description (Dx)" Style="{StaticResource Subheading}"/>
+                                                <TextBox Style="{StaticResource ModernTextBox}" Text="{Binding Diagnosis, UpdateSourceTrigger=PropertyChanged}" Tag="e.g. Flu, Tonsillitis | اكتب التشخيص الطبي هنا..."/>
+                                                
+                                                <!-- Quick Narrative Chips -->
+                                                <WrapPanel Margin="0,8,0,0">
+                                                    <Button Style="{StaticResource ChipButton}" Content="Flu | إنفلونزا" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Common Flu / إنفلونزا ونزلة برد"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Gastroenteritis | نزلة معوية" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Acute Gastroenteritis / التهاب المعدة والأمعاء الحاد"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Hypertension | ضغط مرتفع" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Hypertension / ارتفاع ضغط الدم الشرياني"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Tonsillitis | التهاب اللوزتين" Command="{Binding AppendTextCommand}" CommandParameter="Dx:Acute Tonsillitis / التهاب اللوزتين الحاد"/>
+                                                </WrapPanel>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1">
+                                                <TextBlock Text="Return Visit Date" Style="{StaticResource Subheading}"/>
+                                                <DatePicker SelectedDate="{Binding ReturnDate}" Height="36"/>
+                                            </StackPanel>
+                                        </Grid>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- 5. Prescription -->
+                                <ui:Card x:Name="CardRx" Margin="0,0,0,12" Visibility="{Binding ShowDrugs, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <StackPanel Orientation="Horizontal">
                                                 <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
                                                 <TextBlock Text="Prescription | الوصفة الطبية" Style="{StaticResource Header2}" Margin="0"/>
                                             </StackPanel>
-                                            <!-- Drug Search -->
-                                            <Grid Margin="0,0,0,8">
-                                                <ui:TextBox x:Name="DrugSearchTextBox" Text="{Binding DrugSearchText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Search medication name..." PreviewKeyDown="DrugSearchTextBox_PreviewKeyDown">
-                                                    <TextBox.InputBindings>
-                                                        <KeyBinding Key="Enter" Command="{Binding HandleDrugSearchEnterCommand}"/>
-                                                    </TextBox.InputBindings>
-                                                </ui:TextBox>
-                                                <Popup x:Name="DrugSuggestionsPopup" IsOpen="{Binding IsDrugSuggestionsOpen}" Placement="Bottom" StaysOpen="False" Width="260">
-                                                    <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="6" MaxHeight="180">
-                                                        <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                                            <ListBox x:Name="DrugSuggestionsListBox" ItemsSource="{Binding DrugSuggestions}" SelectedItem="{Binding SelectedSuggestedDrug}" PreviewKeyDown="DrugSuggestionsListBox_PreviewKeyDown">
-                                                                <ListBox.ItemTemplate>
-                                                                    <DataTemplate>
-                                                                        <TextBlock Text="{Binding}" Foreground="{DynamicResource TextColor}" Padding="5"/>
-                                                                    </DataTemplate>
-                                                                </ListBox.ItemTemplate>
-                                                            </ListBox>
-                                                        </ScrollViewer>
-                                                    </Border>
-                                                </Popup>
-                                            </Grid>
-
-                                            <ui:Button Appearance="Secondary" Content="Add to Prescription" Command="{Binding AddDrugCommand}" Height="34" Margin="0,0,0,10" HorizontalAlignment="Stretch"/>
-
-                                            <!-- Prescribed Drugs List (Clinic360 Inline Style) -->
-                                            <ItemsControl ItemsSource="{Binding PrescribedDrugs}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1.5" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
-                                                            <Grid>
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                </Grid.RowDefinitions>
-                                                                
-                                                                <!-- Row 1: Drug Name and Actions -->
-                                                                <Grid Grid.Row="0">
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                                        <TextBlock Text="&#xE966;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource PrimaryColor}" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                                        <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13.5" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
-                                                                    </StackPanel>
-                                                                    
-                                                                    <Button Grid.Column="1" Style="{StaticResource IconButton}" Tag="&#xE711;" ToolTip="Remove | حذف" Command="{Binding DataContext.RemoveDrugCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource AccentColor}" FontSize="15" VerticalAlignment="Center"/>
-                                                                </Grid>
-                                                                
-                                                                <!-- Row 2: Structured & Labeled Inputs -->
-                                                                <Grid Grid.Row="1" Margin="0,8,0,0">
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <Grid.RowDefinitions>
-                                                                        <RowDefinition Height="Auto"/>
-                                                                        <RowDefinition Height="Auto"/>
-                                                                    </Grid.RowDefinitions>
-                                                                    
-                                                                    <!-- Dose -->
-                                                                    <StackPanel Grid.Column="0" Grid.Row="0" Margin="0,0,6,8">
-                                                                        <TextBlock Text="Dose | الجرعة" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
-                                                                        <ui:TextBox Height="34" Text="{Binding Dose, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 1 tab / 5ml"/>
-                                                                    </StackPanel>
-                                                                    
-                                                                    <!-- Form -->
-                                                                    <StackPanel Grid.Column="1" Grid.Row="0" Margin="6,0,0,8">
-                                                                        <TextBlock Text="Form | الشكل" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
-                                                                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="34" IsEditable="True" Text="{Binding Type, UpdateSourceTrigger=PropertyChanged}">
-                                                                            <ComboBoxItem Content="Tablet | حبوب"/>
-                                                                            <ComboBoxItem Content="Capsule | كبسولة"/>
-                                                                            <ComboBoxItem Content="Syrup | شراب"/>
-                                                                            <ComboBoxItem Content="Injection | حقنة"/>
-                                                                            <ComboBoxItem Content="Drops | قطرات"/>
-                                                                            <ComboBoxItem Content="Ointment | مرهم"/>
-                                                                            <ComboBoxItem Content="Inhaler | بخاخ"/>
-                                                                        </ComboBox>
-                                                                    </StackPanel>
-                                                                    
-                                                                    <!-- Frequency -->
-                                                                    <StackPanel Grid.Column="0" Grid.Row="1" Margin="0,0,6,0">
-                                                                        <TextBlock Text="Frequency | التكرار" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
-                                                                        <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="34" IsEditable="True" Text="{Binding Time, UpdateSourceTrigger=PropertyChanged}">
-                                                                            <ComboBoxItem Content="1x Daily | مرة يومياً"/>
-                                                                            <ComboBoxItem Content="2x Daily (12h) | مرتين يومياً"/>
-                                                                            <ComboBoxItem Content="3x Daily (8h) | 3 مرات يومياً"/>
-                                                                            <ComboBoxItem Content="4x Daily (6h) | 4 مرات يومياً"/>
-                                                                            <ComboBoxItem Content="Every 4 hours | كل 4 ساعات"/>
-                                                                            <ComboBoxItem Content="As needed (PRN) | عند الحاجة"/>
-                                                                            <ComboBoxItem Content="Before bed | قبل النوم"/>
-                                                                        </ComboBox>
-                                                                    </StackPanel>
-                                                                    
-                                                                    <!-- Note -->
-                                                                    <StackPanel Grid.Column="1" Grid.Row="1" Margin="6,0,0,0">
-                                                                        <TextBlock Text="Note | ملاحظة" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
-                                                                        <ui:TextBox Height="34" Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. After meals"/>
-                                                                    </StackPanel>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </ui:Card>
-                                
-<!-- Investigations -->
-                                    <ui:Card x:Name="CardLabs" Margin="0,0,0,12" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                                <TextBlock Text="&#xF191;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                <TextBlock Text="Labs &amp; Investigations | التحاليل" Style="{StaticResource Header2}"/>
-                                            </StackPanel>
-                                            <Grid Margin="0,0,0,8">
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                </Grid.ColumnDefinitions>
-                                                <ComboBox x:Name="LabsComboBox" Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding InvestigationList}" Text="{Binding SelectedInvestigation, UpdateSourceTrigger=PropertyChanged}" Height="34" PreviewKeyDown="ComboBox_PreviewKeyDown"/>
-                                                <ui:Button Grid.Column="1" Appearance="Secondary" Content="Add" Command="{Binding AddInvestigationCommand}" Padding="15,0" Margin="8,0,0,0" Height="34"/>
-                                            </Grid>
-                                            <ItemsControl ItemsSource="{Binding AddedInvestigations}">
-                                                <ItemsControl.ItemTemplate>
-                                                    <DataTemplate>
-                                                        <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1.5" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
-                                                            <Grid>
-                                                                <Grid.RowDefinitions>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                    <RowDefinition Height="Auto"/>
-                                                                </Grid.RowDefinitions>
-                                                                
-                                                                <!-- Row 1: Title and Actions -->
-                                                                <Grid Grid.Row="0">
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
-                                                                    
-                                                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                                        <!-- Scan Document Button -->
-                                                                        <Button Style="{StaticResource IconButton}" Tag="&#xE294;" ToolTip="Scan Document | مسح ضوئي" Command="{Binding DataContext.ScanDocumentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource SecondaryColor}" FontSize="15" Margin="0,0,6,0"/>
-                                                                        <!-- Upload/Attach File Button -->
-                                                                        <Button Style="{StaticResource IconButton}" Tag="&#xE71B;" ToolTip="Attach File | إرفاق ملف" Command="{Binding DataContext.UploadInvestigationFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource PrimaryColor}" FontSize="15" Margin="0,0,6,0"/>
-                                                                        <!-- Print Button -->
-                                                                        <Button Style="{StaticResource IconButton}" Tag="&#xE749;" ToolTip="Print | طباعة" Command="{Binding DataContext.PrintClinicalAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource TextColor}" FontSize="15" Margin="0,0,6,0"/>
-                                                                        <!-- Delete Card Button -->
-                                                                        <Button Style="{StaticResource IconButton}" Tag="&#xE711;" ToolTip="Remove | حذف" Command="{Binding DataContext.RemoveInvestigationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource AccentColor}" FontSize="15"/>
-                                                                    </StackPanel>
-                                                                </Grid>
-                                                                
-                                                                <!-- Row 2: Attachment Details -->
-                                                                <Grid Grid.Row="1" Margin="0,6,0,0">
-                                                                    <!-- Case A: No File Attached (Dashed Rectangle border) -->
-                                                                    <Grid Visibility="{Binding AttachmentPath, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                                                                        <Rectangle Stroke="#475569" StrokeThickness="1" StrokeDashArray="3 3" RadiusX="6" RadiusY="6"/>
-                                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,6">
-                                                                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" Foreground="#64748B" FontSize="13" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                                            <TextBlock Text="No attachment | لم يتم إرفاق ملف" FontSize="11.5" Foreground="#64748B" VerticalAlignment="Center"/>
-                                                                        </StackPanel>
-                                                                    </Grid>
-                                                                    
-                                                                    <!-- Case B: Attached Image (Show Thumbnail with Hover View Button) -->
-                                                                    <StackPanel Orientation="Vertical" Visibility="{Binding IsImage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                                        <Grid Width="200" Height="130" HorizontalAlignment="Left" Margin="0,4,0,4">
-                                                                            <Border CornerRadius="6" ClipToBounds="True" Background="#0F172A" BorderBrush="#334155" BorderThickness="1.5">
-                                                                                <Image Source="{Binding AttachmentPath}" Stretch="Uniform"/>
-                                                                            </Border>
-                                                                            <!-- View Icon overlay button (Click to view fullscreen) -->
-                                                                            <Button Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                                                                    CommandParameter="{Binding AttachmentPath}"
-                                                                                    Style="{StaticResource IconButton}" 
-                                                                                    Tag="&#xE7B3;" 
-                                                                                    ToolTip="View Fullscreen | عرض ملء الشاشة" 
-                                                                                    Foreground="White" 
-                                                                                    Background="#80000000"
-                                                                                    HorizontalAlignment="Stretch"
-                                                                                    VerticalAlignment="Stretch">
-                                                                                <Button.Resources>
-                                                                                    <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
-                                                                                        <Setter Property="Opacity" Value="0"/>
-                                                                                        <Style.Triggers>
-                                                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                                                <Setter Property="Opacity" Value="1"/>
-                                                                                            </Trigger>
-                                                                                        </Style.Triggers>
-                                                                                    </Style>
-                                                                                </Button.Resources>
-                                                                            </Button>
-                                                                        </Grid>
-                                                                        <TextBlock Text="{Binding AttachmentName}" FontSize="11" Foreground="{DynamicResource SubtextColor}" TextTrimming="CharacterEllipsis" Margin="2,0,0,0"/>
-                                                                    </StackPanel>
-                                                                    
-                                                                    <!-- Case C: Attached Non-Image File (Show File Details & Open Button) -->
-                                                                    <Border Background="#0F172A" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="10,8" Visibility="{Binding IsNonImageFile, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                                        <Grid>
-                                                                            <Grid.ColumnDefinitions>
-                                                                                <ColumnDefinition Width="Auto"/>
-                                                                                <ColumnDefinition Width="*"/>
-                                                                                <ColumnDefinition Width="Auto"/>
-                                                                            </Grid.ColumnDefinitions>
-                                                                            <TextBlock Grid.Column="0" Text="&#xE1A5;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource PrimaryColor}" FontSize="16" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                                                            <TextBlock Grid.Column="1" Text="{Binding AttachmentName}" FontSize="12" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                                                            <Button Grid.Column="2" Style="{StaticResource IconButton}" Tag="&#xE8A7;" ToolTip="Open File | فتح الملف" Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding AttachmentPath}" Foreground="{DynamicResource TextColor}" FontSize="14" Margin="10,0,0,0"/>
-                                                                        </Grid>
-                                                                    </Border>
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </ItemsControl.ItemTemplate>
-                                            </ItemsControl>
-                                        </StackPanel>
-                                    </ui:Card>
-                                
-<!-- Imaging -->
-                                     <ui:Card x:Name="CardImaging" Margin="0,0,0,12" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                         <StackPanel>
-                                             <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                                 <TextBlock Text="&#xE91B;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                 <TextBlock Text="Imaging &amp; Radiology | الأشعة" Style="{StaticResource Header2}"/>
-                                             </StackPanel>
-                                             <Grid Margin="0,0,0,8">
-                                                 <Grid.ColumnDefinitions>
-                                                     <ColumnDefinition Width="*"/>
-                                                     <ColumnDefinition Width="Auto"/>
-                                                 </Grid.ColumnDefinitions>
-                                                 <ComboBox x:Name="ImagingComboBox" Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding ImagingList}" Text="{Binding SelectedImaging, UpdateSourceTrigger=PropertyChanged}" Height="34" PreviewKeyDown="ComboBox_PreviewKeyDown"/>
-                                                 <ui:Button Grid.Column="1" Appearance="Secondary" Content="Add" Command="{Binding AddImagingCommand}" Padding="15,0" Margin="8,0,0,0" Height="34"/>
-                                             </Grid>
-                                             <ItemsControl ItemsSource="{Binding AddedImagings}">
-                                                 <ItemsControl.ItemTemplate>
-                                                     <DataTemplate>
-                                                         <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1.5" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
-                                                             <Grid>
-                                                                 <Grid.RowDefinitions>
-                                                                     <RowDefinition Height="Auto"/>
-                                                                     <RowDefinition Height="Auto"/>
-                                                                 </Grid.RowDefinitions>
-                                                                 
-                                                                 <!-- Row 1: Title and Actions -->
-                                                                 <Grid Grid.Row="0">
-                                                                     <Grid.ColumnDefinitions>
-                                                                         <ColumnDefinition Width="*"/>
-                                                                         <ColumnDefinition Width="Auto"/>
-                                                                     </Grid.ColumnDefinitions>
-                                                                     <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
-                                                                     
-                                                                     <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                                                         <!-- Scan Document Button -->
-                                                                         <Button Style="{StaticResource IconButton}" Tag="&#xE294;" ToolTip="Scan Document | مسح ضوئي" Command="{Binding DataContext.ScanDocumentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource SecondaryColor}" FontSize="15" Margin="0,0,6,0"/>
-                                                                         <!-- Upload/Attach File Button -->
-                                                                         <Button Style="{StaticResource IconButton}" Tag="&#xE71B;" ToolTip="Attach File | إرفاق ملف" Command="{Binding DataContext.UploadImagingFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource PrimaryColor}" FontSize="15" Margin="0,0,6,0"/>
-                                                                         <!-- Print Button -->
-                                                                         <Button Style="{StaticResource IconButton}" Tag="&#xE749;" ToolTip="Print | طباعة" Command="{Binding DataContext.PrintClinicalAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource TextColor}" FontSize="15" Margin="0,0,6,0"/>
-                                                                         <!-- Delete Card Button -->
-                                                                         <Button Style="{StaticResource IconButton}" Tag="&#xE711;" ToolTip="Remove | حذف" Command="{Binding DataContext.RemoveImagingCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource AccentColor}" FontSize="15"/>
-                                                                     </StackPanel>
-                                                                 </Grid>
-                                                                 
-                                                                 <!-- Row 2: Attachment Details -->
-                                                                 <Grid Grid.Row="1" Margin="0,6,0,0">
-                                                                     <!-- Case A: No File Attached (Dashed Rectangle border) -->
-                                                                     <Grid Visibility="{Binding AttachmentPath, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
-                                                                         <Rectangle Stroke="#475569" StrokeThickness="1" StrokeDashArray="3 3" RadiusX="6" RadiusY="6"/>
-                                                                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="10,6">
-                                                                             <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" Foreground="#64748B" FontSize="13" VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                                                             <TextBlock Text="No attachment | لم يتم إرفاق ملف" FontSize="11.5" Foreground="#64748B" VerticalAlignment="Center"/>
-                                                                         </StackPanel>
-                                                                     </Grid>
-                                                                     
-                                                                     <!-- Case B: Attached Image (Show Thumbnail with Hover View Button) -->
-                                                                     <StackPanel Orientation="Vertical" Visibility="{Binding IsImage, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                                         <Grid Width="200" Height="130" HorizontalAlignment="Left" Margin="0,4,0,4">
-                                                                             <Border CornerRadius="6" ClipToBounds="True" Background="#0F172A" BorderBrush="#334155" BorderThickness="1.5">
-                                                                                 <Image Source="{Binding AttachmentPath}" Stretch="Uniform"/>
-                                                                             </Border>
-                                                                             <!-- View Icon overlay button (Click to view fullscreen) -->
-                                                                             <Button Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
-                                                                                     CommandParameter="{Binding AttachmentPath}"
-                                                                                     Style="{StaticResource IconButton}" 
-                                                                                     Tag="&#xE7B3;" 
-                                                                                     ToolTip="View Fullscreen | عرض ملء الشاشة" 
-                                                                                     Foreground="White" 
-                                                                                     Background="#80000000"
-                                                                                     HorizontalAlignment="Stretch"
-                                                                                     VerticalAlignment="Stretch">
-                                                                                 <Button.Resources>
-                                                                                     <Style TargetType="Button" BasedOn="{StaticResource IconButton}">
-                                                                                         <Setter Property="Opacity" Value="0"/>
-                                                                                         <Style.Triggers>
-                                                                                             <Trigger Property="IsMouseOver" Value="True">
-                                                                                                 <Setter Property="Opacity" Value="1"/>
-                                                                                             </Trigger>
-                                                                                         </Style.Triggers>
-                                                                                     </Style>
-                                                                                 </Button.Resources>
-                                                                             </Button>
-                                                                         </Grid>
-                                                                         <TextBlock Text="{Binding AttachmentName}" FontSize="11" Foreground="{DynamicResource SubtextColor}" TextTrimming="CharacterEllipsis" Margin="2,0,0,0"/>
-                                                                     </StackPanel>
-                                                                     
-                                                                     <!-- Case C: Attached Non-Image File (Show File Details & Open Button) -->
-                                                                     <Border Background="#0F172A" BorderBrush="#334155" BorderThickness="1" CornerRadius="6" Padding="10,8" Visibility="{Binding IsNonImageFile, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                                         <Grid>
-                                                                             <Grid.ColumnDefinitions>
-                                                                                 <ColumnDefinition Width="Auto"/>
-                                                                                 <ColumnDefinition Width="*"/>
-                                                                                 <ColumnDefinition Width="Auto"/>
-                                                                             </Grid.ColumnDefinitions>
-                                                                             <TextBlock Grid.Column="0" Text="&#xE1A5;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource PrimaryColor}" FontSize="16" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                                                             <TextBlock Grid.Column="1" Text="{Binding AttachmentName}" FontSize="12" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
-                                                                             <Button Grid.Column="2" Style="{StaticResource IconButton}" Tag="&#xE8A7;" ToolTip="Open File | فتح الملف" Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding AttachmentPath}" Foreground="{DynamicResource TextColor}" FontSize="14" Margin="10,0,0,0"/>
-                                                                         </Grid>
-                                                                     </Border>
-                                                                 </Grid>
-                                                             </Grid>
-                                                         </Border>
-                                                     </DataTemplate>
-                                                 </ItemsControl.ItemTemplate>
-                                             </ItemsControl>
-                                        </StackPanel>
-                                    </ui:Card>
-                                
-<!-- Patient History & Lifestyle (Clinic360 persistent fields) -->
-                                    <ui:Card x:Name="CardHistory" Margin="0,0,0,12">
-                                        <StackPanel>
-                                            <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                                                <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
-                                                <TextBlock Text="Patient History &amp; Lifestyle | التاريخ المرضي" Style="{StaticResource Header2}"/>
-                                            </StackPanel>
-                                            <StackPanel Margin="0,4,0,0">
-                                                <TextBlock Text="Allergies | الحساسية" Style="{StaticResource Subheading}"/>
-                                                <ui:TextBox Text="{Binding CurrentPatient.Allergy, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Enter allergies..." Margin="0,0,0,10"/>
-                                                
-                                                <TextBlock Text="Smoking | التدخين" Style="{StaticResource Subheading}"/>
-                                                <ui:TextBox Text="{Binding CurrentPatient.Smoking, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 10 cig/day for 5 yrs" Margin="0,0,0,10"/>
-                                                
-                                                <TextBlock Text="Alcohol | الكحول" Style="{StaticResource Subheading}"/>
-                                                <ui:TextBox Text="{Binding CurrentPatient.Alcohol, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. None, Occasional" Margin="0,0,0,5"/>
-                                            </StackPanel>
-                                        </StackPanel>
-                                    </ui:Card>
-                                
-<!-- Past Visits History -->
-                                    <Border Style="{StaticResource AccentCardBorder}" Padding="15">
-                                        <Expander Header="Past Visits History | سجل الزيارات" Style="{StaticResource {x:Type Expander}}" ExpandDirection="Down">
-                                            <ScrollViewer Height="220" VerticalScrollBarVisibility="Auto">
-                                                <ItemsControl ItemsSource="{Binding VisitHistory}" Margin="0,10,0,0">
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,8">
-                                                                <StackPanel>
-                                                                    <Grid>
-                                                                        <TextBlock Text="{Binding VisitDate, StringFormat='\{0:dd/MM/yyyy HH:mm\}'}" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}"/>
-                                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                                                            <Button Content="Print Report" Style="{StaticResource LinkButton}" Command="{Binding DataContext.PrintVisitReportCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
-                                                                        </StackPanel>
-                                                                    </Grid>
-                                                                    <TextBlock Text="{Binding Diagnosis, StringFormat='Diagnosis: {0}'}" FontSize="11" Margin="0,4,0,2" Foreground="{DynamicResource TextColor}" TextWrapping="Wrap"/>
-                                                                    <TextBlock Text="{Binding ChiefComplaint, StringFormat='Complaint: {0}'}" FontSize="11" Margin="0,0,0,2" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap"/>
-                                                                    <TextBlock Text="{Binding Prescription, StringFormat='Rx: {0}'}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryColor}" TextWrapping="Wrap"/>
-                                                                </StackPanel>
-                                                            </Border>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
-                                                </ItemsControl>
+                                            <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="Prescription"/>
+                                        </Grid>
+                                        
+                                        <!-- Drug Search -->
+                                        <Grid Margin="0,0,0,8">
+                                            <ui:TextBox x:Name="DrugSearchTextBox" Text="{Binding DrugSearchText, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Search medication name..." PreviewKeyDown="DrugSearchTextBox_PreviewKeyDown">
+                                                <TextBox.InputBindings>
+                                                    <KeyBinding Key="Enter" Command="{Binding HandleDrugSearchEnterCommand}"/>
+                                                </TextBox.InputBindings>
+                                            </ui:TextBox>
+                                            <Popup x:Name="DrugSuggestionsPopup" IsOpen="{Binding IsDrugSuggestionsOpen}" Placement="Bottom" StaysOpen="False" Width="280">
+                                                <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="6" MaxHeight="180">
+                                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                                        <ListBox x:Name="DrugSuggestionsListBox" ItemsSource="{Binding DrugSuggestions}" SelectedItem="{Binding SelectedSuggestedDrug}" PreviewKeyDown="DrugSuggestionsListBox_PreviewKeyDown">
+                                                            <ListBox.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <TextBlock Text="{Binding}" Foreground="{DynamicResource TextColor}" Padding="5"/>
+                                                                </DataTemplate>
+                                                            </ListBox.ItemTemplate>
+                                                        </ListBox>
+                                                    </ScrollViewer>
+                                                </Border>
+                                            </Popup>
+                                        </Grid>
+                                        
+                                        <!-- Add Button and Drug Presets -->
+                                        <Grid Margin="0,0,0,10">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ui:Button Grid.Column="0" Appearance="Secondary" Content="Add to Prescription" Command="{Binding AddDrugCommand}" Height="34" Padding="15,0" Margin="0,0,12,0"/>
+                                            
+                                            <!-- Quick Presets -->
+                                            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <Button Style="{StaticResource ChipButton}" Content="Panadol (500mg)" Command="{Binding AddPresetDrugCommand}" CommandParameter="Panadol 500mg|1 tab|Tablet | حبوب|3x Daily | 3 مرات يومياً|After meals"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Amoxil (500mg)" Command="{Binding AddPresetDrugCommand}" CommandParameter="Amoxil 500mg|1 cap|Capsule | كبسولة|3x Daily | 3 مرات يومياً|For 7 days"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Brufen (400mg)" Command="{Binding AddPresetDrugCommand}" CommandParameter="Brufen 400mg|1 tab|Tablet | حبوب|2x Daily | مرتين يومياً|After meals"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Cough Syrup" Command="{Binding AddPresetDrugCommand}" CommandParameter="Cough Syrup|5ml|Syrup | شراب|3x Daily | 3 مرات يومياً|After meals"/>
+                                                    <Button Style="{StaticResource ChipButton}" Content="Salbutamol" Command="{Binding AddPresetDrugCommand}" CommandParameter="Salbutamol Inhaler|2 puffs|Inhaler | بخاخ|As needed | عند الحاجة|When short of breath"/>
+                                                </StackPanel>
                                             </ScrollViewer>
-                                        </Expander>
-                                    </Border>
+                                        </Grid>
+
+                                        <!-- Prescribed Drugs List (Clinic360 Inline Style) -->
+                                        <ItemsControl ItemsSource="{Binding PrescribedDrugs}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1.5" CornerRadius="8" Padding="12,10" Margin="0,0,0,8">
+                                                        <Grid>
+                                                            <Grid.RowDefinitions>
+                                                                <RowDefinition Height="Auto"/>
+                                                                <RowDefinition Height="Auto"/>
+                                                            </Grid.RowDefinitions>
+                                                            
+                                                            <!-- Row 1: Drug Name and Actions -->
+                                                            <Grid Grid.Row="0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                    <TextBlock Text="&#xE966;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource PrimaryColor}" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13.5" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+                                                                </StackPanel>
+                                                                
+                                                                <Button Grid.Column="1" Style="{StaticResource IconButton}" Tag="&#xE711;" ToolTip="Remove | حذف" Command="{Binding DataContext.RemoveDrugCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource AccentColor}" FontSize="15" VerticalAlignment="Center"/>
+                                                            </Grid>
+                                                            
+                                                            <!-- Row 2: Structured & Labeled Inputs -->
+                                                            <Grid Grid.Row="1" Margin="0,8,0,0">
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                
+                                                                <!-- Dose -->
+                                                                <StackPanel Grid.Column="0" Margin="0,0,6,0">
+                                                                    <TextBlock Text="Dose | الجرعة" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
+                                                                    <ui:TextBox Height="34" Text="{Binding Dose, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 1 tab / 5ml"/>
+                                                                </StackPanel>
+                                                                
+                                                                <!-- Form -->
+                                                                <StackPanel Grid.Column="1" Margin="6,0,6,0">
+                                                                    <TextBlock Text="Form | الشكل" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
+                                                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="34" IsEditable="True" Text="{Binding Type, UpdateSourceTrigger=PropertyChanged}">
+                                                                        <ComboBoxItem Content="Tablet | حبوب"/>
+                                                                        <ComboBoxItem Content="Capsule | كبسولة"/>
+                                                                        <ComboBoxItem Content="Syrup | شراب"/>
+                                                                        <ComboBoxItem Content="Injection | حقنة"/>
+                                                                        <ComboBoxItem Content="Drops | قطرات"/>
+                                                                        <ComboBoxItem Content="Ointment | مرهم"/>
+                                                                        <ComboBoxItem Content="Inhaler | بخاخ"/>
+                                                                    </ComboBox>
+                                                                </StackPanel>
+                                                                
+                                                                <!-- Frequency -->
+                                                                <StackPanel Grid.Column="2" Margin="6,0,6,0">
+                                                                    <TextBlock Text="Frequency | التكرار" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
+                                                                    <ComboBox Style="{StaticResource MaterialDesignOutlinedComboBox}" Height="34" IsEditable="True" Text="{Binding Time, UpdateSourceTrigger=PropertyChanged}">
+                                                                        <ComboBoxItem Content="1x Daily | مرة يومياً"/>
+                                                                        <ComboBoxItem Content="2x Daily (12h) | مرتين يومياً"/>
+                                                                        <ComboBoxItem Content="3x Daily (8h) | 3 مرات يومياً"/>
+                                                                        <ComboBoxItem Content="4x Daily (6h) | 4 مرات يومياً"/>
+                                                                        <ComboBoxItem Content="Every 4 hours | كل 4 ساعات"/>
+                                                                        <ComboBoxItem Content="As needed (PRN) | عند الحاجة"/>
+                                                                        <ComboBoxItem Content="Before bed | قبل النوم"/>
+                                                                    </ComboBox>
+                                                                </StackPanel>
+                                                                
+                                                                <!-- Note -->
+                                                                <StackPanel Grid.Column="3" Margin="6,0,0,0">
+                                                                    <TextBlock Text="Note | ملاحظة" FontSize="11" Foreground="{DynamicResource SubtextColor}" Margin="0,0,0,4"/>
+                                                                    <ui:TextBox Height="34" Text="{Binding Note, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. After meals"/>
+                                                                </StackPanel>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 6. Labs & Investigations -->
+                                <ui:Card x:Name="CardLabs" Margin="0,0,0,12" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="&#xF191;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Labs &amp; Investigations | التحاليل" Style="{StaticResource Header2}"/>
+                                        </StackPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ComboBox x:Name="LabsComboBox" Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding InvestigationList}" Text="{Binding SelectedInvestigation, UpdateSourceTrigger=PropertyChanged}" Height="34" PreviewKeyDown="ComboBox_PreviewKeyDown"/>
+                                            <ui:Button Grid.Column="1" Appearance="Secondary" Content="Add" Command="{Binding AddInvestigationCommand}" Padding="15,0" Margin="8,0,0,0" Height="34"/>
+                                        </Grid>
+                                        
+                                        <!-- Investigations Items List -->
+                                        <ItemsControl ItemsSource="{Binding AddedInvestigations}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1.5" CornerRadius="8" Padding="12,8" Margin="0,0,0,8">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            
+                                                            <!-- Left: Attachment Status & Name -->
+                                                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                                                <TextBlock Text="&#xF191;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource PrimaryColor}" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                                                
+                                                                <!-- File Attachment Chip -->
+                                                                <Grid VerticalAlignment="Center">
+                                                                    <!-- Case A: No File -->
+                                                                    <Border Background="#334155" CornerRadius="4" Padding="6,3" Visibility="{Binding AttachmentPath, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" Foreground="#64748B" FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="No file" FontSize="10" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                    
+                                                                    <!-- Case B: Attached File -->
+                                                                    <Button Style="{StaticResource LinkButton}" Content="{Binding AttachmentName}" Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding AttachmentPath}" Visibility="{Binding AttachmentPath, Converter={StaticResource NullToVisibilityConverter}}" FontSize="11" Foreground="#10B981" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                                </Grid>
+                                                            </StackPanel>
+                                                            
+                                                            <!-- Right: Action Buttons -->
+                                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                                <Button Style="{StaticResource IconButton}" Tag="&#xE294;" ToolTip="Scan Document" Command="{Binding DataContext.ScanDocumentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource SecondaryColor}" FontSize="14" Margin="0,0,6,0"/>
+                                                                <Button Style="{StaticResource IconButton}" Tag="&#xE71B;" ToolTip="Attach File" Command="{Binding DataContext.UploadInvestigationFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource PrimaryColor}" FontSize="14" Margin="0,0,6,0"/>
+                                                                <Button Style="{StaticResource IconButton}" Tag="&#xE749;" ToolTip="Print Attachment" Command="{Binding DataContext.PrintClinicalAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource TextColor}" FontSize="14" Margin="0,0,6,0" Visibility="{Binding AttachmentPath, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                                                <Button Style="{StaticResource IconButton}" Tag="&#xE711;" ToolTip="Remove" Command="{Binding DataContext.RemoveInvestigationCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource AccentColor}" FontSize="14"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 7. Imaging & Radiology -->
+                                <ui:Card x:Name="CardImaging" Margin="0,0,0,12" Visibility="{Binding ShowInvestigation, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE91B;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Imaging &amp; Radiology | الأشعة" Style="{StaticResource Header2}" Margin="0"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Grid Margin="0,0,0,8">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <ComboBox x:Name="ImagingComboBox" Grid.Column="0" Style="{StaticResource MaterialDesignOutlinedComboBox}" IsEditable="True" ItemsSource="{Binding ImagingList}" Text="{Binding SelectedImaging, UpdateSourceTrigger=PropertyChanged}" Height="34" PreviewKeyDown="ComboBox_PreviewKeyDown"/>
+                                            <ui:Button Grid.Column="1" Appearance="Secondary" Content="Add" Command="{Binding AddImagingCommand}" Padding="15,0" Margin="8,0,0,0" Height="34"/>
+                                        </Grid>
+                                        
+                                        <!-- Imaging Items List -->
+                                        <ItemsControl ItemsSource="{Binding AddedImagings}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border Background="#1E293B" BorderBrush="#334155" BorderThickness="1.5" CornerRadius="8" Padding="12,8" Margin="0,0,0,8">
+                                                        <Grid>
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*"/>
+                                                                <ColumnDefinition Width="Auto"/>
+                                                            </Grid.ColumnDefinitions>
+                                                            
+                                                            <!-- Left: Attachment Status & Name -->
+                                                            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                                                                <TextBlock Text="&#xE91B;" FontFamily="Segoe MDL2 Assets" Foreground="{DynamicResource PrimaryColor}" FontSize="14" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center" Margin="0,0,15,0"/>
+                                                                
+                                                                <!-- File Attachment Chip -->
+                                                                <Grid VerticalAlignment="Center">
+                                                                    <!-- Case A: No File -->
+                                                                    <Border Background="#334155" CornerRadius="4" Padding="6,3" Visibility="{Binding AttachmentPath, Converter={StaticResource NullToVisibilityConverter}, ConverterParameter=inverse}">
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            <TextBlock Text="&#xE7BA;" FontFamily="Segoe MDL2 Assets" Foreground="#64748B" FontSize="11" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                                                                            <TextBlock Text="No file" FontSize="10" Foreground="#94A3B8" VerticalAlignment="Center"/>
+                                                                        </StackPanel>
+                                                                    </Border>
+                                                                    
+                                                                    <!-- Case B: Attached File -->
+                                                                    <Button Style="{StaticResource LinkButton}" Content="{Binding AttachmentName}" Command="{Binding DataContext.OpenAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding AttachmentPath}" Visibility="{Binding AttachmentPath, Converter={StaticResource NullToVisibilityConverter}}" FontSize="11" Foreground="#10B981" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                                </Grid>
+                                                            </StackPanel>
+                                                            
+                                                            <!-- Right: Action Buttons -->
+                                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                                                <Button Style="{StaticResource IconButton}" Tag="&#xE294;" ToolTip="Scan Document" Command="{Binding DataContext.ScanDocumentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource SecondaryColor}" FontSize="14" Margin="0,0,6,0"/>
+                                                                <Button Style="{StaticResource IconButton}" Tag="&#xE71B;" ToolTip="Attach File" Command="{Binding DataContext.UploadImagingFileCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource PrimaryColor}" FontSize="14" Margin="0,0,6,0"/>
+                                                                <Button Style="{StaticResource IconButton}" Tag="&#xE749;" ToolTip="Print Attachment" Command="{Binding DataContext.PrintClinicalAttachmentCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource TextColor}" FontSize="14" Margin="0,0,6,0" Visibility="{Binding AttachmentPath, Converter={StaticResource NullToVisibilityConverter}}"/>
+                                                                <Button Style="{StaticResource IconButton}" Tag="&#xE711;" ToolTip="Remove" Command="{Binding DataContext.RemoveImagingCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Foreground="{DynamicResource AccentColor}" FontSize="14"/>
+                                                            </StackPanel>
+                                                        </Grid>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 8. Treatment Plan / Notes -->
+                                <ui:Card x:Name="CardPlan" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <Grid Margin="0,0,0,8">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="&#xE70F;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Treatment Plan / Notes | خطة العلاج والملاحظات" Style="{StaticResource Header2}" Margin="0"/>
+                                            </StackPanel>
+                                            <Button HorizontalAlignment="Right" Style="{StaticResource IconButton}" Tag="&#xE720;" Command="{Binding SimulateVoiceInputCommand}" CommandParameter="TreatmentPlan"/>
+                                        </Grid>
+                                        <ui:TextBox Text="{Binding TreatmentPlan, UpdateSourceTrigger=PropertyChanged}" Height="75" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
+                                        
+                                        <!-- Quick Narrative Chips for Treatment Plan -->
+                                        <WrapPanel Margin="0,8,0,0">
+                                            <Button Style="{StaticResource ChipButton}" Content="Bed rest | الراحة التامة" Command="{Binding AppendTextCommand}" CommandParameter="Plan:Bed rest / الراحة التامة والتعافي"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Drink fluids | سوائل دافئة" Command="{Binding AppendTextCommand}" CommandParameter="Plan:Drink plenty of warm fluids / الإكثار من شرب السوائل الدافئة والماء"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Follow-up | مراجعة" Command="{Binding AppendTextCommand}" CommandParameter="Plan:Follow up in 3 days / مراجعة العيادة بعد 3 أيام عند عدم التحسن"/>
+                                            <Button Style="{StaticResource ChipButton}" Content="Avoid fat | تجنب الدهون" Command="{Binding AppendTextCommand}" CommandParameter="Plan:Avoid fatty foods / تجنب تناول الأطعمة الدسمة والمقلية"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 9. Obstetrics & Gynecology (Conditional) -->
+                                <ui:Card Margin="0,0,0,12" Visibility="{Binding ShowObstetricsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <TextBlock Text="Obstetrics &amp; Gynecology | التوليد والنساء" Style="{StaticResource Header2}"/>
+                                        <WrapPanel Margin="0,5,0,0">
+                                            <StackPanel Margin="0,0,15,8" Width="110">
+                                                <TextBlock Text="LMP" Style="{StaticResource Subheading}"/>
+                                                <DatePicker SelectedDate="{Binding ObLMP}" Height="34"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,15,8" Width="110">
+                                                <TextBlock Text="EDD" Style="{StaticResource Subheading}"/>
+                                                <DatePicker SelectedDate="{Binding ObEDD}" Height="34"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,15,8" Width="70">
+                                                <TextBlock Text="Gravida" Style="{StaticResource Subheading}"/>
+                                                <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding ObGravida}"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,15,8" Width="70">
+                                                <TextBlock Text="Para" Style="{StaticResource Subheading}"/>
+                                                <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding ObPara}"/>
+                                            </StackPanel>
+                                            <StackPanel Margin="0,0,15,8" Width="70">
+                                                <TextBlock Text="Abortion" Style="{StaticResource Subheading}"/>
+                                                <TextBox Style="{StaticResource CompactVitalInput}" Text="{Binding ObAbortion}"/>
+                                            </StackPanel>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 10. Review of Systems (ROS) -->
+                                <ui:Card Margin="0,0,0,12" Visibility="{Binding ShowSystemReviewSection, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel>
+                                        <TextBlock Text="Review of Systems (ROS) | فحص أجهزة الجسم" Style="{StaticResource Header2}"/>
+                                        <StackPanel>
+                                            <WrapPanel>
+                                                <CheckBox Content="CVS" IsChecked="{Binding SysShowCVS}" Margin="0,0,20,8"/>
+                                                <CheckBox Content="Respiratory" IsChecked="{Binding SysShowResp}" Margin="0,0,20,8"/>
+                                                <CheckBox Content="GI" IsChecked="{Binding SysShowGI}" Margin="0,0,20,8"/>
+                                                <CheckBox Content="Neurological" IsChecked="{Binding SysShowCNS}" Margin="0,0,20,8"/>
+                                                <CheckBox Content="Other systems" IsChecked="{Binding SysShowOther}" Margin="0,0,20,8"/>
+                                            </WrapPanel>
+                                            <Grid Margin="0,10,0,0">
+                                                <StackPanel>
+                                                    <ui:TextBox Text="{Binding SysReviewCVS, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="CVS Findings..." Margin="0,0,0,8" Visibility="{Binding SysShowCVS, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                    <ui:TextBox Text="{Binding SysReviewResp, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Respiratory..." Margin="0,0,0,8" Visibility="{Binding SysShowResp, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                    <ui:TextBox Text="{Binding SysReviewGI, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="GI..." Margin="0,0,0,8" Visibility="{Binding SysShowGI, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                    <ui:TextBox Text="{Binding SysReviewCNS, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Neurological..." Margin="0,0,0,8" Visibility="{Binding SysShowCNS, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                    <ui:TextBox Text="{Binding SysReviewOther, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Other..." Margin="0,0,0,8" Visibility="{Binding SysShowOther, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 11. Patient History & Lifestyle -->
+                                <ui:Card x:Name="CardHistory" Margin="0,0,0,12">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                            <TextBlock Text="&#xE81C;" FontFamily="Segoe MDL2 Assets" FontSize="14" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                            <TextBlock Text="Patient History &amp; Lifestyle | التاريخ المرضي" Style="{StaticResource Header2}"/>
+                                        </StackPanel>
+                                        <StackPanel Margin="0,4,0,0">
+                                            <TextBlock Text="Allergies | الحساسية" Style="{StaticResource Subheading}"/>
+                                            <ui:TextBox Text="{Binding PatientAllergy, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Enter allergies..." Margin="0,0,0,10"/>
+                                            
+                                            <TextBlock Text="Smoking | التدخين" Style="{StaticResource Subheading}"/>
+                                            <ui:TextBox Text="{Binding PatientSmoking, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. 10 cig/day for 5 yrs" Margin="0,0,0,10"/>
+                                            
+                                            <TextBlock Text="Alcohol | الكحول" Style="{StaticResource Subheading}"/>
+                                            <ui:TextBox Text="{Binding PatientAlcohol, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="e.g. None, Occasional" Margin="0,0,0,5"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </ui:Card>
+
+                                <!-- 12. Past Visits History -->
+                                <Border Style="{StaticResource AccentCardBorder}" Padding="15">
+                                    <Expander Header="Past Visits History | سجل الزيارات" Style="{StaticResource {x:Type Expander}}" ExpandDirection="Down">
+                                        <ScrollViewer Height="220" VerticalScrollBarVisibility="Auto">
+                                            <ItemsControl ItemsSource="{Binding VisitHistory}" Margin="0,10,0,0">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="0,0,0,8" Margin="0,0,0,8">
+                                                            <StackPanel>
+                                                                <Grid>
+                                                                    <TextBlock Text="{Binding VisitDate, StringFormat='\{0:dd/MM/yyyy HH:mm\}'}" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}"/>
+                                                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                                        <Button Content="Print Report" Style="{StaticResource LinkButton}" Command="{Binding DataContext.PrintVisitReportCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                                                    </StackPanel>
+                                                                </Grid>
+                                                                <TextBlock Text="{Binding Diagnosis, StringFormat='Diagnosis: {0}'}" FontSize="11" Margin="0,4,0,2" Foreground="{DynamicResource TextColor}" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="{Binding ChiefComplaint, StringFormat='Complaint: {0}'}" FontSize="11" Margin="0,0,0,2" Foreground="{DynamicResource SubtextColor}" TextWrapping="Wrap"/>
+                                                                <TextBlock Text="{Binding Prescription, StringFormat='Rx: {0}'}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryColor}" TextWrapping="Wrap"/>
+                                                            </StackPanel>
+                                                        </Border>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                            </ItemsControl>
+                                        </ScrollViewer>
+                                    </Expander>
+                                </Border>
                                 </StackPanel>
-                            </Grid>
                         </ScrollViewer>
 
                         <!-- COL 2: RIGHT PATIENT DOSSIER PANEL -->

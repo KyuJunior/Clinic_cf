@@ -158,18 +158,23 @@ namespace MedicalApp.ViewModels
 
         // Visit Form Fields
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasChiefComplaint))]
         private string _chiefComplaint = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasHPI))]
         private string _historyOfPresentIllness = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasPhysicalExam))]
         private string _physicalExamination = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasDiagnosis))]
         private string _diagnosis = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasTreatmentPlan))]
         private string _treatmentPlan = string.Empty;
 
         [ObservableProperty]
@@ -206,6 +211,26 @@ namespace MedicalApp.ViewModels
 
         public string PatientVisitDate => DateTime.Now.ToString("MMMM dd, yyyy");
 
+        // Computed indicators for sidebar badge dots
+        public bool HasChiefComplaint => !string.IsNullOrWhiteSpace(ChiefComplaint);
+        public bool HasHPI => !string.IsNullOrWhiteSpace(HistoryOfPresentIllness);
+        public bool HasPhysicalExam => !string.IsNullOrWhiteSpace(PhysicalExamination);
+        public bool HasDiagnosis => !string.IsNullOrWhiteSpace(Diagnosis);
+        public bool HasTreatmentPlan => !string.IsNullOrWhiteSpace(TreatmentPlan);
+        public bool HasVitals => !string.IsNullOrWhiteSpace(VitalHR) ||
+                                 !string.IsNullOrWhiteSpace(VitalSBP) ||
+                                 !string.IsNullOrWhiteSpace(VitalDBP) ||
+                                 !string.IsNullOrWhiteSpace(VitalRR) ||
+                                 !string.IsNullOrWhiteSpace(VitalSPO2) ||
+                                 !string.IsNullOrWhiteSpace(VitalTemp);
+        public bool HasPrescription => PrescribedDrugs != null && PrescribedDrugs.Count > 0;
+        public bool HasInvestigations => AddedInvestigations != null && AddedInvestigations.Count > 0;
+        public bool HasImaging => AddedImagings != null && AddedImagings.Count > 0;
+        public bool HasHistory => CurrentPatient != null && (
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.Allergy) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.Smoking) ||
+                                  !string.IsNullOrWhiteSpace(CurrentPatient.Alcohol));
+
         [RelayCommand]
         private void ToggleSidebar()
         {
@@ -233,21 +258,27 @@ namespace MedicalApp.ViewModels
 
         // Vital Signs Fields
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasVitals))]
         private string _vitalHR = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasVitals))]
         private string _vitalSBP = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasVitals))]
         private string _vitalDBP = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasVitals))]
         private string _vitalRR = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasVitals))]
         private string _vitalSPO2 = string.Empty;
 
         [ObservableProperty]
+        [NotifyPropertyChangedFor(nameof(HasVitals))]
         private string _vitalTemp = string.Empty;
 
 
@@ -335,9 +366,16 @@ namespace MedicalApp.ViewModels
                 TriggerAutoSave();
                 OnPropertyChanged(nameof(HasNoPrescribedDrugs));
                 OnPropertyChanged(nameof(HasPrescribedDrugs));
+                OnPropertyChanged(nameof(HasPrescription));
             };
-            _addedInvestigations.CollectionChanged += (s, e) => TriggerAutoSave();
-            _addedImagings.CollectionChanged += (s, e) => TriggerAutoSave();
+            _addedInvestigations.CollectionChanged += (s, e) => {
+                TriggerAutoSave();
+                OnPropertyChanged(nameof(HasInvestigations));
+            };
+            _addedImagings.CollectionChanged += (s, e) => {
+                TriggerAutoSave();
+                OnPropertyChanged(nameof(HasImaging));
+            };
 
             // Load initial patient context and subscribe to selection updates
             CurrentPatient = _sharedStateService.CurrentPatient;
@@ -525,6 +563,10 @@ namespace MedicalApp.ViewModels
                 ClearFormFieldsWithoutAutoSave();
             }
             OnPropertyChanged(nameof(ShowObstetricsCard));
+            OnPropertyChanged(nameof(HasHistory));
+            OnPropertyChanged(nameof(PatientAllergy));
+            OnPropertyChanged(nameof(PatientSmoking));
+            OnPropertyChanged(nameof(PatientAlcohol));
         }
 
         async partial void OnSearchTermChanged(string value)
@@ -992,12 +1034,32 @@ namespace MedicalApp.ViewModels
         }
 
         [RelayCommand]
-        public void SelectSuggestedDrug(string drugName)
+        public void AddPresetDrug(string presetInfo)
         {
-            if (!string.IsNullOrEmpty(drugName))
+            if (string.IsNullOrWhiteSpace(presetInfo)) return;
+            
+            // Format: Name|Dose|Type|Time|Note
+            var parts = presetInfo.Split('|');
+            if (parts.Length > 0)
             {
-                DrugSearchText = drugName;
-                AddDrug();
+                string name = parts[0].Trim();
+                string dose = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+                string type = parts.Length > 2 ? parts[2].Trim() : string.Empty;
+                string time = parts.Length > 3 ? parts[3].Trim() : string.Empty;
+                string note = parts.Length > 4 ? parts[4].Trim() : string.Empty;
+
+                if (!PrescribedDrugs.Any(d => d.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    var med = new PrescribedMedication
+                    {
+                        Name = name,
+                        Dose = dose,
+                        Type = type,
+                        Time = time,
+                        Note = note
+                    };
+                    PrescribedDrugs.Add(med);
+                }
             }
         }
 
@@ -1010,6 +1072,62 @@ namespace MedicalApp.ViewModels
             {
                 SelectSuggestedDrug(value);
                 SelectedSuggestedDrug = null;
+            }
+        }
+
+        [RelayCommand]
+        public void SelectSuggestedDrug(string drugName)
+        {
+            if (!string.IsNullOrEmpty(drugName))
+            {
+                DrugSearchText = drugName;
+                AddDrug();
+            }
+        }
+
+        // Direct bindings to support real-time HasHistory green dots without model subscriptions
+        public string PatientAllergy
+        {
+            get => CurrentPatient?.Allergy ?? string.Empty;
+            set
+            {
+                if (CurrentPatient != null && CurrentPatient.Allergy != value)
+                {
+                    CurrentPatient.Allergy = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(HasHistory));
+                    TriggerAutoSave();
+                }
+            }
+        }
+
+        public string PatientSmoking
+        {
+            get => CurrentPatient?.Smoking ?? string.Empty;
+            set
+            {
+                if (CurrentPatient != null && CurrentPatient.Smoking != value)
+                {
+                    CurrentPatient.Smoking = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(HasHistory));
+                    TriggerAutoSave();
+                }
+            }
+        }
+
+        public string PatientAlcohol
+        {
+            get => CurrentPatient?.Alcohol ?? string.Empty;
+            set
+            {
+                if (CurrentPatient != null && CurrentPatient.Alcohol != value)
+                {
+                    CurrentPatient.Alcohol = value;
+                    OnPropertyChanged();
+                    OnPropertyChanged(nameof(HasHistory));
+                    TriggerAutoSave();
+                }
             }
         }
 
