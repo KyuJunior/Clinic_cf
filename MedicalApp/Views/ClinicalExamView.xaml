@@ -121,19 +121,52 @@
                                 <!-- Section Settings (Configure visible panels) -->
                                 <ToggleButton Name="BtnSectionSettings" Style="{StaticResource IconToggleButton}" Tag="&#xE8A4;" ToolTip="Visible Sections | الأقسام الظاهرة" FontSize="17" Width="40" Height="40" Foreground="White" Margin="0,0,10,0"/>
                                 <Popup IsOpen="{Binding IsChecked, ElementName=BtnSectionSettings}" PlacementTarget="{Binding ElementName=BtnSectionSettings}" Placement="Bottom" StaysOpen="False" PopupAnimation="Fade">
-                                    <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="15" Width="220" Margin="0,5,0,0">
+                                    <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="1" CornerRadius="8" Padding="12" Width="300" Margin="0,5,0,0">
                                         <Border.Effect>
                                             <DropShadowEffect BlurRadius="15" ShadowDepth="3" Color="Black" Opacity="0.3"/>
                                         </Border.Effect>
-                                        <StackPanel>
-                                            <TextBlock Text="Visible Sections | الأقسام الظاهرة" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,0,0,10"/>
-                                            <CheckBox Content="Nutritional Status" IsChecked="{Binding ShowNutritionalSub}" Margin="0,0,0,6"/>
-                                            <CheckBox Content="Obstetrics / Gynae" IsChecked="{Binding ShowObstetricsSub}" Margin="0,0,0,6"/>
-                                            <CheckBox Content="System Review" IsChecked="{Binding ShowSystemReviewSection}" Margin="0,0,0,6"/>
-                                            <CheckBox Content="Clinical Examination" IsChecked="{Binding ShowExaminationSection}" Margin="0,0,0,6"/>
-                                            <CheckBox Content="Dentist Notes" IsChecked="{Binding DentistShowNotes}" Margin="0,0,0,6"/>
-                                            <CheckBox Content="Visit Summary notes" IsChecked="{Binding SummeryShowVisitSummary}" Margin="0,0,0,6"/>
-                                        </StackPanel>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+                                            
+                                            <TextBlock Grid.Row="0" Text="Visible Sections | الأقسام الظاهرة" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource PrimaryColor}" Margin="0,0,0,10"/>
+                                            
+                                            <ScrollViewer Grid.Row="1" MaxHeight="350" VerticalScrollBarVisibility="Auto">
+                                                <ItemsControl ItemsSource="{Binding SectionOrderList}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,0,1" Padding="4,6" Margin="0,0,0,2">
+                                                                <Grid>
+                                                                    <Grid.ColumnDefinitions>
+                                                                        <ColumnDefinition Width="Auto"/> <!-- Checkbox -->
+                                                                        <ColumnDefinition Width="*"/>    <!-- Text Name -->
+                                                                        <ColumnDefinition Width="Auto"/> <!-- Up Button -->
+                                                                        <ColumnDefinition Width="Auto"/> <!-- Down Button -->
+                                                                    </Grid.ColumnDefinitions>
+                                                                    
+                                                                    <!-- Enable / Disable Switch CheckBox -->
+                                                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsVisible, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="0,0,8,0" Style="{StaticResource {x:Type CheckBox}}"/>
+                                                                    
+                                                                    <!-- Section Title (Dual Language) -->
+                                                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0,0,8,0">
+                                                                        <TextBlock Text="{Binding DisplayNameEn}" Foreground="{DynamicResource TextColor}" FontSize="12" FontWeight="SemiBold"/>
+                                                                        <TextBlock Text="{Binding DisplayNameAr}" Foreground="{DynamicResource SubtextColor}" FontSize="10"/>
+                                                                    </StackPanel>
+                                                                    
+                                                                    <!-- Up Reorder Button -->
+                                                                    <Button Grid.Column="2" Style="{StaticResource IconButton}" Tag="&#xE70E;" FontSize="10" Padding="6,4" Width="26" Height="26" Command="{Binding DataContext.MoveSectionUpCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}" Margin="0,0,4,0"/>
+                                                                    
+                                                                    <!-- Down Reorder Button -->
+                                                                    <Button Grid.Column="3" Style="{StaticResource IconButton}" Tag="&#xE70D;" FontSize="10" Padding="6,4" Width="26" Height="26" Command="{Binding DataContext.MoveSectionDownCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </ScrollViewer>
+                                        </Grid>
                                     </Border>
                                 </Popup>
 
