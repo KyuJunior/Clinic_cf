@@ -928,7 +928,7 @@
                                 </ui:Card>
 
                                 <!-- 9. Obstetrics & Gynecology (Conditional) -->
-                                <ui:Card x:Name="CardObstetrics" Grid.Row="{Binding ObstetricsRow}" Margin="0,0,0,12" Visibility="{Binding ShowObstetrics, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ui:Card x:Name="CardObstetrics" Grid.Row="{Binding ObstetricsRow}" Margin="0,0,0,12" Visibility="{Binding ShowObstetricsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="Obstetrics &amp; Gynecology | التوليد والنساء" Style="{StaticResource Header2}"/>
                                         <WrapPanel Margin="0,5,0,0">

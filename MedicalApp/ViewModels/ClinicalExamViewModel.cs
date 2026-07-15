@@ -1743,6 +1743,7 @@ namespace MedicalApp.ViewModels
         }
 
         // Changed handlers for auto-saving view/draft fields
+        partial void OnShowObstetricsChanged(bool value) => OnPropertyChanged(nameof(ShowObstetricsCard));
 
         partial void OnVitalHRChanged(string value)
         {

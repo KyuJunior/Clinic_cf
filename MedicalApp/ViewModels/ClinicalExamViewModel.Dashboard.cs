@@ -231,10 +231,7 @@ namespace MedicalApp.ViewModels
         [ObservableProperty]
         private DateTime? _obLMP;
 
-        public bool ShowObstetricsCard => ShowOverviewSection && ShowObstetricsSub && CurrentPatient?.Gender == "Female";
-
-        partial void OnShowOverviewSectionChanged(bool value) => OnPropertyChanged(nameof(ShowObstetricsCard));
-        partial void OnShowObstetricsSubChanged(bool value) => OnPropertyChanged(nameof(ShowObstetricsCard));
+        public bool ShowObstetricsCard => ShowObstetrics && CurrentPatient?.Gender == "Female";
 
         [ObservableProperty]
         private string _visitSummaryText = string.Empty;
