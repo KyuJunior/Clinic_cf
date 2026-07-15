@@ -54,12 +54,33 @@
         <!-- Main Grid Layout (Left Sidebar + Main Area) -->
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260"/> <!-- Left Sidebar: Queue / Waitlist -->
-                <ColumnDefinition Width="*"/>   <!-- Right Content: Stats & Table -->
+                <ColumnDefinition>
+                    <ColumnDefinition.Style>
+                        <Style TargetType="ColumnDefinition">
+                            <Setter Property="Width" Value="260"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ActiveSubView}" Value="Dashboard">
+                                    <Setter Property="Width" Value="0"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ColumnDefinition.Style>
+                </ColumnDefinition>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- Column 0: Left Sidebar -->
             <Border Grid.Column="0" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderColor}" BorderThickness="0,0,1.5,0">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ActiveSubView}" Value="Dashboard">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <Grid Margin="10,15">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*"/>    <!-- Waiting Visits -->
@@ -174,233 +195,386 @@
                                 </Style.Triggers>
                             </Style>
                         </Grid.Style>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/> <!-- Top row: KPI Cards -->
+                                <RowDefinition Height="*"/>    <!-- Bottom row: Tables -->
+                            </Grid.RowDefinitions>
 
-                        <!-- Center the responsive grid of KPI cards vertically -->
-                        <helpers:ResponsiveUniformGrid Columns="2" VerticalAlignment="Center" Margin="20,10" MaxWidth="1200" Height="580">
+                            <!-- Symmetrical 4-Column Responsive Grid of KPI Cards -->
+                            <helpers:ResponsiveUniformGrid Grid.Row="0" Columns="4" VerticalAlignment="Top" Margin="10,5" MaxWidth="1200">
 
-                            <!-- Card 0: Total Registered (Clickable Card) -->
-                            <Button Command="{Binding ShowAllPatientsViewCommand}" Margin="16" Cursor="Hand" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-                                    Visibility="{Binding Settings.ShowTotalPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border CornerRadius="10" Padding="18,16">
-                                            <Border.Background>
-                                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                                    <GradientStop Color="#0D9488" Offset="0"/> <!-- Teal 600 -->
-                                                    <GradientStop Color="#2DD4BF" Offset="1"/> <!-- Teal 400 -->
-                                                </LinearGradientBrush>
-                                            </Border.Background>
-                                            <Border.Effect>
-                                                <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
-                                            </Border.Effect>
-                                            <ContentPresenter/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <TextBlock Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Text="إجمالي المرضى المسجلين" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <!-- Card 0: Total Registered (Clickable Card) -->
+                                <Button Command="{Binding ShowAllPatientsViewCommand}" Margin="8" Cursor="Hand" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
+                                        Visibility="{Binding Settings.ShowTotalPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border CornerRadius="10" Padding="18,16">
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                                        <GradientStop Color="#0D9488" Offset="0"/> <!-- Teal 600 -->
+                                                        <GradientStop Color="#2DD4BF" Offset="1"/> <!-- Teal 400 -->
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                                <Border.Effect>
+                                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                                </Border.Effect>
+                                                <ContentPresenter/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="&#xE716;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="إجمالي المرضى المسجلين" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding TotalPatientsCount}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Row="2" Text="Total Registered Patients (Click to View)" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                     </Grid>
-                                    <TextBlock Grid.Row="1" Text="{Binding TotalPatientsCount}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    <TextBlock Grid.Row="2" Text="Total Registered Patients (Click to View)" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Button>
+                                </Button>
 
-                            <!-- Card 1: New Patients -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16"
-                                    Visibility="{Binding Settings.ShowNewPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#4F46E5" Offset="0"/> <!-- Indigo 600 -->
-                                        <GradientStop Color="#818CF8" Offset="1"/> <!-- Indigo 400 -->
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
-                                </Border.Effect>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <TextBlock Text="&#xE8FA;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Text="المرضى الجدد اليوم" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <!-- Card 1: New Patients -->
+                                <Border CornerRadius="10" Padding="18,16" Margin="8"
+                                        Visibility="{Binding Settings.ShowNewPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#4F46E5" Offset="0"/> <!-- Indigo 600 -->
+                                            <GradientStop Color="#818CF8" Offset="1"/> <!-- Indigo 400 -->
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="&#xE8FA;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="المرضى الجدد اليوم" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding NewPatientsTodayCount}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Row="2" Text="New Patients Registered Today" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                     </Grid>
-                                    <TextBlock Grid.Row="1" Text="{Binding NewPatientsTodayCount}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    <TextBlock Grid.Row="2" Text="New Patients Registered Today" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Border>
+                                </Border>
 
-                            <!-- Card 2: Waiting Patients -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16"
-                                    Visibility="{Binding Settings.ShowWaitingPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#0284C7" Offset="0"/> <!-- Sky 700 -->
-                                        <GradientStop Color="#38BDF8" Offset="1"/> <!-- Sky 400 -->
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
-                                </Border.Effect>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <TextBlock Text="&#xE916;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Text="المرضى في الانتظار" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <!-- Card 2: Waiting Patients -->
+                                <Border CornerRadius="10" Padding="18,16" Margin="8"
+                                        Visibility="{Binding Settings.ShowWaitingPatientsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#0284C7" Offset="0"/> <!-- Sky 700 -->
+                                            <GradientStop Color="#38BDF8" Offset="1"/> <!-- Sky 400 -->
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="&#xE916;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="المرضى في الانتظار" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding WaitingPatientsCount}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Row="2" Text="Waiting Patients in Queue" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                     </Grid>
-                                    <TextBlock Grid.Row="1" Text="{Binding WaitingPatientsCount}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    <TextBlock Grid.Row="2" Text="Waiting Patients in Queue" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Border>
+                                </Border>
 
-                            <!-- Card 3: Active Consultations -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16"
-                                    Visibility="{Binding Settings.ShowActiveConsultationsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#E11D48" Offset="0"/> <!-- Rose 600 -->
-                                        <GradientStop Color="#F43F5E" Offset="1"/> <!-- Rose 400 -->
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
-                                </Border.Effect>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <TextBlock Text="&#xE957;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Text="الزيارات غير المنتهية" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <!-- Card 3: Active Consultations -->
+                                <Border CornerRadius="10" Padding="18,16" Margin="8"
+                                        Visibility="{Binding Settings.ShowActiveConsultationsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#E11D48" Offset="0"/> <!-- Rose 600 -->
+                                            <GradientStop Color="#F43F5E" Offset="1"/> <!-- Rose 400 -->
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="&#xE957;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="الزيارات غير المنتهية" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding IncompleteVisitsCount}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Row="2" Text="Active Unfinished Visits" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                     </Grid>
-                                    <TextBlock Grid.Row="1" Text="{Binding IncompleteVisitsCount}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    <TextBlock Grid.Row="2" Text="Active Unfinished Visits" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Border>
+                                </Border>
 
-                            <!-- Card 4: Patient in Exam Room -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16"
-                                    Visibility="{Binding Settings.ShowExamRoomCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#D97706" Offset="0"/> <!-- Amber 600 -->
-                                        <GradientStop Color="#F59E0B" Offset="1"/> <!-- Amber 400 -->
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
-                                </Border.Effect>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Text="المريض في غرفة الطبيب" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <!-- Card 4: Patient in Exam Room -->
+                                <Border CornerRadius="10" Padding="18,16" Margin="8"
+                                        Visibility="{Binding Settings.ShowExamRoomCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#D97706" Offset="0"/> <!-- Amber 600 -->
+                                            <GradientStop Color="#F59E0B" Offset="1"/> <!-- Amber 400 -->
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="&#xE77B;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="المريض في غرفة الطبيب" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding PatientInDoctorRoomName}" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,10,0,6" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" ToolTip="{Binding PatientInDoctorRoomName}"/>
+                                        <TextBlock Grid.Row="2" Text="Patient with Attending Doctor" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                     </Grid>
-                                    <TextBlock Grid.Row="1" Text="{Binding PatientInDoctorRoomName}" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,10,0,6" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" ToolTip="{Binding PatientInDoctorRoomName}"/>
-                                    <TextBlock Grid.Row="2" Text="Patient with Attending Doctor" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Border>
+                                </Border>
 
-                            <!-- Card 5: Next Patient -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16"
-                                    Visibility="{Binding Settings.ShowNextPatientCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#7C3AED" Offset="0"/> <!-- Purple 600 -->
-                                        <GradientStop Color="#A855F7" Offset="1"/> <!-- Violet 400 -->
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
-                                </Border.Effect>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <TextBlock Text="&#xE893;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Text="المريض التالي" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <!-- Card 5: Next Patient -->
+                                <Border CornerRadius="10" Padding="18,16" Margin="8"
+                                        Visibility="{Binding Settings.ShowNextPatientCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#7C3AED" Offset="0"/> <!-- Purple 600 -->
+                                            <GradientStop Color="#A855F7" Offset="1"/> <!-- Violet 400 -->
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="&#xE893;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="المريض التالي" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding NextPatientName}" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,10,0,6" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" ToolTip="{Binding NextPatientName}"/>
+                                        <TextBlock Grid.Row="2" Text="Next Patient in Queue" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                     </Grid>
-                                    <TextBlock Grid.Row="1" Text="{Binding NextPatientName}" FontSize="22" FontWeight="Bold" Foreground="White" Margin="0,10,0,6" VerticalAlignment="Center" HorizontalAlignment="Center" TextAlignment="Center" TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" ToolTip="{Binding NextPatientName}"/>
-                                    <TextBlock Grid.Row="2" Text="Next Patient in Queue" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Border>
+                                </Border>
 
-                            <!-- Card 6: Total Visits Today -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16"
-                                    Visibility="{Binding Settings.ShowTotalVisitsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#0369A1" Offset="0"/> <!-- Sky 800 -->
-                                        <GradientStop Color="#0EA5E9" Offset="1"/> <!-- Sky 500 -->
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
-                                </Border.Effect>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <TextBlock Text="&#xE77C;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Text="إجمالي زيارات اليوم" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <!-- Card 6: Total Visits Today -->
+                                <Border CornerRadius="10" Padding="18,16" Margin="8"
+                                        Visibility="{Binding Settings.ShowTotalVisitsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#0369A1" Offset="0"/> <!-- Sky 800 -->
+                                            <GradientStop Color="#0EA5E9" Offset="1"/> <!-- Sky 500 -->
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="&#xE77C;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="إجمالي زيارات اليوم" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding TotalVisitsCountToday}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Row="2" Text="Total Checked-In Visits Today" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                     </Grid>
-                                    <TextBlock Grid.Row="1" Text="{Binding TotalVisitsCountToday}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    <TextBlock Grid.Row="2" Text="Total Checked-In Visits Today" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Border>
+                                </Border>
 
-                            <!-- Card 7: Completed Consultations Today -->
-                            <Border CornerRadius="10" Padding="18,16" Margin="16"
-                                    Visibility="{Binding Settings.ShowCompletedConsultationsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                <Border.Background>
-                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
-                                        <GradientStop Color="#15803D" Offset="0"/> <!-- Green 700 -->
-                                        <GradientStop Color="#22C55E" Offset="1"/> <!-- Green 500 -->
-                                    </LinearGradientBrush>
-                                </Border.Background>
-                                <Border.Effect>
-                                    <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
-                                </Border.Effect>
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="*"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-                                    <Grid Grid.Row="0">
-                                        <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                                        <TextBlock Text="الاستشارات المكتملة" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                <!-- Card 7: Completed Consultations Today -->
+                                <Border CornerRadius="10" Padding="18,16" Margin="8"
+                                        Visibility="{Binding Settings.ShowCompletedConsultationsCard, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#15803D" Offset="0"/> <!-- Green 700 -->
+                                            <GradientStop Color="#22C55E" Offset="1"/> <!-- Green 500 -->
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                    <Border.Effect>
+                                        <DropShadowEffect Color="#0F172A" Opacity="0.12" BlurRadius="12" ShadowDepth="1.5" Direction="270"/>
+                                    </Border.Effect>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Grid Grid.Row="0">
+                                            <TextBlock Text="&#xE8B0;" FontFamily="Segoe MDL2 Assets" FontSize="18" Foreground="White" Opacity="0.8" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                                            <TextBlock Text="الاستشارات المكتملة" FontSize="13.5" FontWeight="Bold" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                                        </Grid>
+                                        <TextBlock Grid.Row="1" Text="{Binding CompletedConsultationsCountToday}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock Grid.Row="2" Text="Completed Doctor Consultations Today" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
                                     </Grid>
-                                    <TextBlock Grid.Row="1" Text="{Binding CompletedConsultationsCountToday}" FontSize="36" FontWeight="Bold" Foreground="White" Margin="0,8,0,6" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    <TextBlock Grid.Row="2" Text="Completed Doctor Consultations Today" FontSize="10.5" Foreground="White" Opacity="0.85" HorizontalAlignment="Left"/>
-                                </Grid>
-                            </Border>
-                        </helpers:ResponsiveUniformGrid>
+                                </Border>
+                            </helpers:ResponsiveUniformGrid>
+
+                            <!-- Bottom Row: Side-by-Side Tables -->
+                            <Grid Grid.Row="1" Margin="10,10,10,5" VerticalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>   <!-- Left Table: Waiting Patients -->
+                                    <ColumnDefinition Width="20"/>  <!-- Gap -->
+                                    <ColumnDefinition Width="*"/>   <!-- Right Table: Non-Finished Visits -->
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Left Table: Waiting Patients -->
+                                <Border Grid.Column="0" Style="{StaticResource CardBorder}" Background="{DynamicResource CardBackgroundColor}" Padding="15">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Header Panel -->
+                                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="&#xE916;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{DynamicResource PrimaryColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="WAITING PATIENTS | المرضى في الانتظار" FontSize="13.5" FontWeight="Bold" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Table Content -->
+                                        <Grid Grid.Row="1">
+                                            <DataGrid x:Name="WaitingDataGrid" ItemsSource="{Binding WaitingVisits}" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AutoGenerateColumns="False" BorderThickness="0" Background="Transparent">
+                                                <DataGrid.Style>
+                                                    <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="HasItems" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </DataGrid.Style>
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="الاسم / Patient" Binding="{Binding PatientName}" Width="2*" FontWeight="SemiBold"/>
+                                                    <DataGridTextColumn Header="الطبيب / Doctor" Binding="{Binding DoctorName}" Width="1.5*"/>
+                                                    <DataGridTextColumn Header="الوقت / Time" Binding="{Binding CreatedAt, StringFormat=\{0:hh:mm tt\}}" Width="100"/>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+
+                                            <!-- Empty Overlay -->
+                                            <TextBlock Text="No patients currently waiting in queue.&#x0a;لا يوجد مرضى في طابور الانتظار" 
+                                                       FontSize="13" Foreground="{DynamicResource SubtextColor}" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasItems, ElementName=WaitingDataGrid}" Value="False">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+
+                                <!-- Right Table: Non-Finished Visits -->
+                                <Border Grid.Column="2" Style="{StaticResource CardBorder}" Background="{DynamicResource CardBackgroundColor}" Padding="15">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="*"/>
+                                        </Grid.RowDefinitions>
+
+                                        <!-- Header Panel -->
+                                        <Grid Grid.Row="0" Margin="0,0,0,10">
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                                <TextBlock Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="16" Foreground="{DynamicResource AccentColor}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                                <TextBlock Text="NON-FINISHED VISITS | الزيارات غير المكتملة" FontSize="13.5" FontWeight="Bold" Foreground="{DynamicResource TextColor}" VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </Grid>
+
+                                        <!-- Table Content -->
+                                        <Grid Grid.Row="1">
+                                            <DataGrid x:Name="IncompleteDataGrid" ItemsSource="{Binding IncompleteVisits}" HeadersVisibility="Column" GridLinesVisibility="Horizontal" AutoGenerateColumns="False" BorderThickness="0" Background="Transparent">
+                                                <DataGrid.Style>
+                                                    <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="HasItems" Value="False">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </DataGrid.Style>
+                                                <DataGrid.Columns>
+                                                    <DataGridTextColumn Header="الاسم / Patient" Binding="{Binding PatientName}" Width="2*" FontWeight="SemiBold"/>
+                                                    <DataGridTextColumn Header="الطبيب / Doctor" Binding="{Binding DoctorName}" Width="1.5*"/>
+                                                    <DataGridTextColumn Header="الوقت / Time" Binding="{Binding CreatedAt, StringFormat=\{0:hh:mm tt\}}" Width="100"/>
+                                                    <DataGridTemplateColumn Header="الحالة / Status" Width="120">
+                                                        <DataGridTemplateColumn.CellTemplate>
+                                                            <DataTemplate>
+                                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                                    <TextBlock x:Name="StatusIcon" Text="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="12" Margin="0,0,5,0" VerticalAlignment="Center"/>
+                                                                    <TextBlock x:Name="StatusText" Text="In-session" FontSize="11.5" VerticalAlignment="Center"/>
+                                                                </StackPanel>
+                                                                <DataTemplate.Triggers>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="Pending">
+                                                                        <Setter TargetName="StatusIcon" Property="Text" Value="&#xE7BA;"/>
+                                                                        <Setter TargetName="StatusIcon" Property="Foreground" Value="#EAB308"/>
+                                                                        <Setter TargetName="StatusText" Property="Text" Value="Pending"/>
+                                                                        <Setter TargetName="StatusText" Property="Foreground" Value="#EAB308"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="InExam">
+                                                                        <Setter TargetName="StatusIcon" Property="Text" Value="&#xE77B;"/>
+                                                                        <Setter TargetName="StatusIcon" Property="Foreground" Value="#EF4444"/>
+                                                                        <Setter TargetName="StatusText" Property="Text" Value="In-session"/>
+                                                                        <Setter TargetName="StatusText" Property="Foreground" Value="#EF4444"/>
+                                                                    </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="InEcho">
+                                                                        <Setter TargetName="StatusIcon" Property="Text" Value="&#xE77B;"/>
+                                                                        <Setter TargetName="StatusIcon" Property="Foreground" Value="#EF4444"/>
+                                                                        <Setter TargetName="StatusText" Property="Text" Value="In-session"/>
+                                                                        <Setter TargetName="StatusText" Property="Foreground" Value="#EF4444"/>
+                                                                    </DataTrigger>
+                                                                </DataTemplate.Triggers>
+                                                            </DataTemplate>
+                                                        </DataGridTemplateColumn.CellTemplate>
+                                                    </DataGridTemplateColumn>
+                                                </DataGrid.Columns>
+                                            </DataGrid>
+
+                                            <!-- Empty Overlay -->
+                                            <TextBlock Text="No active consultations currently.&#x0a;لا يوجد زيارات غير مكتملة حالياً" 
+                                                       FontSize="13" Foreground="{DynamicResource SubtextColor}" 
+                                                       HorizontalAlignment="Center" VerticalAlignment="Center" TextAlignment="Center">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasItems, ElementName=IncompleteDataGrid}" Value="False">
+                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+                            </Grid>
+                        </Grid>
                     </Grid>
 
                     <!-- Panels container border (for AllPatients, TodayVisits, AppointmentsCalendar, Finance) -->
