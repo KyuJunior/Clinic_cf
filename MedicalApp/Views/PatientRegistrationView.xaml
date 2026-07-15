@@ -548,6 +548,12 @@
                                                                         <Setter TargetName="StatusText" Property="Text" Value="In-session"/>
                                                                         <Setter TargetName="StatusText" Property="Foreground" Value="#EF4444"/>
                                                                     </DataTrigger>
+                                                                    <DataTrigger Binding="{Binding Status}" Value="HoldExam">
+                                                                        <Setter TargetName="StatusIcon" Property="Text" Value="&#xE7BA;"/>
+                                                                        <Setter TargetName="StatusIcon" Property="Foreground" Value="#EAB308"/>
+                                                                        <Setter TargetName="StatusText" Property="Text" Value="On hold"/>
+                                                                        <Setter TargetName="StatusText" Property="Foreground" Value="#EAB308"/>
+                                                                    </DataTrigger>
                                                                 </DataTemplate.Triggers>
                                                             </DataTemplate>
                                                         </DataGridTemplateColumn.CellTemplate>

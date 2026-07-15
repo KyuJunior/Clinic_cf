@@ -140,7 +140,7 @@ namespace MedicalApp.ViewModels
                 var doctorQueue = activeQueue.Where(q => q.DoctorName == ActiveDoctorName).ToList();
 
                 var waiting = doctorQueue.Where(q => q.Status == "Pending").ToList();
-                var inExam = doctorQueue.Where(q => q.Status == "InExam").ToList();
+                var inExam = doctorQueue.Where(q => q.Status == "InExam" || q.Status == "HoldExam").ToList();
 
                 WaitingPatients = new ObservableCollection<QueueEntry>(waiting);
                 NotFinishedPatients = new ObservableCollection<QueueEntry>(inExam);

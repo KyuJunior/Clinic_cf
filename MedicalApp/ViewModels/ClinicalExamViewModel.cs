@@ -408,7 +408,7 @@ namespace MedicalApp.ViewModels
                 var active = activeTask.Result.Where(q => q.DoctorName == ActiveDoctorName).ToList();
                 ActiveQueue = new ObservableCollection<QueueEntry>(active);
                 WaitingPatients = new ObservableCollection<QueueEntry>(active.Where(q => q.Status == "Pending"));
-                NotFinishedPatients = new ObservableCollection<QueueEntry>(active.Where(q => q.Status == "InExam"));
+                NotFinishedPatients = new ObservableCollection<QueueEntry>(active.Where(q => q.Status == "InExam" || q.Status == "HoldExam"));
                 CompletedCountToday = completedTask.Result;
             }
             catch
@@ -760,6 +760,19 @@ namespace MedicalApp.ViewModels
         [RelayCommand]
         public void ExitToDashboard()
         {
+            if (CurrentPatient != null)
+            {
+                var patientId = CurrentPatient.PatientId;
+                _ = Task.Run(async () =>
+                {
+                    try
+                    {
+                        await _queueService.UpdateQueueStatusAsync(patientId, "HoldExam");
+                    }
+                    catch { }
+                });
+            }
+
             SelectedPatientLookup = null;
             CurrentPatient = null;
             _sharedStateService.CurrentPatient = null; // Clear shared state
@@ -788,8 +801,8 @@ namespace MedicalApp.ViewModels
                     await SaveVisitAsync();
                 }
 
-                // Explicitly update queue status to InExam (which means Incomplete / Not Finished)
-                await _queueService.UpdateQueueStatusAsync(CurrentPatient.PatientId, "InExam");
+                // Explicitly update queue status to HoldExam (on hold)
+                await _queueService.UpdateQueueStatusAsync(CurrentPatient.PatientId, "HoldExam");
                 StatusMessage = $"Exam session for '{CurrentPatient.Name}' put on hold (Not Finished).";
 
                 // Exit to dashboard (clears state and navigates home)

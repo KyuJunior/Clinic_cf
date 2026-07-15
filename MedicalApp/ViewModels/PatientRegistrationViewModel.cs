@@ -492,11 +492,13 @@ namespace MedicalApp.ViewModels
                 // New patients today
                 NewPatientsTodayCount = System.Linq.Enumerable.Count(Patients, p => p.CreatedAt.Date == DateTime.Today);
 
-                // Incomplete count
-                IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
+                // Incomplete count (includes InExam, InEcho, and HoldExam)
+                IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho" || q.Status == "HoldExam");
 
-                // Active patient in doctor room
-                PatientInDoctorRoomName = _sharedStateService.CurrentPatient != null ? _sharedStateService.CurrentPatient.Name : "no patient (لا احد)";
+                // Active patient in doctor room (checks memory first, then active database queue entries)
+                PatientInDoctorRoomName = _sharedStateService.CurrentPatient != null 
+                    ? _sharedStateService.CurrentPatient.Name 
+                    : (System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho")?.PatientName ?? "no patient (لا احد)");
 
                 // Next patient in queue
                 var nextEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "Pending");
@@ -505,8 +507,8 @@ namespace MedicalApp.ViewModels
                 // Waitlist list for left sidebar (status Pending)
                 WaitingVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "Pending"));
                 
-                // Incomplete list for left sidebar (status InExam or InEcho)
-                IncompleteVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho"));
+                // Incomplete list (includes InExam, InEcho, and HoldExam)
+                IncompleteVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho" || q.Status == "HoldExam"));
             }
             catch (Exception ex)
             {
@@ -533,15 +535,17 @@ namespace MedicalApp.ViewModels
                             TotalVisitsCountToday = AttendingPatientsCount + completedTodayCount;
 
                             WaitingPatientsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "Pending");
-                            IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho");
+                            IncompleteVisitsCount = System.Linq.Enumerable.Count(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho" || q.Status == "HoldExam");
 
-                            PatientInDoctorRoomName = _sharedStateService.CurrentPatient != null ? _sharedStateService.CurrentPatient.Name : "no patient (لا احد)";
+                            PatientInDoctorRoomName = _sharedStateService.CurrentPatient != null 
+                                ? _sharedStateService.CurrentPatient.Name 
+                                : (System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho")?.PatientName ?? "no patient (لا احد)");
 
                             var nextEntry = System.Linq.Enumerable.FirstOrDefault(activeQueue, q => q.Status == "Pending");
                             NextPatientName = nextEntry != null ? nextEntry.PatientName : "No waiting patient | لا يوجد مريض";
 
                             WaitingVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "Pending"));
-                            IncompleteVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho"));
+                            IncompleteVisits = new ObservableCollection<QueueEntry>(System.Linq.Enumerable.Where(activeQueue, q => q.Status == "InExam" || q.Status == "InEcho" || q.Status == "HoldExam"));
                         });
                     }
                 }
